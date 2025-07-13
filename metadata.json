@@ -1,0 +1,8 @@
+{
+  "name": "Biosensor-Apptesting",
+  "description": "A web application to quantify pesticide concentration by analyzing the bioluminescent brightness of an E. coli sample image. Users can calibrate a standard curve, analyze sample images, and view historical data.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}
