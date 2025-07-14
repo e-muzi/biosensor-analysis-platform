@@ -33,16 +33,16 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
                       </div>
                     </div>
                     
-                    {/* Show individual calibration segments */}
+                    {/* Show individual calibration segments (vertical) */}
                     {strip.concentrations.map((conc, segIndex) => (
                       <div
                         key={`segment-${strip.name}-${segIndex}`}
                         className="absolute border border-green-300 border-opacity-50 pointer-events-none"
                         style={{
-                          top: `${strip.roi.y * 100}%`,
-                          left: `${(strip.roi.x + (segIndex * strip.roi.width / 5)) * 100}%`,
-                          width: `${(strip.roi.width / 5) * 100}%`,
-                          height: `${strip.roi.height * 100}%`
+                          top: `${(strip.roi.y + (segIndex * strip.roi.height / 5)) * 100}%`,
+                          left: `${strip.roi.x * 100}%`,
+                          width: `${strip.roi.width * 100}%`,
+                          height: `${(strip.roi.height / 5) * 100}%`
                         }}
                       >
                         <div className="absolute -top-3 left-0 text-green-300 text-xs bg-gray-900 bg-opacity-70 px-1 rounded">

@@ -14,37 +14,43 @@ export interface PesticideROI {
     roi: ROI;
 }
 
-// New layout with calibration strips on the left side of each pesticide test area
-// Each calibration strip is divided into 5 segments (0, 25, 50, 75, 100 µM)
+// Updated layout: smaller calibration strips, wider test areas, and gaps to prevent overlap
+// Calibration strip: width = 0.06, height = 0.7
+// Gap: 0.02
+// Test area: width = 0.12, height = 0.7
+// Group 1: cal x=0.04, test x=0.12
+// Group 2: cal x=0.28, test x=0.36
+// Group 3: cal x=0.52, test x=0.60
+// Group 4: cal x=0.76, test x=0.84
+
 export const CALIBRATION_STRIPS: CalibrationStrip[] = [
     {
         name: PREDEFINED_PESTICIDES[0].name, // Acephate
-        roi: { x: 0.02, y: 0.2, width: 0.08, height: 0.6 },
-        concentrations: [0, 25, 50, 75, 100] // µM concentrations
+        roi: { x: 0.04, y: 0.15, width: 0.06, height: 0.7 },
+        concentrations: [0, 25, 50, 75, 100] // µM concentrations (top to bottom)
     },
     {
         name: PREDEFINED_PESTICIDES[1].name, // Glyphosate
-        roi: { x: 0.245, y: 0.2, width: 0.08, height: 0.6 },
-        concentrations: [0, 50, 100, 150, 200] // µM concentrations
+        roi: { x: 0.28, y: 0.15, width: 0.06, height: 0.7 },
+        concentrations: [0, 50, 100, 150, 200] // µM concentrations (top to bottom)
     },
     {
         name: PREDEFINED_PESTICIDES[2].name, // Mancozeb
-        roi: { x: 0.47, y: 0.2, width: 0.08, height: 0.6 },
-        concentrations: [0, 30, 60, 90, 120] // µM concentrations
+        roi: { x: 0.52, y: 0.15, width: 0.06, height: 0.7 },
+        concentrations: [0, 30, 60, 90, 120] // µM concentrations (top to bottom)
     },
     {
         name: PREDEFINED_PESTICIDES[3].name, // Cypermethrin
-        roi: { x: 0.695, y: 0.2, width: 0.08, height: 0.6 },
-        concentrations: [0, 45, 90, 135, 180] // µM concentrations
+        roi: { x: 0.76, y: 0.15, width: 0.06, height: 0.7 },
+        concentrations: [0, 45, 90, 135, 180] // µM concentrations (top to bottom)
     }
 ];
 
-// Updated test areas (moved slightly to the right to make room for calibration strips)
 export const PESTICIDE_ROIS: PesticideROI[] = [
-    { name: PREDEFINED_PESTICIDES[0].name, roi: { x: 0.12, y: 0.2, width: 0.15, height: 0.6 } }, // Acephate test area
-    { name: PREDEFINED_PESTICIDES[1].name, roi: { x: 0.345, y: 0.2, width: 0.15, height: 0.6 } }, // Glyphosate test area
-    { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.57, y: 0.2, width: 0.15, height: 0.6 } }, // Mancozeb test area
-    { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.795, y: 0.2, width: 0.15, height: 0.6 } }, // Cypermethrin test area
+    { name: PREDEFINED_PESTICIDES[0].name, roi: { x: 0.12, y: 0.15, width: 0.12, height: 0.7 } }, // Acephate test area
+    { name: PREDEFINED_PESTICIDES[1].name, roi: { x: 0.36, y: 0.15, width: 0.12, height: 0.7 } }, // Glyphosate test area
+    { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.60, y: 0.15, width: 0.12, height: 0.7 } }, // Mancozeb test area
+    { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.84, y: 0.15, width: 0.12, height: 0.7 } }, // Cypermethrin test area
 ];
 
 // Converts RGB color to HSV. Returns V (value/brightness) component.
@@ -87,26 +93,26 @@ function calculateBrightnessForRoi(ctx: CanvasRenderingContext2D, roi: ROI): num
     return totalBrightness / pixelCount;
 }
 
-// Calculate brightness for each segment of a calibration strip
+// Calculate brightness for each segment of a vertical calibration strip
 function calculateCalibrationStripBrightnesses(ctx: CanvasRenderingContext2D, strip: CalibrationStrip): number[] {
     const canvas = ctx.canvas;
-    const stripX = Math.floor(canvas.width * strip.roi.x);
-    // const stripY = Math.floor(canvas.height * strip.roi.y);
+    // const stripX = Math.floor(canvas.width * strip.roi.x);
+    const stripY = Math.floor(canvas.height * strip.roi.y);
     const stripWidth = Math.floor(canvas.width * strip.roi.width);
     const stripHeight = Math.floor(canvas.height * strip.roi.height);
     
     if (stripWidth <= 0 || stripHeight <= 0) return [0, 0, 0, 0, 0];
 
-    const segmentWidth = stripWidth / 5; // 5 segments in each calibration strip
+    const segmentHeight = stripHeight / 5; // 5 vertical segments in each calibration strip
     const brightnesses: number[] = [];
 
     for (let i = 0; i < 5; i++) {
-        const segmentX = stripX + (i * segmentWidth);
+        const segmentY = stripY + (i * segmentHeight);
         const segmentROI: ROI = {
-            x: segmentX / canvas.width,
-            y: strip.roi.y,
-            width: segmentWidth / canvas.width,
-            height: strip.roi.height
+            x: strip.roi.x,
+            y: segmentY / canvas.height,
+            width: strip.roi.width,
+            height: segmentHeight / canvas.height
         };
         brightnesses.push(calculateBrightnessForRoi(ctx, segmentROI));
     }

@@ -57,8 +57,10 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed!!!
 
 ## Test Kit Layout
 
-The test kit now has the following layout (left to right):
-- **Acephate**: Calibration strip (0-100 µM) + Test area
-- **Glyphosate**: Calibration strip (0-200 µM) + Test area  
-- **Mancozeb**: Calibration strip (0-120 µM) + Test area
-- **Cypermethrin**: Calibration strip (0-180 µM) + Test area
+The test kit has the following layout (left to right):
+- **Acephate**: Vertical calibration strip (0-100 µM, top to bottom) + Test area
+- **Glyphosate**: Vertical calibration strip (0-200 µM, top to bottom) + Test area  
+- **Mancozeb**: Vertical calibration strip (0-120 µM, top to bottom) + Test area
+- **Cypermethrin**: Vertical calibration strip (0-180 µM, top to bottom) + Test area
+
+Each calibration strip is a vertical rectangle divided into 5 small squares with known concentrations arranged from top (lowest) to bottom (highest).

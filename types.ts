@@ -38,4 +38,4 @@ export interface HistoryRecord {
   results: AnalysisResult[];
 }
 
-export type Screen = 'capture' | 'history' | 'settings' | 'analysis';
+export type Screen = 'capture' | 'history' | 'settings' | 'analysis' | 'alignment';
