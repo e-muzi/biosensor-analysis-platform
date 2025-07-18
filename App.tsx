@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { Screen, CalibrationResult } from './types';
 
 import { CaptureScreen, AnalysisResultScreen } from './components/analyze';
 import { HistoryScreen } from './components/history';
 import { SettingsScreen } from './components/settings';
 import { Navigation, Layout } from './components/shared';
+import { useThemeStore } from './state/themeStore';
 
 interface AnalysisData {
   results: CalibrationResult[];
@@ -14,6 +15,15 @@ interface AnalysisData {
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>('capture');
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const theme = useThemeStore(state => state.theme);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   const handleAnalysisComplete = (results: CalibrationResult[], imageSrc: string) => {
     setAnalysisData({ results, imageSrc });
