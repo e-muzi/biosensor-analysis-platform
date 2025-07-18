@@ -34,6 +34,16 @@ export const CalibrationSettings: React.FC = () => {
     setEditing(null);
   };
 
+  const handleResetAll = () => {
+    if (window.confirm('Are you sure you want to reset all calibration settings to default?')) {
+      resetAll();
+      setLocalCal(Object.fromEntries(
+        PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
+      ));
+      setEditing(null);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-xl font-bold text-cyan-400 mb-2">Calibration Strip Settings</h2>
@@ -72,7 +82,7 @@ export const CalibrationSettings: React.FC = () => {
         ))}
       </div>
       <div className="mt-8 flex justify-end">
-        <AppButton onClick={resetAll} variant="danger">Reset All to Default</AppButton>
+        <AppButton onClick={handleResetAll} variant="danger">Reset All to Default</AppButton>
       </div>
     </div>
   );

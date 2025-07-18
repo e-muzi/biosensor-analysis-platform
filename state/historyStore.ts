@@ -1,32 +1,36 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import type { HistoryRecord } from '../types';
+import { persist } from 'zustand/middleware';
+import type { AnalysisResult } from '../types';
+
+export interface HistoryRecord {
+  id: string;
+  name: string;
+  timestamp: string;
+  imageSrc: string;
+  results: AnalysisResult[];
+}
 
 interface HistoryState {
   records: HistoryRecord[];
   addRecord: (record: HistoryRecord) => void;
-  removeRecord: (id: string) => void;
-  updateRecordName: (id: string, newName: string) => void;
   clearHistory: () => void;
+  deleteRecord: (id: string) => void;
+  updateRecordName: (id: string, name: string) => void;
+  setRecords: (records: HistoryRecord[]) => void;
 }
 
 export const useHistoryStore = create<HistoryState>()(
   persist(
     (set, get) => ({
       records: [],
-      addRecord: (record) => set({ records: [record, ...get().records] }),
-      removeRecord: (id) => set({ records: get().records.filter((r) => r.id !== id) }),
-      updateRecordName: (id, newName) =>
-        set({
-          records: get().records.map((r) =>
-            r.id === id ? { ...r, name: newName } : r
-          ),
-        }),
+      addRecord: (record) => set(state => ({ records: [record, ...state.records] })),
       clearHistory: () => set({ records: [] }),
+      deleteRecord: (id) => set(state => ({ records: state.records.filter(r => r.id !== id) })),
+      updateRecordName: (id, name) => set(state => ({
+        records: state.records.map(r => r.id === id ? { ...r, name } : r)
+      })),
+      setRecords: (records) => set({ records }),
     }),
-    {
-      name: 'aptasense-history-storage',
-      storage: createJSONStorage(() => localStorage),
-    }
+    { name: 'history-store' }
   )
 );
