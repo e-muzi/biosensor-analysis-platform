@@ -65,7 +65,6 @@ export const DataSettings: React.FC = () => {
 
   return (
     <section>
-      <h2 className="text-xl font-bold text-cyan-400 mb-2">Data</h2>
       <div className="bg-gray-800 p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
         <div>
           <h3 className="text-lg font-semibold text-cyan-300">Export / Import</h3>
