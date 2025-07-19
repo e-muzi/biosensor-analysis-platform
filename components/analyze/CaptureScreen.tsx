@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { analyzeWithCalibrationStrips } from '../../utils/analysis';
 import { AppButton } from '../shared';
-import { CameraCapture, ImageUpload, ImageDisplay, ImageAlignment } from './';
+import { CameraCapture, ImageUpload, ImageDisplay } from './';
 import type { CalibrationResult } from '../../types';
 
 interface CaptureScreenProps {
@@ -13,21 +13,10 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
-  const [showAlignment, setShowAlignment] = useState(false);
 
   const handleImageSelect = (src: string) => {
     setImageSrc(src);
     setError(null);
-    setShowAlignment(true); // Show alignment step after image selection
-  };
-
-  const handleAlignmentConfirm = (alignedImageSrc: string) => {
-    setImageSrc(alignedImageSrc);
-    setShowAlignment(false);
-  };
-
-  const handleAlignmentBack = () => {
-    setShowAlignment(false);
   };
 
   const handleAnalyze = useCallback(async () => {
@@ -58,7 +47,6 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   const handleClearImage = () => {
     setImageSrc(null);
     setError(null);
-    setShowAlignment(false);
   };
 
   const handleOpenCamera = () => {
@@ -78,19 +66,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
     setImageSrc(capturedImageSrc);
     setIsCameraOpen(false);
     setError(null);
-    setShowAlignment(true); // Show alignment step after camera capture
   };
-
-  // Show alignment screen if image is selected and alignment is enabled
-  if (showAlignment && imageSrc) {
-    return (
-      <ImageAlignment 
-        imageSrc={imageSrc}
-        onConfirm={handleAlignmentConfirm}
-        onBack={handleAlignmentBack}
-      />
-    );
-  }
 
   return (
     <div className="p-4 md:p-6 max-w-4xl mx-auto flex flex-col items-center space-y-6">
@@ -105,7 +81,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
       ) : (
         <>
           <div className="w-full max-w-md">
-            <ImageDisplay imageSrc={imageSrc} />
+            <ImageDisplay imageSrc={imageSrc} showROIs={false} />
           </div>
           
           {!imageSrc && (
@@ -117,7 +93,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
             </div>
           )}
           
-          {imageSrc && !showAlignment && (
+          {imageSrc && (
             <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
               <AppButton onClick={handleClearImage} variant="secondary" className="flex-1">
                 Clear Image

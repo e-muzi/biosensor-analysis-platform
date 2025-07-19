@@ -1,6 +1,6 @@
 # HK-Joint-School - iGEM 2025
 
-Biosensor analysis app (3rd version) by CPU student to quantify pesticide concentration by analyzing the brightness of a sample image of our biosensor. The app uses calibration strips on each test kit to provide accurate concentration measurements without normalization. Users can capture photos, analyze samples using built-in calibration strips, and view historical data.
+Biosensor analysis app (2rd version) by CPU student to quantify pesticide concentration by analyzing the brightness of a sample image of our biosensor. The app uses calibration strips on each test kit to provide accurate concentration measurements without normalization. Users can capture photos, analyze samples using built-in calibration strips, and view historical data.
 
 ## Tech Stack
 
@@ -40,7 +40,7 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed!!!
 
 1.  **Prepare Test Kit**: Ensure your biosensor test kit has calibration strips on the left side of each pesticide test area. Each calibration strip contains 5 segments with known concentrations (0, 25, 50, 75, 100 µM for Acephate; 0, 50, 100, 150, 200 µM for Glyphosate; etc.).
 
-2.  **Capture/Upload**: Navigate to the 'Capture' screen to either take a photo with your device's camera or upload an existing image file of your test kit.
+2.  **Capture/Upload**: Navigate to the 'Capture' screen to either take a photo with your device's camera (automatically crops to test kit area) or upload an existing image file of your test kit.
 
 3.  **Analyze**: After uploading, the app will automatically analyze both the calibration strips and test areas. The green boxes show calibration strip segments, and cyan boxes show test areas.
 
