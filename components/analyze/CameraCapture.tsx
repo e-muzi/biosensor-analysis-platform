@@ -1,6 +1,6 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { AppButton } from '../shared';
-import { CALIBRATION_STRIPS, PESTICIDE_ROIS } from '../../utils/analysis';
+import { CALIBRATION_STRIPS, PESTICIDE_ROIS, cropToTestKit, detectTestKitBoundariesAdvanced } from '../../utils/analysis';
 
 interface CameraCaptureProps {
   onCapture: (imageSrc: string) => void;
@@ -13,6 +13,8 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
   const streamRef = useRef<MediaStream | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [flashEnabled, setFlashEnabled] = useState(false);
+  const [detectedBounds, setDetectedBounds] = useState<{ x: number; y: number; width: number; height: number } | null>(null);
+  const [isDetecting, setIsDetecting] = useState(false);
 
   const stopCamera = useCallback(() => {
     if (streamRef.current) {
@@ -21,18 +23,72 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
     streamRef.current = null;
   }, []);
 
-  const handleCapturePhoto = useCallback(() => {
+  // Function to detect test kit boundaries in real-time
+  const detectTestKitInVideo = useCallback(async () => {
+    if (!videoRef.current || isDetecting) return;
+    
+    const video = videoRef.current;
+    if (video.videoWidth === 0 || video.videoHeight === 0) return;
+    
+    setIsDetecting(true);
+    
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      
+      // Draw current video frame
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Get image data for detection
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      
+      // Detect test kit boundaries
+      const bounds = detectTestKitBoundariesAdvanced(imageData);
+      setDetectedBounds(bounds);
+      
+    } catch (error) {
+      console.error('Detection error:', error);
+      setDetectedBounds(null);
+    } finally {
+      setIsDetecting(false);
+    }
+  }, [isDetecting]);
+
+  // Periodically detect test kit boundaries
+  useEffect(() => {
+    if (!videoRef.current) return;
+    
+    const interval = setInterval(detectTestKitInVideo, 1000); // Detect every second
+    
+    return () => clearInterval(interval);
+  }, [detectTestKitInVideo]);
+
+  const handleCapturePhoto = useCallback(async () => {
     if (!videoRef.current || isCapturing) return;
+
+    const video = videoRef.current;
+    
+    // Check if video is ready
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      console.error('Video not ready:', { width: video.videoWidth, height: video.videoHeight });
+      onError('Camera not ready. Please wait a moment and try again.');
+      return;
+    }
 
     setIsCapturing(true);
 
     try {
       const canvas = document.createElement('canvas');
-      const video = videoRef.current;
       
       // Set canvas size to match video dimensions
       canvas.width = video.videoWidth;
       canvas.height = video.videoHeight;
+      
+      console.log('Video dimensions:', video.videoWidth, 'x', video.videoHeight);
       
       const ctx = canvas.getContext('2d');
       if (!ctx) {
@@ -44,34 +100,21 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
       // Draw the full video frame
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      // Calculate the test kit area bounds (covers all calibration strips and test areas)
-      // Based on the analysis layout: x from 0.04 to 0.96, y from 0.15 to 0.85
-      const kitX = Math.floor(canvas.width * 0.04);
-      const kitY = Math.floor(canvas.height * 0.15);
-      const kitWidth = Math.floor(canvas.width * 0.92); // 0.96 - 0.04
-      const kitHeight = Math.floor(canvas.height * 0.7); // 0.85 - 0.15
-
-      // Create a new canvas for the cropped test kit area
-      const croppedCanvas = document.createElement('canvas');
-      croppedCanvas.width = kitWidth;
-      croppedCanvas.height = kitHeight;
+      // Create a temporary image element for automatic cropping
+      const tempImage = new Image();
+      tempImage.src = canvas.toDataURL('image/jpeg', 0.9);
       
-      const croppedCtx = croppedCanvas.getContext('2d');
-      if (!croppedCtx) {
-        onError('Could not process cropped image.');
-        setIsCapturing(false);
-        return;
-      }
+      await new Promise((resolve, reject) => {
+        tempImage.onload = resolve;
+        tempImage.onerror = reject;
+      });
 
-      // Draw only the test kit area
-      croppedCtx.drawImage(
-        canvas, 
-        kitX, kitY, kitWidth, kitHeight,  // Source rectangle
-        0, 0, kitWidth, kitHeight          // Destination rectangle
-      );
-
-      const dataUrl = croppedCanvas.toDataURL('image/jpeg', 0.9);
-      onCapture(dataUrl);
+      // Use automatic test kit detection and cropping
+      const croppedDataUrl = await cropToTestKit(tempImage);
+      
+      console.log('Automatic cropping completed');
+      
+      onCapture(croppedDataUrl);
       onClose();
     } catch (error) {
       console.error('Capture error:', error);
@@ -136,7 +179,12 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
       <div className="absolute top-0 left-0 right-0 z-10 bg-black bg-opacity-70 text-white p-4">
         <div className="text-center">
           <h3 className="text-lg font-semibold mb-1">Position Test Kit</h3>
-          <p className="text-sm text-gray-300">Align the test kit within the frame. The app will automatically crop to the test kit area.</p>
+          <p className="text-sm text-gray-300">
+            {detectedBounds ? 
+              '✅ Test kit detected! Tap capture to analyze.' : 
+              'Align the test kit within the frame. The app will automatically detect and crop the test kit area.'
+            }
+          </p>
         </div>
       </div>
 
@@ -158,6 +206,23 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
                 Test Kit Area
               </div>
             </div>
+
+            {/* Detected bounds overlay (if available) */}
+            {detectedBounds && (
+              <div 
+                className="absolute border-2 border-green-500 bg-green-500 bg-opacity-20"
+                style={{
+                  left: `${(detectedBounds.x / (videoRef.current?.videoWidth || 1)) * 100}%`,
+                  top: `${(detectedBounds.y / (videoRef.current?.videoHeight || 1)) * 100}%`,
+                  width: `${(detectedBounds.width / (videoRef.current?.videoWidth || 1)) * 100}%`,
+                  height: `${(detectedBounds.height / (videoRef.current?.videoHeight || 1)) * 100}%`
+                }}
+              >
+                <div className="absolute -top-6 left-0 text-green-400 bg-gray-900 bg-opacity-80 px-2 py-1 text-xs rounded">
+                  Detected Area
+                </div>
+              </div>
+            )}
 
             {/* Calibration strips overlay */}
             {CALIBRATION_STRIPS.map((strip, index) => (
@@ -204,6 +269,13 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
             <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2 border-cyan-400"></div>
           </div>
         </div>
+
+        {/* Detection status indicator */}
+        {isDetecting && (
+          <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-blue-900 bg-opacity-80 text-blue-200 px-3 py-1 rounded-full text-sm">
+            🔍 Detecting test kit...
+          </div>
+        )}
       </div>
       
       {/* Bottom controls */}
@@ -224,7 +296,11 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
           <AppButton 
             onClick={handleCapturePhoto}
             disabled={isCapturing}
-            className="w-16 h-16 rounded-full bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-600 flex items-center justify-center"
+            className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${
+              detectedBounds 
+                ? 'bg-green-500 hover:bg-green-600 disabled:bg-gray-600' 
+                : 'bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-600'
+            }`}
           >
             {isCapturing ? (
               <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
