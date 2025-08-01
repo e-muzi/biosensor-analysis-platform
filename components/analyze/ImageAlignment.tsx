@@ -2,6 +2,8 @@ import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { AppButton } from '../shared';
 import { cropToTestKit, detectTestKitBoundariesAdvanced } from '../../utils/analysis';
 
+//This component not complete yet, will update it later
+// This component allows users to align and crop the test kit area from an uploaded image
 interface ImageAlignmentProps {
   imageSrc: string;
   onConfirm: (alignedImageSrc: string) => void;

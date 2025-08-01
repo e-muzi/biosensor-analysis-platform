@@ -225,7 +225,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
             )}
 
             {/* Calibration strips overlay */}
-            {CALIBRATION_STRIPS.map((strip, index) => (
+            {CALIBRATION_STRIPS.map((strip) => (
               <div key={`cal-${strip.name}`} className="absolute">
                 <div 
                   className="border-2 border-green-400 border-dashed bg-green-400 bg-opacity-10"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { Screen, CalibrationResult } from './types';
 
 import { CaptureScreen, AnalysisResultScreen } from './components/analyze';

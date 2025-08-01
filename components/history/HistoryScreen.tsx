@@ -4,7 +4,7 @@ import { HistoryItem } from './';
 import { EmptyState } from '../shared';
 
 export const HistoryScreen: React.FC = () => {
-  const { records, removeRecord } = useHistoryStore();
+  const { records, deleteRecord } = useHistoryStore();
 
   const emptyStateIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18,7 +18,7 @@ export const HistoryScreen: React.FC = () => {
       {records.length > 0 ? (
         <div className="space-y-4">
           {records.map(record => (
-            <HistoryItem key={record.id} record={record} onDelete={removeRecord} />
+            <HistoryItem key={record.id} record={record} onDelete={deleteRecord} />
           ))}
         </div>
       ) : (
