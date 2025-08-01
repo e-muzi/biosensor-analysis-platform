@@ -6,7 +6,7 @@ interface ImageUploadProps {
   onOpenCamera: () => void;
 }
 
-export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, onOpenCamera }) => {
+export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,9 +32,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect, onOpenC
       <div className="flex space-x-4">
         <AppButton onClick={() => fileInputRef.current?.click()} variant="secondary">
           Upload Image
-        </AppButton>
-        <AppButton onClick={onOpenCamera}>
-          Use Camera
         </AppButton>
       </div>
     </>
