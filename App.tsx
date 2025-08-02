@@ -4,7 +4,7 @@ import type { Screen, CalibrationResult } from './types';
 import { CaptureScreen, AnalysisResultScreen } from './components/analyze';
 import { HistoryScreen } from './components/history';
 import { SettingsScreen } from './components/settings';
-import { Navigation, Layout } from './components/shared';
+import { Layout } from './components/shared';
 import { useThemeStore } from './state/themeStore';
 
 interface AnalysisData {
@@ -15,6 +15,7 @@ interface AnalysisData {
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>('capture');
   const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
+  const [currentTab, setCurrentTab] = useState<'analyze' | 'history' | 'settings'>('analyze');
   const theme = useThemeStore(state => state.theme);
 
   useEffect(() => {
@@ -37,19 +38,27 @@ export default function App() {
   
   const handleSave = () => {
     setAnalysisData(null);
-    setActiveScreen('history');
+    setCurrentTab('history');
   }
 
+  const handleTabChange = (tab: 'analyze' | 'history' | 'settings') => {
+    setCurrentTab(tab);
+    // Reset to capture screen when switching to analyze tab
+    if (tab === 'analyze') {
+      setActiveScreen('capture');
+    }
+  };
+
   const renderScreen = () => {
-    switch (activeScreen) {
-      case 'capture':
+    // If we're in analysis mode, show the analysis screen regardless of tab
+    if (activeScreen === 'analysis' && analysisData) {
+      return <AnalysisResultScreen {...analysisData} onDiscard={handleDiscard} onSave={handleSave} />;
+    }
+
+    // Otherwise, render based on current tab
+    switch (currentTab) {
+      case 'analyze':
         return <CaptureScreen onAnalysisComplete={handleAnalysisComplete} />;
-      case 'analysis':
-        return analysisData ? (
-          <AnalysisResultScreen {...analysisData} onDiscard={handleDiscard} onSave={handleSave} />
-        ) : (
-          <CaptureScreen onAnalysisComplete={handleAnalysisComplete} /> // Fallback
-        );
       case 'history':
         return <HistoryScreen />;
       case 'settings':
@@ -60,9 +69,8 @@ export default function App() {
   };
 
   return (
-    <Layout>
+    <Layout currentTab={currentTab} onTabChange={handleTabChange}>
       {renderScreen()}
-      <Navigation activeScreen={activeScreen} onScreenChange={setActiveScreen} />
     </Layout>
   );
 }

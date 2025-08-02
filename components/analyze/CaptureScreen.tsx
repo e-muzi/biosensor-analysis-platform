@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { analyzeWithCalibrationStrips } from '../../utils/analysis';
 import { AppButton } from '../shared';
 import { CameraCapture, ImageUpload, ImageDisplay, ImageAlignment } from './';
+import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import type { CalibrationResult } from '../../types';
 
 interface CaptureScreenProps {
@@ -9,6 +10,9 @@ interface CaptureScreenProps {
 }
 
 export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete }) => {
+  const { getColors } = useThemeStore();
+  const colors = getColors();
+  
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -96,8 +100,25 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   }
 
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto flex flex-col items-center space-y-6">
-      <h2 className="text-2xl font-bold text-cyan-400">Capture & Analyze</h2>
+    <div 
+      className="p-4 md:p-6 max-w-4xl mx-auto flex flex-col items-center space-y-6"
+      style={{ backgroundColor: colors.background }}
+    >
+      {/* Header Section */}
+      <div className="w-full text-center mb-6">
+        <h2 
+          className="text-3xl font-bold mb-2"
+          style={{ color: colors.text }}
+        >
+          Pesticide Analysis
+        </h2>
+        <p 
+          className="text-sm"
+          style={{ color: colors.textSecondary }}
+        >
+          Capture or upload an image of your test strip for analysis
+        </p>
+      </div>
       
       {isCameraOpen ? (
         <CameraCapture 
@@ -107,45 +128,77 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
         />
       ) : (
         <>
-          <div className="w-full max-w-md">
+          {/* Image Display Section */}
+          <div 
+            className="w-full max-w-md p-6 rounded-xl border-2 border-dashed"
+            style={{ 
+              backgroundColor: colors.surface,
+              borderColor: colors.border
+            }}
+          >
             <ImageDisplay imageSrc={imageSrc} showROIs={false} />
             {imageSrc && !isUploadedImage && (
-              <div className="text-center text-sm text-cyan-400 mt-2">
+              <div 
+                className="text-center text-sm mt-3 p-2 rounded-lg"
+                style={{ 
+                  backgroundColor: `${iGEMColors.primary}20`,
+                  color: iGEMColors.primary 
+                }}
+              >
                 ✅ Auto-detected and cropped test kit area
               </div>
             )}
             {imageSrc && isUploadedImage && (
-              <div className="text-center text-sm text-yellow-400 mt-2">
+              <div 
+                className="text-center text-sm mt-3 p-2 rounded-lg"
+                style={{ 
+                  backgroundColor: `${iGEMColors.accent}20`,
+                  color: iGEMColors.accentDark 
+                }}
+              >
                 📷 Uploaded image - use alignment tool for precise cropping
               </div>
             )}
           </div>
           
+          {/* Action Buttons */}
           {!imageSrc && (
-            <>
-              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-                <AppButton onClick={handleOpenCamera} className="flex-1">
+            <div className="w-full max-w-md space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <AppButton onClick={handleOpenCamera} className="w-full">
                   📷 Use Camera
                 </AppButton>
                 <ImageUpload onImageSelect={handleImageSelect} onOpenCamera={handleOpenCamera} />
               </div>
-            </>
+              
+              <div 
+                className="text-center text-xs p-3 rounded-lg"
+                style={{ 
+                  backgroundColor: colors.surface,
+                  color: colors.textSecondary,
+                  border: `1px solid ${colors.border}`
+                }}
+              >
+                💡 Tip: Ensure good lighting and a clear view of the test strip
+              </div>
+            </div>
           )}
           
           {imageSrc && !showAlignment && (
-            <div className="flex flex-col gap-4 w-full max-w-md">
-              <div className="flex gap-4">
-                <AppButton onClick={handleClearImage} variant="secondary" className="flex-1">
+            <div className="w-full max-w-md space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <AppButton onClick={handleClearImage} variant="outline" className="w-full">
                   Clear Image
                 </AppButton>
                 <AppButton 
                   onClick={handleAnalyze} 
                   disabled={isAnalyzing}
-                  className="flex-1"
+                  className="w-full"
                 >
-                  {isAnalyzing ? 'Analyzing...' : 'Analyze'}
+                  {isAnalyzing ? '🔬 Analyzing...' : '🔬 Analyze'}
                 </AppButton>
               </div>
+              
               {!isUploadedImage && (
                 <AppButton 
                   onClick={() => setShowAlignment(true)}
@@ -159,8 +212,15 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
           )}
           
           {error && (
-            <div className="w-full max-w-md p-3 bg-red-900 border border-red-700 rounded-lg text-red-200 text-sm">
-              {error}
+            <div 
+              className="w-full max-w-md p-4 rounded-lg text-sm"
+              style={{ 
+                backgroundColor: '#DC2626',
+                color: 'white',
+                border: '1px solid #B91C1C'
+              }}
+            >
+              ❌ {error}
             </div>
           )}
         </>

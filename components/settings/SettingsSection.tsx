@@ -1,4 +1,5 @@
 import React from 'react';
+import { useThemeStore } from '../../state/themeStore';
 import { AppButton } from '../shared';
 
 interface SettingsSectionProps {
@@ -18,11 +19,30 @@ export const SettingsSection: React.FC<SettingsSectionProps> = ({
   onAction, 
   actionVariant = 'secondary' 
 }) => {
+  const { getColors } = useThemeStore();
+  const colors = getColors();
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-700 rounded-lg">
+    <div 
+      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg"
+      style={{ 
+        backgroundColor: colors.surface,
+        border: `1px solid ${colors.border}`
+      }}
+    >
       <div>
-        <p className="font-medium text-gray-200">{title}</p>
-        <p className="text-sm text-gray-400">{actionDescription}</p>
+        <p 
+          className="font-medium"
+          style={{ color: colors.text }}
+        >
+          {title}
+        </p>
+        <p 
+          className="text-sm"
+          style={{ color: colors.textSecondary }}
+        >
+          {actionDescription}
+        </p>
       </div>
       <AppButton onClick={onAction} variant={actionVariant} className="mt-2 sm:mt-0">
         {actionLabel}

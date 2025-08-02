@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { useCalibrationStore } from '../../state/calibrationStore';
 import { PREDEFINED_PESTICIDES } from '../../state/pesticideStore';
 import { AppButton } from '../shared';
 
 export const CalibrationSettings: React.FC = () => {
+  const { getColors } = useThemeStore();
+  const colors = getColors();
+  
   const { userCalibrations, setCalibration, resetCalibration, resetAll } = useCalibrationStore();
   const [localCal, setLocalCal] = useState(() => {
     // Deep copy to avoid direct mutation
@@ -69,29 +73,52 @@ export const CalibrationSettings: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-bold text-cyan-400 mb-2">Calibration Strip Settings</h2>
-      <p className="text-gray-300 text-sm mb-4">Set the calibration concentrations for each pesticide. Double-click the name to edit. You can reset to default at any time.</p>
+      <h2 
+        className="text-xl font-bold mb-2"
+        style={{ color: colors.text }}
+      >
+        Calibration Strip Settings
+      </h2>
+      <p 
+        className="text-sm mb-4"
+        style={{ color: colors.textSecondary }}
+      >
+        Set the calibration concentrations for each pesticide. Double-click the name to edit. You can reset to default at any time.
+      </p>
       <div className="space-y-8">
         {Object.keys(localCal).map((pesticide, idx) => (
-          <div key={pesticide} className="bg-gray-800 p-4 rounded-xl shadow">
+          <div 
+            key={pesticide} 
+            className="p-4 rounded-xl shadow"
+            style={{ 
+              backgroundColor: colors.surface,
+              border: `1px solid ${colors.border}`
+            }}
+          >
             <div className="flex items-center justify-between mb-2">
               <div>
                 {editingName === pesticide ? (
                   <input
                     type="text"
-                    className="font-semibold text-cyan-300 text-lg bg-gray-900 rounded px-2 py-1 border border-cyan-400 focus:outline-none"
+                    className="font-semibold text-lg rounded px-2 py-1 focus:outline-none"
                     value={nameEdits[pesticide]}
                     autoFocus
                     onChange={e => handleNameChange(pesticide, e.target.value)}
                     onBlur={() => handleNameBlur(pesticide)}
                     onKeyDown={e => handleNameKeyDown(e, pesticide)}
-                    style={{ minWidth: 80 }}
+                    style={{ 
+                      minWidth: 80,
+                      backgroundColor: colors.background,
+                      color: colors.text,
+                      border: `1px solid ${iGEMColors.primary}`
+                    }}
                   />
                 ) : (
                   <h3
-                    className="font-semibold text-cyan-300 text-lg cursor-pointer select-none"
+                    className="font-semibold text-lg cursor-pointer select-none"
                     onDoubleClick={() => handleNameDoubleClick(pesticide)}
                     title="Double-click to edit name"
+                    style={{ color: iGEMColors.primary }}
                   >
                     {nameEdits[pesticide]}
                   </h3>
@@ -105,13 +132,24 @@ export const CalibrationSettings: React.FC = () => {
             <div className="flex flex-wrap gap-2 items-center">
               {localCal[pesticide].map((val: number, idx: number) => (
                 <div key={idx} className="flex flex-col items-center">
-                  <label className="text-xs text-gray-400">#{idx + 1}</label>
+                  <label 
+                    className="text-xs"
+                    style={{ color: colors.textSecondary }}
+                  >
+                    #{idx + 1}
+                  </label>
                   <input
                     type="number"
-                    className="w-20 px-2 py-1 rounded bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                    className="w-20 px-2 py-1 rounded focus:outline-none focus:ring-2"
                     value={val}
                     disabled={editing !== pesticide}
                     onChange={e => handleInputChange(pesticide, idx, e.target.value)}
+                    style={{ 
+                      backgroundColor: colors.background,
+                      color: colors.text,
+                      border: `1px solid ${colors.border}`,
+                      '--tw-ring-color': iGEMColors.primary
+                    } as React.CSSProperties}
                   />
                 </div>
               ))}

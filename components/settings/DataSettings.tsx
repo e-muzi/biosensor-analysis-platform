@@ -1,9 +1,13 @@
 import React, { useRef } from 'react';
+import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { SettingsSection } from './SettingsSection';
 import { useHistoryStore } from '../../state/historyStore';
 import { useCalibrationStore } from '../../state/calibrationStore';
 
 export const DataSettings: React.FC = () => {
+  const { getColors } = useThemeStore();
+  const colors = getColors();
+  
   const { records, setRecords, clearHistory } = useHistoryStore();
   const { userCalibrations, setCalibration } = useCalibrationStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -65,20 +69,45 @@ export const DataSettings: React.FC = () => {
 
   return (
     <section>
-      <div className="bg-gray-800 p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+      <div 
+        className="p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4"
+        style={{ 
+          backgroundColor: colors.surface,
+          border: `1px solid ${colors.border}`
+        }}
+      >
         <div>
-          <h3 className="text-lg font-semibold text-cyan-300">Export / Import</h3>
-          <p className="text-gray-400 text-sm">Backup or transfer your analysis history and calibration settings.</p>
+          <h3 
+            className="text-lg font-semibold mb-1"
+            style={{ color: iGEMColors.primary }}
+          >
+            Export / Import
+          </h3>
+          <p 
+            className="text-sm"
+            style={{ color: colors.textSecondary }}
+          >
+            Backup or transfer your analysis history and calibration settings.
+          </p>
         </div>
         <div className="flex gap-2 mt-2 md:mt-0">
           <button
-            className="px-4 py-2 rounded bg-cyan-700 text-white font-bold hover:bg-cyan-600 transition-colors"
+            className="px-4 py-2 rounded font-bold transition-colors"
+            style={{ 
+              backgroundColor: iGEMColors.primary,
+              color: 'white'
+            }}
             onClick={handleExport}
           >
             Export
           </button>
           <button
-            className="px-4 py-2 rounded bg-gray-200 text-gray-900 font-bold hover:bg-gray-300 transition-colors"
+            className="px-4 py-2 rounded font-bold transition-colors"
+            style={{ 
+              backgroundColor: colors.background,
+              color: colors.text,
+              border: `1px solid ${colors.border}`
+            }}
             onClick={() => fileInputRef.current?.click()}
           >
             Import

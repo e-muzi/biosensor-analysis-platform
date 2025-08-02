@@ -1,10 +1,13 @@
 import React from 'react';
 import { useHistoryStore } from '../../state/historyStore';
+import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { HistoryItem } from './';
 import { EmptyState } from '../shared';
 
 export const HistoryScreen: React.FC = () => {
   const { records, deleteRecord } = useHistoryStore();
+  const { getColors } = useThemeStore();
+  const colors = getColors();
 
   const emptyStateIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -13,8 +16,69 @@ export const HistoryScreen: React.FC = () => {
   );
 
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-cyan-400 mb-6">Measurement History</h2>
+    <div 
+      className="p-4 md:p-6 max-w-4xl mx-auto"
+      style={{ backgroundColor: colors.background }}
+    >
+      {/* Header Section */}
+      <div className="text-center mb-8">
+        <h2 
+          className="text-3xl font-bold mb-2"
+          style={{ color: colors.text }}
+        >
+          Analysis History
+        </h2>
+        <p 
+          className="text-sm"
+          style={{ color: colors.textSecondary }}
+        >
+          View and manage your previous pesticide analysis results
+        </p>
+      </div>
+
+      {/* Stats Section */}
+      {records.length > 0 && (
+        <div 
+          className="mb-6 p-4 rounded-xl"
+          style={{ 
+            backgroundColor: colors.surface,
+            border: `1px solid ${colors.border}`
+          }}
+        >
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div>
+              <div 
+                className="text-2xl font-bold"
+                style={{ color: iGEMColors.primary }}
+              >
+                {records.length}
+              </div>
+              <div 
+                className="text-xs"
+                style={{ color: colors.textSecondary }}
+              >
+                Total Analyses
+              </div>
+            </div>
+            <div>
+              <div 
+                className="text-2xl font-bold"
+                style={{ color: iGEMColors.accent }}
+              >
+                {records.filter(r => r.results.length > 0).length}
+              </div>
+              <div 
+                className="text-xs"
+                style={{ color: colors.textSecondary }}
+              >
+                Successful
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Records List */}
       {records.length > 0 ? (
         <div className="space-y-4">
           {records.map(record => (
