@@ -1,6 +1,6 @@
 # HK-Joint-School - iGEM 2025
 
-Biosensor analysis app (2rd version) by CPU student to quantify pesticide concentration by analyzing the brightness of a sample image of our biosensor. The app uses calibration strips on each test kit to provide accurate concentration measurements without normalization. Users can capture photos, analyze samples using built-in calibration strips, and view historical data.
+Biosensor analysis app by CPU student to quantify pesticide concentration by analyzing the brightness of a sample image of our biosensor. The app uses calibration strips on each test kit to provide accurate concentration measurements without normalization. Users can capture photos, analyze samples using built-in calibration strips, and view historical data.
 
 ## Tech Stack
 
@@ -48,13 +48,6 @@ Make sure you have [Node.js](https://nodejs.org/en/) installed!!!
 
 5.  **Check History**: Go to 'History' to see a list of all your past analyses. You may clear all history data in the 'Settings' function.
 
-## New Features in Version 3
-
-- **Calibration Strips**: Each pesticide test area now has its own calibration strip with 5 known concentration points
-- **No Normalization Required**: Direct comparison between test areas and calibration strips eliminates the need for white reference normalization
-- **Confidence Levels**: Results include confidence indicators based on how well the test brightness matches calibration points
-- **Improved Accuracy**: More accurate concentration measurements using real-time calibration data
-
 ## Test Kit Layout
 
 The test kit has the following layout (left to right):
@@ -64,3 +57,5 @@ The test kit has the following layout (left to right):
 - **Cypermethrin**: Vertical calibration strip (0-180 µM, top to bottom) + Test area
 
 Each calibration strip is a vertical rectangle divided into 5 small squares with known concentrations arranged from top (lowest) to bottom (highest).
+
+UPDATE: Users can now access our app directly! https://hkjs-biosensorapp.netlify.app/
