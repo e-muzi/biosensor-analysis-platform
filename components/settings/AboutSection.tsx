@@ -27,7 +27,7 @@ export const AboutSection: React.FC = () => {
             className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center"
             style={{ border: `3px solid ${iGEMColors.primary}` }}
           >
-            <div className="w-8 h-8 text-white font-bold text-sm">
+            <div className="w-16 h-16 text-white font-bold text-sm">
               <img 
                 src="/hkjs_logo.png" 
                 alt="HK-JOINT-SCHOOL" 
