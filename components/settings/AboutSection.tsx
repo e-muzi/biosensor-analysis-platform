@@ -46,7 +46,7 @@ export const AboutSection: React.FC = () => {
             className="text-sm font-medium"
             style={{ color: iGEMColors.primary }}
           >
-            iGEM 2025 Team
+            iGEM 2025
           </p>
         </div>
 
@@ -63,15 +63,15 @@ export const AboutSection: React.FC = () => {
             style={{ color: colors.textSecondary }}
           >
             <p>Version: <span className="font-mono">v1.0.0</span></p>
-            <p>Build: 2025-01-15</p>
-            <p>Platform: Mobile Web App</p>
+            <p>Build: 01-07-2025</p>
+            <p>Platform: Web App</p>
           </div>
         </div>
 
         {/* Links */}
         <div className="pt-4 space-y-2">
           <a 
-            href="https://github.com/e-muzi/biosensor-apptesting" 
+            href="https://github.com/e-muzi/biosensor-apptesting-2" 
             target="_blank" 
             rel="noopener noreferrer" 
             className="inline-block px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80"
@@ -80,7 +80,7 @@ export const AboutSection: React.FC = () => {
               color: 'white'
             }}
           >
-            📁 Project GitHub
+            📁 Project GitHub link
           </a>
           
           <div 
