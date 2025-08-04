@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { useThemeStore } from '../../state/themeStore';
 import { PESTICIDE_ROIS, CALIBRATION_STRIPS } from '../../utils/analysis';
 
 interface ImageDisplayProps {

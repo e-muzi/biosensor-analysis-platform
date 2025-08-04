@@ -1,5 +1,5 @@
 import React from 'react';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { useThemeStore } from '../../state/themeStore';
 
 interface EmptyStateProps {
   icon: React.ReactNode;

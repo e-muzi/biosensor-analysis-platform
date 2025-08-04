@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistoryStore } from '../../state/historyStore';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { useThemeStore} from '../../state/themeStore';
 import { AppButton } from '../shared';
 import { ResultCard } from './';
 import type { CalibrationResult } from '../../types';
