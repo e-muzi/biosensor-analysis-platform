@@ -72,17 +72,24 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze'
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto">
+      <main 
+        className="flex-1 overflow-y-auto"
+        style={{
+          // Reserve space so fixed bottom nav doesn't cover content
+          paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))'
+        }}
+      >
         {children}
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Bottom Navigation (fixed for mobile) */}
       <nav 
-        className="flex justify-around py-2 border-t"
+        className="fixed bottom-0 left-0 right-0 flex justify-around py-2 border-t"
         style={{ 
           backgroundColor: colors.surface,
           borderColor: colors.border,
-          boxShadow: `0 -2px 4px ${colors.shadow}`
+          boxShadow: `0 -2px 4px ${colors.shadow}`,
+          paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))'
         }}
       >
         <button
@@ -95,8 +102,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze'
             color: currentTab === 'analyze' ? 'white' : colors.textSecondary
           }}
         >
-          <span className="text-xl mb-1">🔬</span>
-          <span className="text-xs font-medium">Analyze</span>
+          <span className="text-2xl mb-1">🔬</span>
+          <span className="text-sm font-medium">Analyze</span>
         </button>
 
         <button
@@ -109,8 +116,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze'
             color: currentTab === 'history' ? 'white' : colors.textSecondary
           }}
         >
-          <span className="text-xl mb-1">📊</span>
-          <span className="text-xs font-medium">History</span>
+          <span className="text-2xl mb-1">📊</span>
+          <span className="text-sm font-medium">History</span>
         </button>
 
         <button
@@ -123,8 +130,8 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze'
             color: currentTab === 'settings' ? 'white' : colors.textSecondary
           }}
         >
-          <span className="text-xl mb-1">⚙️</span>
-          <span className="text-xs font-medium">Settings</span>
+          <span className="text-2xl mb-1">⚙️</span>
+          <span className="text-sm font-medium">Settings</span>
         </button>
       </nav>
     </div>
