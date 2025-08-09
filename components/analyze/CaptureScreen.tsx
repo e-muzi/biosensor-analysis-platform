@@ -14,6 +14,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   const colors = getColors();
   
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [originalImageSrc, setOriginalImageSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -22,6 +23,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
 
   const handleImageSelect = (src: string) => {
     setImageSrc(src);
+    setOriginalImageSrc(src); // For uploaded images, original and processed are the same initially
     setError(null);
     setIsUploadedImage(true);
     setShowAlignment(true); // Show alignment step for uploaded images
@@ -63,6 +65,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   
   const handleClearImage = () => {
     setImageSrc(null);
+    setOriginalImageSrc(null);
     setError(null);
     setShowAlignment(false);
     setIsUploadedImage(false);
@@ -81,18 +84,21 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
     setError(errorMessage);
   };
 
-  const handleCameraCapture = (capturedImageSrc: string) => {
+  const handleCameraCapture = (capturedImageSrc: string, originalImageSrc?: string) => {
     setImageSrc(capturedImageSrc);
+    setOriginalImageSrc(originalImageSrc || capturedImageSrc);
     setIsCameraOpen(false);
     setError(null);
-    setIsUploadedImage(false); // Camera images are pre-cropped, but user can choose alignment
+    setIsUploadedImage(false);
+    // After camera capture, allow user to refine alignment by opening alignment view
+    setShowAlignment(true);
   };
 
   // Show alignment screen if image is selected and alignment is enabled
   if (showAlignment && imageSrc) {
     return (
       <ImageAlignment 
-        imageSrc={imageSrc}
+        imageSrc={originalImageSrc || imageSrc} // Use original image for alignment if available
         onConfirm={handleAlignmentConfirm}
         onBack={handleAlignmentBack}
       />
@@ -199,15 +205,13 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
                 </AppButton>
               </div>
               
-              {!isUploadedImage && (
-                <AppButton 
-                  onClick={() => setShowAlignment(true)}
-                  variant="secondary"
-                  className="w-full"
-                >
-                  🔧 Align Image (Optional)
-                </AppButton>
-              )}
+              <AppButton 
+                onClick={() => setShowAlignment(true)}
+                variant="secondary"
+                className="w-full"
+              >
+                {isUploadedImage ? '🔧 Adjust & Crop Image' : '🔧 Select Test Kit Area'}
+              </AppButton>
             </div>
           )}
           

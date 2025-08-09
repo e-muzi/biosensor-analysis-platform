@@ -1,9 +1,10 @@
 import React, { useRef, useCallback, useEffect, useState } from 'react';
 import { AppButton } from '../shared';
-import { CALIBRATION_STRIPS, PESTICIDE_ROIS, cropToTestKit, detectTestKitBoundariesAdvanced } from '../../utils/analysis';
+import { cropToTestKit, detectTestKitBoundariesAdvanced } from '../../utils/analysis';
+import { CameraOverlays } from './camera/Overlays';
 
 interface CameraCaptureProps {
-  onCapture: (imageSrc: string) => void;
+  onCapture: (imageSrc: string, originalImageSrc?: string) => void;
   onClose: () => void;
   onError: (error: string) => void;
 }
@@ -100,9 +101,12 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
       // Draw the full video frame
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
+      // Get the original full image
+      const originalDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
       // Create a temporary image element for automatic cropping
       const tempImage = new Image();
-      tempImage.src = canvas.toDataURL('image/jpeg', 0.9);
+      tempImage.src = originalDataUrl;
       
       await new Promise((resolve, reject) => {
         tempImage.onload = resolve;
@@ -114,7 +118,8 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
       
       console.log('Automatic cropping completed');
       
-      onCapture(croppedDataUrl);
+      // Pass both original and cropped versions
+      onCapture(croppedDataUrl, originalDataUrl);
       onClose();
     } catch (error) {
       console.error('Capture error:', error);
@@ -198,77 +203,11 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
         />
         
         {/* Test kit overlay with detailed layout */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-[90vmin] h-[60vmin] max-w-[600px] max-h-[400px]">
-            {/* Main test kit border */}
-            <div className="absolute inset-0 border-4 border-cyan-400 border-dashed rounded-lg">
-              <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-cyan-400 bg-gray-900 bg-opacity-80 px-3 py-1 text-sm rounded-full font-medium">
-                Test Kit Area
-              </div>
-            </div>
-
-            {/* Detected bounds overlay (if available) */}
-            {detectedBounds && (
-              <div 
-                className="absolute border-2 border-green-500 bg-green-500 bg-opacity-20"
-                style={{
-                  left: `${(detectedBounds.x / (videoRef.current?.videoWidth || 1)) * 100}%`,
-                  top: `${(detectedBounds.y / (videoRef.current?.videoHeight || 1)) * 100}%`,
-                  width: `${(detectedBounds.width / (videoRef.current?.videoWidth || 1)) * 100}%`,
-                  height: `${(detectedBounds.height / (videoRef.current?.videoHeight || 1)) * 100}%`
-                }}
-              >
-                <div className="absolute -top-6 left-0 text-green-400 bg-gray-900 bg-opacity-80 px-2 py-1 text-xs rounded">
-                  Detected Area
-                </div>
-              </div>
-            )}
-
-            {/* Calibration strips overlay */}
-            {CALIBRATION_STRIPS.map((strip) => (
-              <div key={`cal-${strip.name}`} className="absolute">
-                <div 
-                  className="border-2 border-green-400 border-dashed bg-green-400 bg-opacity-10"
-                  style={{ 
-                    top: `${strip.roi.y * 100}%`, 
-                    left: `${strip.roi.x * 100}%`, 
-                    width: `${strip.roi.width * 100}%`, 
-                    height: `${strip.roi.height * 100}%` 
-                  }}
-                >
-                  <div className="absolute -top-6 left-0 text-green-400 bg-gray-900 bg-opacity-80 px-2 py-1 text-xs rounded">
-                    {strip.name} Cal
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Test areas overlay */}
-            {PESTICIDE_ROIS.map(({name, roi}) => (
-              <div key={`test-${name}`} className="absolute">
-                <div 
-                  className="border-2 border-cyan-400 border-dashed bg-cyan-400 bg-opacity-10"
-                  style={{ 
-                    top: `${roi.y * 100}%`, 
-                    left: `${roi.x * 100}%`, 
-                    width: `${roi.width * 100}%`, 
-                    height: `${roi.height * 100}%` 
-                  }}
-                >
-                  <div className="absolute -top-6 left-0 text-cyan-400 bg-gray-900 bg-opacity-80 px-2 py-1 text-xs rounded">
-                    {name} Test
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Corner guides */}
-            <div className="absolute top-2 left-2 w-6 h-6 border-l-2 border-t-2 border-cyan-400"></div>
-            <div className="absolute top-2 right-2 w-6 h-6 border-r-2 border-t-2 border-cyan-400"></div>
-            <div className="absolute bottom-2 left-2 w-6 h-6 border-l-2 border-b-2 border-cyan-400"></div>
-            <div className="absolute bottom-2 right-2 w-6 h-6 border-r-2 border-b-2 border-cyan-400"></div>
-          </div>
-        </div>
+        <CameraOverlays 
+          detectedBounds={detectedBounds}
+          videoWidth={videoRef.current?.videoWidth || 0}
+          videoHeight={videoRef.current?.videoHeight || 0}
+        />
 
         {/* Detection status indicator */}
         {isDetecting && (
