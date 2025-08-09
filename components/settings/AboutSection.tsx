@@ -88,7 +88,7 @@ export const AboutSection: React.FC = () => {
             style={{ color: colors.textSecondary }}
           >
             <p>Developed for iGEM 2025 Competition</p>
-            <p>Pesticide Detection & Analysis Platform</p>
+            <p>For bugs, contact <a href="mailto:s2021060@cpu.edu.hk" className="text-blue-500 hover:underline">s2021060@cpu.edu.hk</a></p>
           </div>
         </div>
       </div>
