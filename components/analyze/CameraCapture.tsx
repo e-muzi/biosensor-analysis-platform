@@ -177,7 +177,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture, onClose
   }, [stopCamera, onError, onClose]);
 
   return (
-    <div className="fixed inset-0 bg-gray-900 z-50 flex flex-col" role="dialog" aria-modal="true" aria-labelledby="camera-title">
+    <div className="fixed inset-0 bg-gray-900 z-50 flex flex-col" role="dialog" aria-modal="true" aria-labelledby="camera-title" style={{ top: '-30px' }}>
       <h2 id="camera-title" className="sr-only">Camera View</h2>
       
       {/* Header with instructions */}
