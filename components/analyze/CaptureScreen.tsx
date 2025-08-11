@@ -90,8 +90,9 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
     setIsCameraOpen(false);
     setError(null);
     setIsUploadedImage(false);
-    // After camera capture, allow user to refine alignment by opening alignment view
-    setShowAlignment(true);
+    // After camera capture, show the auto-cropped result first
+    // User can choose to analyze or go to alignment
+    setShowAlignment(false);
   };
 
   // Show alignment screen if image is selected and alignment is enabled
@@ -151,7 +152,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
                   color: iGEMColors.primary 
                 }}
               >
-                ✅ Auto-detected and cropped test kit area
+                ✅ Auto-cropped test kit area ready for analysis
               </div>
             )}
             {imageSrc && isUploadedImage && (
@@ -192,6 +193,22 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
           
           {imageSrc && !showAlignment && (
             <div className="w-full max-w-md space-y-4">
+              {!isUploadedImage && (
+                <div 
+                  className="text-center text-sm p-3 rounded-lg mb-4"
+                  style={{ 
+                    backgroundColor: colors.surface,
+                    border: `1px solid ${colors.border}`,
+                    color: colors.textSecondary
+                  }}
+                >
+                  <p className="mb-2">
+                    <strong style={{ color: colors.text }}>Auto-crop completed!</strong>
+                  </p>
+                  <p>You can proceed with analysis or adjust the crop if needed.</p>
+                </div>
+              )}
+              
               <div className="grid grid-cols-2 gap-4">
                 <AppButton onClick={handleClearImage} variant="outline" className="w-full">
                   Clear Image
@@ -210,7 +227,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
                 variant="secondary"
                 className="w-full"
               >
-                {isUploadedImage ? '🔧 Adjust & Crop Image' : '🔧 Select Test Kit Area'}
+                {isUploadedImage ? '🔧 Adjust & Crop Image' : '🔧 Adjust Crop'}
               </AppButton>
             </div>
           )}
