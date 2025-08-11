@@ -1,9 +1,11 @@
 import React from 'react';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { getVersionInfo } from '../../utils/version';
 
 export const AboutSection: React.FC = () => {
   const { getColors } = useThemeStore();
   const colors = getColors();
+  const versionInfo = getVersionInfo();
 
   return (
     <section>
@@ -62,9 +64,10 @@ export const AboutSection: React.FC = () => {
             className="text-xs space-y-1"
             style={{ color: colors.textSecondary }}
           >
-            <p>Version: <span className="font-mono">v1.0.0</span></p>
-            <p>Build: 01-07-2025</p>
-            <p>Platform: Web App</p>
+            <p>Version: <span className="font-mono">v{versionInfo.version}</span></p>
+            <p>Build Date: 01/07/2025</p>
+            <p>Last Updated: {versionInfo.buildDate} </p>
+            <p>Platform: {versionInfo.platform}</p>
           </div>
         </div>
 
