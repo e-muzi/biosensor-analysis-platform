@@ -141,7 +141,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ record, onDelete }) =>
                     µM
                   </span>
                 </p>
-                {res.confidence && (
+                {/* {res.confidence && (
                   <p 
                     className={`text-xs ${
                       res.confidence === 'high' ? 'text-green-600' : 
@@ -151,7 +151,7 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ record, onDelete }) =>
                   >
                     {res.confidence} confidence
                   </p>
-                )}
+                )} */}
                 <p 
                   className="text-xs mt-1"
                   style={{ color: colors.textSecondary }}

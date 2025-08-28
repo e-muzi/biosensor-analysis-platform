@@ -1,5 +1,5 @@
 import React from 'react';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { useThemeStore } from '../../state/themeStore';
 import { DataSettings } from './DataSettings';
 import { CalibrationSettings } from './CalibrationSettings';
 import { AboutSection } from './AboutSection';

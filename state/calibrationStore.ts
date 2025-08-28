@@ -17,9 +17,10 @@ const defaultCalibrations: CalibrationSettings = Object.fromEntries(
   PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
 );
 
+// This function stores the calibration settings for each pesticide in the browser's local storage
 export const useCalibrationStore = create<CalibrationStoreState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       userCalibrations: { ...defaultCalibrations },
       setCalibration: (pesticide, concentrations) =>
         set(state => ({

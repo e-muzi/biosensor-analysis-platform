@@ -1,6 +1,8 @@
 import { PREDEFINED_PESTICIDES } from "../state/pesticideStore";
 import type { CalibrationStrip, CalibrationResult } from "../types";
 
+// TODO: Refactor this file, it is so long (When I was writting this code, me and god can understand it. But now only god can understand it.)
+
 // Defines a Region of Interest as a rectangle { x, y, width, height } in percentage
 export interface ROI {
   x: number;
@@ -14,7 +16,8 @@ export interface PesticideROI {
     roi: ROI;
 }
 
-// Updated layout: smaller calibration strips, wider test areas, and gaps to prevent overlap
+// Just a Proposed layout
+// After software is done, need to update it again
 // Calibration strip: width = 0.06, height = 0.7
 // Gap: 0.02
 // Test area: width = 0.12, height = 0.7
@@ -63,8 +66,7 @@ function rgbToHsv_V(r: number, g: number, b: number): number {
   return max * 255; // Return V component on a 0-255 scale
 }
 
-
-
+// Calculate brightness for a given region of interest
 function calculateBrightnessForRoi(ctx: CanvasRenderingContext2D, roi: ROI): number {
     const canvas = ctx.canvas;
     const roiX = Math.floor(canvas.width * roi.x);
@@ -103,7 +105,7 @@ function calculateCalibrationStripBrightnesses(ctx: CanvasRenderingContext2D, st
     
     if (stripWidth <= 0 || stripHeight <= 0) return [0, 0, 0, 0, 0];
 
-    const segmentHeight = stripHeight / 5; // 5 vertical segments in each calibration strip
+    const segmentHeight = stripHeight / 5; // 5 vertical segments in each calibration strip, can be changed due to our disaster wet lab -_-
     const brightnesses: number[] = [];
 
     for (let i = 0; i < 5; i++) {
@@ -121,6 +123,7 @@ function calculateCalibrationStripBrightnesses(ctx: CanvasRenderingContext2D, st
 }
 
 // Estimate concentration by comparing test brightness with calibration strip
+// This function is not in use, but will be kept for future reference
 function estimateConcentrationFromCalibration(
     testBrightness: number, 
     calibrationBrightnesses: number[], 

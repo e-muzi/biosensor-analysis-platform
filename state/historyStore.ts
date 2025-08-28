@@ -19,9 +19,10 @@ interface HistoryState {
   setRecords: (records: HistoryRecord[]) => void;
 }
 
+// This function stores the history of analysis results in the browser's local storage
 export const useHistoryStore = create<HistoryState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       records: [],
       addRecord: (record) => set(state => ({ records: [record, ...state.records] })),
       clearHistory: () => set({ records: [] }),

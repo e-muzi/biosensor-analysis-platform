@@ -111,12 +111,9 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
             <p className="mt-2">Upload or capture an image of the kit</p>
-            <p 
-              className="text-xs mt-1"
-              style={{ color: colors.textSecondary }}
-            >
+            {/* <p className="text-xs mt-1" style={{ color: colors.textSecondary }}>
               Green: Calibration strips | Cyan: Test areas
-            </p>
+            </p> */}
           </div>
         )}
       </div>

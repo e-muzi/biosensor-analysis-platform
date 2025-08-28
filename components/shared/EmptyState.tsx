@@ -7,6 +7,7 @@ interface EmptyStateProps {
   description: string;
 }
 
+//EmptyState...my brain is going to be empty also -_-
 export const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description }) => {
   const { getColors } = useThemeStore();
   const colors = getColors();

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// iGEM-inspired color palette
+// iGEM-inspired color palette, only for igem!!! ^^
 export const iGEMColors = {
   primary: '#009B48', // iGEM Green
   primaryDark: '#007A3A',
@@ -36,6 +36,7 @@ interface ThemeState {
   getColors: () => typeof iGEMColors.light;
 }
 
+// Actually I personally prefer light theme but sometimes dark theme better for my eyes...
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({

@@ -6,6 +6,7 @@ export interface Pesticide {
   curve: CalibrationPoint[];
 }
 
+// List of predefined pesticides that are used in the app
 export const PREDEFINED_PESTICIDES: Pesticide[] = [
   {
     name: 'Acephate',
