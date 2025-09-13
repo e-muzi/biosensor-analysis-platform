@@ -163,12 +163,12 @@ export const ImageAlignment: React.FC<ImageAlignmentProps> = ({ imageSrc, onConf
       </Box>
       
       <Grid container spacing={2} sx={{ maxWidth: 'md', mx: 'auto', mt: 4 }}>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <AppButton onClick={onBack} variant="outline" fullWidth>
             ← Back
           </AppButton>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <AppButton 
             onClick={onAutoCrop} 
             disabled={!imageLoaded}
@@ -178,7 +178,7 @@ export const ImageAlignment: React.FC<ImageAlignmentProps> = ({ imageSrc, onConf
             �� Auto-Crop
           </AppButton>
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <AppButton 
             onClick={onConfirmCrop} 
             disabled={!cropBounds || !imageLoaded}

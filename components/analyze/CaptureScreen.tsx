@@ -181,7 +181,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
           {!imageSrc && (
             <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
               <Grid container spacing={2} sx={{ mb: 3 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <AppButton 
                     onClick={handleOpenCamera} 
                     variant="primary"
@@ -191,7 +191,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
                     📷 Use Camera
                   </AppButton>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <ImageUpload onImageSelect={handleImageSelect} onOpenCamera={handleOpenCamera} />
                 </Grid>
               </Grid>
@@ -233,7 +233,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
               )}
               
               <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <AppButton 
                     onClick={handleClearImage} 
                     variant="outline" 
@@ -242,7 +242,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
                     Clear Image
                   </AppButton>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <AppButton 
                     onClick={handleAnalyze} 
                     disabled={isAnalyzing}
