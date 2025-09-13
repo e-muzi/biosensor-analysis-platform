@@ -1,11 +1,11 @@
 import React from 'react';
 
 interface CanvasStageProps {
-  canvasRef: React.RefObject<HTMLCanvasElement> | React.MutableRefObject<HTMLCanvasElement | null>;
+  canvasRef: React.RefObject<HTMLCanvasElement>;
   imageDisplaySize: { width: number; height: number };
-  onMouseDown: (e: React.MouseEvent | React.TouchEvent) => void;
-  onMouseMove: (e: React.MouseEvent | React.TouchEvent) => void;
-  onMouseUp: () => void;
+  onMouseDown: (e: React.MouseEvent<HTMLCanvasElement>) => void;
+  onMouseMove: (e: React.MouseEvent<HTMLCanvasElement>) => void;
+  onMouseUp: (e: React.MouseEvent<HTMLCanvasElement>) => void;
 }
 
 export const CanvasStage: React.FC<CanvasStageProps> = ({
@@ -13,25 +13,22 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
   imageDisplaySize,
   onMouseDown,
   onMouseMove,
-  onMouseUp,
+  onMouseUp
 }) => {
   return (
     <canvas
       ref={canvasRef}
-      className="block cursor-move"
-      style={{
-        width: imageDisplaySize.width,
-        height: imageDisplaySize.height,
-        maxWidth: '100%',
-        maxHeight: '60vh'
-      }}
+      width={imageDisplaySize.width}
+      height={imageDisplaySize.height}
       onMouseDown={onMouseDown}
-      onTouchStart={onMouseDown}
       onMouseMove={onMouseMove}
-      onTouchMove={onMouseMove}
       onMouseUp={onMouseUp}
-      onTouchEnd={onMouseUp}
+      style={{
+        display: 'block',
+        width: '100%',
+        height: 'auto',
+        cursor: 'crosshair'
+      }}
     />
   );
 };
-

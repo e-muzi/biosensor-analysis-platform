@@ -1,4 +1,11 @@
 import React from 'react';
+import { 
+  Card, 
+  CardContent, 
+  Typography, 
+  Chip, 
+  Box
+} from '@mui/material';
 import { useThemeStore } from '../../state/themeStore';
 import type { CalibrationResult } from '../../types';
 
@@ -23,59 +30,80 @@ export const ResultCard: React.FC<ResultCardProps> = ({ result }) => {
   const safety = getSafetyLevel(result.estimatedConcentration);
 
   return (
-    <div 
-      className="p-4 rounded-xl shadow-lg transition-all duration-200 hover:scale-105"
-      style={{ 
-        backgroundColor: colors.surface,
-        border: `2px solid ${safety.color}`,
-        boxShadow: `0 4px 6px ${colors.shadow}`
+    <Card 
+      sx={{ 
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.05)',
+        },
+        border: 2,
+        borderColor: safety.color
       }}
     >
-      <div className="flex flex-col items-center justify-center space-y-2">
-        {/* Pesticide Name */}
-        <p 
-          className="font-bold text-lg break-words max-w-full text-center"
-          style={{ color: colors.text }}
-        >
-          {result.pesticide}
-        </p>
-
-        {/* Safety Level Badge */}
-        <span 
-          className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide"
-          style={{ 
-            backgroundColor: safety.bgColor,
-            color: safety.color
-          }}
-        >
-          {safety.label}
-        </span>
-
-        {/* Concentration Value */}
-        <div className="text-center">
-          <p 
-            className="text-3xl font-bold"
-            style={{ color: safety.color }}
+      <CardContent sx={{ textAlign: 'center', p: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+          {/* Pesticide Name */}
+          <Typography 
+            variant="h6" 
+            component="p"
+            sx={{ 
+              fontWeight: 'bold',
+              wordBreak: 'break-word',
+              color: 'text.primary'
+            }}
           >
-            {result.estimatedConcentration.toFixed(2)}
-            <span 
-              className="text-lg font-semibold ml-1"
-              style={{ color: colors.textSecondary }}
+            {result.pesticide}
+          </Typography>
+
+          {/* Safety Level Badge */}
+          <Chip
+            label={safety.label}
+            size="small"
+            sx={{
+              backgroundColor: safety.bgColor,
+              color: safety.color,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+              fontSize: '0.75rem'
+            }}
+          />
+
+          {/* Concentration Value */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography 
+              variant="h4" 
+              component="span"
+              sx={{ 
+                fontWeight: 'bold',
+                color: safety.color
+              }}
+            >
+              {result.estimatedConcentration.toFixed(2)}
+            </Typography>
+            <Typography 
+              variant="h6" 
+              component="span"
+              sx={{ 
+                ml: 0.5,
+                color: 'text.secondary'
+              }}
             >
               µM
-            </span>
-          </p>
-        </div>
+            </Typography>
+          </Box>
 
-        {/* Technical Details */}
-        <div 
-          className="text-xs text-center space-y-1"
-          style={{ color: colors.textSecondary }}
-        >
-          <p>Test: {result.testBrightness.toFixed(2)}</p>
-          <p>Cal: {result.calibrationBrightnesses.map(b => b.toFixed(0)).join(', ')}</p>
-        </div>
-      </div>
-    </div>
+          {/* Technical Details */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Typography variant="caption" color="text.secondary">
+              Test: {result.testBrightness.toFixed(2)}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Cal: {result.calibrationBrightnesses.map(b => b.toFixed(0)).join(', ')}
+            </Typography>
+          </Box>
+        </Box>
+      </CardContent>
+    </Card>
   );
-}; 
+};

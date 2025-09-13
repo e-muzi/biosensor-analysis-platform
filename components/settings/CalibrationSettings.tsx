@@ -1,4 +1,18 @@
 import React, { useState } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  CardContent, 
+  TextField, 
+  Grid,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
+import { Edit as EditIcon, RestartAlt as RestartAltIcon } from '@mui/icons-material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { useCalibrationStore } from '../../state/calibrationStore';
 import { PREDEFINED_PESTICIDES } from '../../state/pesticideStore';
@@ -21,6 +35,7 @@ export const CalibrationSettings: React.FC = () => {
     // Map of pesticide name to display name
     return Object.fromEntries(PREDEFINED_PESTICIDES.map(p => [p.name, p.name]));
   });
+  const [showResetDialog, setShowResetDialog] = useState(false);
 
   const handleInputChange = (pesticide: string, idx: number, value: string) => {
     setLocalCal(prev => ({
@@ -44,13 +59,12 @@ export const CalibrationSettings: React.FC = () => {
   };
 
   const handleResetAll = () => {
-    if (window.confirm('Are you sure you want to reset all calibration settings to default?')) {
-      resetAll();
-      setLocalCal(Object.fromEntries(
-        PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
-      ));
-      setEditing(null);
-    }
+    resetAll();
+    setLocalCal(Object.fromEntries(
+      PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
+    ));
+    setEditing(null);
+    setShowResetDialog(false);
   };
 
   // Double-click to edit pesticide name
@@ -65,107 +79,133 @@ export const CalibrationSettings: React.FC = () => {
   const handleNameBlur = (pesticide: string) => {
     setEditingName(null);
   };
-  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, pesticide: string) => {
+  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, pesticide: string) => {
     if (e.key === 'Enter') {
       setEditingName(null);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <h2 
-        className="text-xl font-bold mb-2"
-        style={{ color: colors.text }}
-      >
+    <Box>
+      <Typography variant="h6" gutterBottom>
         Calibration Strip Settings
-      </h2>
-      <p 
-        className="text-sm mb-4"
-        style={{ color: colors.textSecondary }}
-      >
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Set the calibration concentrations for each pesticide. Double-click the name to edit. You can reset to default at any time.
-      </p>
-      <div className="space-y-8">
+      </Typography>
+      
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         {Object.keys(localCal).map((pesticide, idx) => (
-          <div 
-            key={pesticide} 
-            className="p-4 rounded-xl shadow"
-            style={{ 
-              backgroundColor: colors.surface,
-              border: `1px solid ${colors.border}`
-            }}
-          >
-            <div className="flex items-center justify-between mb-2">
-              <div>
-                {editingName === pesticide ? (
-                  <input
-                    type="text"
-                    className="font-semibold text-lg rounded px-2 py-1 focus:outline-none"
-                    value={nameEdits[pesticide]}
-                    autoFocus
-                    onChange={e => handleNameChange(pesticide, e.target.value)}
-                    onBlur={() => handleNameBlur(pesticide)}
-                    onKeyDown={e => handleNameKeyDown(e, pesticide)}
-                    style={{ 
-                      minWidth: 80,
-                      backgroundColor: colors.background,
-                      color: colors.text,
-                      border: `1px solid ${iGEMColors.primary}`
-                    }}
-                  />
-                ) : (
-                  <h3
-                    className="font-semibold text-lg cursor-pointer select-none"
-                    onDoubleClick={() => handleNameDoubleClick(pesticide)}
-                    title="Double-click to edit name"
-                    style={{ color: iGEMColors.primary }}
+          <Card key={pesticide}>
+            <CardContent>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Box>
+                  {editingName === pesticide ? (
+                    <TextField
+                      variant="standard"
+                      value={nameEdits[pesticide]}
+                      autoFocus
+                      onChange={e => handleNameChange(pesticide, e.target.value)}
+                      onBlur={() => handleNameBlur(pesticide)}
+                      onKeyDown={e => handleNameKeyDown(e, pesticide)}
+                      sx={{ minWidth: 120 }}
+                    />
+                  ) : (
+                    <Typography
+                      variant="h6"
+                      onDoubleClick={() => handleNameDoubleClick(pesticide)}
+                      sx={{ 
+                        cursor: 'pointer',
+                        color: iGEMColors.primary,
+                        fontWeight: 600,
+                        userSelect: 'none'
+                      }}
+                      title="Double-click to edit name"
+                    >
+                      {nameEdits[pesticide]}
+                    </Typography>
+                  )}
+                </Box>
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="outlined"
+                    startIcon={<EditIcon />}
+                    onClick={() => setEditing(pesticide)}
+                    disabled={editing === pesticide}
+                    size="small"
                   >
-                    {nameEdits[pesticide]}
-                  </h3>
-                )}
-              </div>
-              <div className="flex gap-2">
-                <AppButton onClick={() => setEditing(pesticide)} variant="secondary" disabled={editing === pesticide}>Edit</AppButton>
-                <AppButton onClick={() => handleReset(pesticide)} variant="danger">Reset</AppButton>
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2 items-center">
-              {localCal[pesticide].map((val: number, idx: number) => (
-                <div key={idx} className="flex flex-col items-center">
-                  <label 
-                    className="text-xs"
-                    style={{ color: colors.textSecondary }}
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    startIcon={<RestartAltIcon />}
+                    onClick={() => handleReset(pesticide)}
+                    size="small"
                   >
-                    #{idx + 1}
-                  </label>
-                  <input
-                    type="number"
-                    className="w-20 px-2 py-1 rounded focus:outline-none focus:ring-2"
-                    value={val}
-                    disabled={editing !== pesticide}
-                    onChange={e => handleInputChange(pesticide, idx, e.target.value)}
-                    style={{ 
-                      backgroundColor: colors.background,
-                      color: colors.text,
-                      border: `1px solid ${colors.border}`,
-                      '--tw-ring-color': iGEMColors.primary
-                    } as React.CSSProperties}
-                  />
-                </div>
-              ))}
-            </div>
-            {editing === pesticide && (
-              <div className="mt-3 flex gap-2">
-                <AppButton onClick={() => handleSave(pesticide)}>Save</AppButton>
-                <AppButton onClick={() => setEditing(null)} variant="secondary">Cancel</AppButton>
-              </div>
-            )}
-          </div>
+                    Reset
+                  </Button>
+                </Box>
+              </Box>
+              
+              <Grid container spacing={1} sx={{ mb: 2 }}>
+                {localCal[pesticide].map((val: number, idx: number) => (
+                  <Grid size={{}} key={idx}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5 }}>
+                        #{idx + 1}
+                      </Typography>
+                      <TextField
+                        type="number"
+                        size="small"
+                        value={val}
+                        disabled={editing !== pesticide}
+                        onChange={e => handleInputChange(pesticide, idx, e.target.value)}
+                        sx={{ width: 80 }}
+                      />
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
+              
+              {editing === pesticide && (
+                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                  <AppButton onClick={() => handleSave(pesticide)} variant="primary">
+                    Save
+                  </AppButton>
+                  <AppButton onClick={() => setEditing(null)} variant="secondary">
+                    Cancel
+                  </AppButton>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
         ))}
-      </div>
-      <div className="mt-8 flex justify-end">
-        <AppButton onClick={handleResetAll} variant="danger">Reset All to Default</AppButton>
-      </div>
-    </div>
+      </Box>
+      
+      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+        <AppButton 
+          onClick={() => setShowResetDialog(true)} 
+          variant="danger"
+        >
+          Reset All to Default
+        </AppButton>
+      </Box>
+
+      <Dialog open={showResetDialog} onClose={() => setShowResetDialog(false)}>
+        <DialogTitle>Reset All Calibrations</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to reset all calibration settings to default? This will overwrite all your custom calibrations.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowResetDialog(false)}>Cancel</Button>
+          <Button onClick={handleResetAll} color="error" variant="contained">
+            Reset All
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
-}; 
+};

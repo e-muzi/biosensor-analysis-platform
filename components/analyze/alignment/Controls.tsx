@@ -1,4 +1,19 @@
 import React from 'react';
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Paper,
+  Grid,
+  Chip
+} from '@mui/material';
+import { 
+  ZoomIn as ZoomInIcon,
+  ZoomOut as ZoomOutIcon,
+  RotateLeft as RotateLeftIcon,
+  RotateRight as RotateRightIcon,
+  Refresh as RefreshIcon
+} from '@mui/icons-material';
 
 interface AlignmentControlsProps {
   scale: number;
@@ -8,7 +23,11 @@ interface AlignmentControlsProps {
   onRotateLeft: () => void;
   onRotateRight: () => void;
   onReset: () => void;
-  colors: { background: string; text: string; border: string };
+  colors: {
+    background: string;
+    text: string;
+    border: string;
+  };
   accentColor: string;
 }
 
@@ -21,78 +40,123 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
   onRotateRight,
   onReset,
   colors,
-  accentColor,
+  accentColor
 }) => {
   return (
-    <div 
-      className="mt-4 p-4 rounded-lg"
-      style={{ 
+    <Paper 
+      sx={{ 
+        mt: 2, 
+        p: 2,
         backgroundColor: colors.background,
-        border: `1px solid ${colors.border}`
+        border: 1,
+        borderColor: colors.border
       }}
     >
-      <div className="flex flex-wrap justify-center gap-2 mb-3">
-        <button
-          onClick={onZoomOut}
-          className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ 
-            backgroundColor: colors.background,
-            color: colors.text,
-            border: `1px solid ${colors.border}`
-          }}
-          disabled={scale <= 0.5}
-        >
-          🔍➖ Zoom Out
-        </button>
-        <button
+      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 2 }}>
+        <Button
+          variant="outlined"
+          startIcon={<ZoomInIcon />}
           onClick={onZoomIn}
-          className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ 
+          size="small"
+          sx={{
             backgroundColor: colors.background,
             color: colors.text,
-            border: `1px solid ${colors.border}`
+            borderColor: colors.border,
+            '&:hover': {
+              backgroundColor: colors.border,
+            }
           }}
-          disabled={scale >= 3}
         >
-          🔍➕ Zoom In
-        </button>
-        <button
+          Zoom In
+        </Button>
+        
+        <Button
+          variant="outlined"
+          startIcon={<ZoomOutIcon />}
+          onClick={onZoomOut}
+          size="small"
+          sx={{
+            backgroundColor: colors.background,
+            color: colors.text,
+            borderColor: colors.border,
+            '&:hover': {
+              backgroundColor: colors.border,
+            }
+          }}
+        >
+          Zoom Out
+        </Button>
+        
+        <Button
+          variant="outlined"
+          startIcon={<RotateLeftIcon />}
           onClick={onRotateLeft}
-          className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ 
+          size="small"
+          sx={{
             backgroundColor: colors.background,
             color: colors.text,
-            border: `1px solid ${colors.border}`
+            borderColor: colors.border,
+            '&:hover': {
+              backgroundColor: colors.border,
+            }
           }}
         >
-          ↺ Rotate Left
-        </button>
-        <button
+          Rotate Left
+        </Button>
+        
+        <Button
+          variant="outlined"
+          startIcon={<RotateRightIcon />}
           onClick={onRotateRight}
-          className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ 
+          size="small"
+          sx={{
             backgroundColor: colors.background,
             color: colors.text,
-            border: `1px solid ${colors.border}`
+            borderColor: colors.border,
+            '&:hover': {
+              backgroundColor: colors.border,
+            }
           }}
         >
-          ↻ Rotate Right
-        </button>
-        <button
+          Rotate Right
+        </Button>
+        
+        <Button
+          variant="outlined"
+          startIcon={<RefreshIcon />}
           onClick={onReset}
-          className="px-3 py-2 rounded-lg text-sm font-medium transition-colors"
-          style={{ 
-            backgroundColor: accentColor,
-            color: 'white'
+          size="small"
+          sx={{
+            backgroundColor: colors.background,
+            color: colors.text,
+            borderColor: colors.border,
+            '&:hover': {
+              backgroundColor: colors.border,
+            }
           }}
         >
-          🔄 Reset
-        </button>
-      </div>
-      <div className="text-center text-xs" style={{ color: colors.text }}>
-        Scale: {scale.toFixed(1)}x | Rotation: {rotation}°
-      </div>
-    </div>
+          Reset
+        </Button>
+      </Box>
+      
+      <Box sx={{ textAlign: 'center' }}>
+        <Grid container spacing={2} justifyContent="center">
+          <Grid size={12}>
+            <Chip
+              label={`Scale: ${(scale * 100).toFixed(0)}%`}
+              size="small"
+              sx={{ backgroundColor: accentColor, color: 'black' }}
+            />
+          </Grid>
+          <Grid size={12}>
+            <Chip
+              label={`Rotation: ${rotation}°`}
+              size="small"
+              sx={{ backgroundColor: accentColor, color: 'black' }}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+    </Paper>
   );
 };
-

@@ -1,5 +1,11 @@
 import React from 'react';
-import { useThemeStore } from '../../state/themeStore';
+import { 
+  Box, 
+  Typography, 
+  Card,
+  CardContent,
+  Grid
+} from '@mui/material';
 import { AppButton } from '../shared';
 
 interface SettingsSectionProps {
@@ -9,44 +15,46 @@ interface SettingsSectionProps {
   actionDescription: string;
   onAction: () => void;
   actionVariant?: 'secondary' | 'danger';
+  icon?: React.ReactNode;
 }
 
 export const SettingsSection: React.FC<SettingsSectionProps> = ({ 
   title, 
-  // description, 
+  description, 
   actionLabel, 
   actionDescription, 
   onAction, 
-  actionVariant = 'secondary' 
+  actionVariant = 'secondary',
+  icon
 }) => {
-  const { getColors } = useThemeStore();
-  const colors = getColors();
-
   return (
-    <div 
-      className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg"
-      style={{ 
-        backgroundColor: colors.surface,
-        border: `1px solid ${colors.border}`
-      }}
-    >
-      <div>
-        <p 
-          className="font-medium"
-          style={{ color: colors.text }}
-        >
-          {title}
-        </p>
-        <p 
-          className="text-sm"
-          style={{ color: colors.textSecondary }}
-        >
-          {actionDescription}
-        </p>
-      </div>
-      <AppButton onClick={onAction} variant={actionVariant} className="mt-2 sm:mt-0">
-        {actionLabel}
-      </AppButton>
-    </div>
+    <Card>
+      <CardContent>
+        <Grid container spacing={2} alignItems="center">
+          <Grid size={{}}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              {icon}
+              <Typography variant="subtitle1" component="p" sx={{ fontWeight: 500 }}>
+                {title}
+              </Typography>
+            </Box>
+            <Typography variant="body2" color="text.secondary">
+              {actionDescription}
+            </Typography>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' } }}>
+              <AppButton 
+                onClick={onAction} 
+                variant={actionVariant}
+                fullWidth
+              >
+                {actionLabel}
+              </AppButton>
+            </Box>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
   );
-}; 
+};

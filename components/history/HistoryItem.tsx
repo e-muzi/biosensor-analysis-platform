@@ -1,4 +1,22 @@
 import React, { useState } from 'react';
+import { 
+  Card, 
+  CardContent, 
+  Box, 
+  Typography, 
+  IconButton, 
+  TextField,
+  Grid,
+  Chip,
+  Collapse,
+  Divider,
+  Paper
+} from '@mui/material';
+import { 
+  Delete as DeleteIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon
+} from '@mui/icons-material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import type { HistoryRecord } from '../../types';
 import { useHistoryStore } from '../../state/historyStore';
@@ -28,141 +46,163 @@ export const HistoryItem: React.FC<HistoryItemProps> = ({ record, onDelete }) =>
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleNameUpdate();
+    }
+  };
+
   return (
-    <div 
-      className="p-4 rounded-xl shadow-lg transition-all duration-200 hover:scale-[1.02]"
-      style={{ 
-        backgroundColor: colors.surface,
-        border: `1px solid ${colors.border}`,
-        boxShadow: `0 4px 6px ${colors.shadow}`
+    <Card 
+      sx={{ 
+        transition: 'all 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.02)',
+        }
       }}
     >
-      <div className="flex items-center space-x-4">
-        {/* Image */}
-        <img 
-          src={record.imageSrc} 
-          alt="History sample" 
-          className="w-20 h-20 rounded-lg object-cover flex-shrink-0 border"
-          style={{ borderColor: colors.border }}
-        />
-        
-        {/* Content */}
-        <div className="flex-grow space-y-2">
-          {isEditing ? (
-            <input
-              type="text"
-              value={name}
-              onChange={handleNameChange}
-              onBlur={handleNameUpdate}
-              onKeyDown={(e) => e.key === 'Enter' && handleNameUpdate()}
-              className="p-2 rounded-lg font-semibold text-lg"
-              style={{ 
-                backgroundColor: colors.background,
-                color: colors.text,
-                border: `1px solid ${colors.border}`
-              }}
-              autoFocus
-            />
-          ) : (
-            <p 
-              onDoubleClick={() => setIsEditing(true)} 
-              className="font-semibold text-lg cursor-pointer hover:opacity-80 transition-opacity"
-              style={{ color: colors.text }}
-            >
-              {record.name}
-            </p>
-          )}
+      <CardContent>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Image */}
+          <Box
+            component="img"
+            src={record.imageSrc}
+            alt="History sample"
+            sx={{
+              width: 80,
+              height: 80,
+              borderRadius: 1,
+              objectFit: 'cover',
+              border: 1,
+              borderColor: 'divider',
+              flexShrink: 0
+            }}
+          />
           
-          <p 
-            className="text-xs"
-            style={{ color: colors.textSecondary }}
-          >
-            {record.timestamp}
-          </p>
-          
-          <button 
-            onClick={() => setIsExpanded(!isExpanded)} 
-            className="text-sm font-semibold transition-colors hover:opacity-80"
-            style={{ color: iGEMColors.primary }}
-          >
-            {isExpanded ? 'Hide Details' : 'Show Details'}
-          </button>
-        </div>
-        
-        {/* Delete Button */}
-        <button 
-          onClick={() => onDelete(record.id)} 
-          className="p-2 rounded-lg transition-colors hover:bg-red-100 dark:hover:bg-red-900/20"
-          style={{ color: '#EF4444' }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-          </svg>
-        </button>
-      </div>
-      
-      {/* Expanded Details */}
-      {isExpanded && (
-        <div 
-          className="pt-4 mt-4 space-y-4"
-          style={{ borderTop: `1px solid ${colors.border}` }}
-        >
-          <h4 
-            className="font-semibold text-sm"
-            style={{ color: colors.textSecondary }}
-          >
-            Analysis Results
-          </h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {record.results.map(res => (
-              <div 
-                key={res.pesticide} 
-                className="p-3 rounded-lg text-center"
-                style={{ 
-                  backgroundColor: colors.background,
-                  border: `1px solid ${colors.border}`
+          {/* Content */}
+          <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+            {isEditing ? (
+              <TextField
+                value={name}
+                onChange={handleNameChange}
+                onBlur={handleNameUpdate}
+                onKeyDown={handleKeyDown}
+                variant="standard"
+                fullWidth
+                autoFocus
+                sx={{
+                  '& .MuiInputBase-input': {
+                    fontSize: '1.125rem',
+                    fontWeight: 600,
+                    py: 0.5
+                  }
+                }}
+              />
+            ) : (
+              <Typography 
+                variant="h6" 
+                component="p"
+                onDoubleClick={() => setIsEditing(true)}
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': { opacity: 0.8 },
+                  fontWeight: 600
                 }}
               >
-                <p 
-                  className="font-bold text-sm mb-2"
-                  style={{ color: iGEMColors.primary }}
+                {record.name}
+              </Typography>
+            )}
+            
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
+              {record.timestamp}
+            </Typography>
+            
+            <Box sx={{ mt: 1 }}>
+              <Chip
+                label={isExpanded ? 'Hide Details' : 'Show Details'}
+                onClick={() => setIsExpanded(!isExpanded)}
+                icon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                size="small"
+                sx={{
+                  backgroundColor: iGEMColors.primary,
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: iGEMColors.primaryDark,
+                  }
+                }}
+              />
+            </Box>
+          </Box>
+          
+          {/* Delete Button */}
+          <IconButton 
+            onClick={() => onDelete(record.id)}
+            sx={{
+              color: '#EF4444',
+              '&:hover': {
+                backgroundColor: 'error.light',
+                color: 'error.dark',
+              }
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </Box>
+        
+        {/* Expanded Details */}
+        <Collapse in={isExpanded}>
+          <Divider sx={{ my: 2 }} />
+          <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 2 }}>
+            Analysis Results
+          </Typography>
+          <Grid container spacing={2}>
+            {record.results.map(res => (
+              <Grid size={{ xs: 6, md: 3 }} key={res.pesticide}>
+                <Paper 
+                  sx={{ 
+                    p: 2, 
+                    textAlign: 'center',
+                    border: 1,
+                    borderColor: 'divider'
+                  }}
                 >
-                  {res.pesticide}
-                </p>
-                <p 
-                  className="text-xl font-bold mb-1"
-                  style={{ color: colors.text }}
-                >
-                  {res.concentration.toFixed(2)}
-                  <span 
-                    className="text-sm font-semibold ml-1"
-                    style={{ color: colors.textSecondary }}
+                  <Typography 
+                    variant="subtitle2" 
+                    sx={{ 
+                      color: iGEMColors.primary,
+                      fontWeight: 'bold',
+                      mb: 1
+                    }}
                   >
-                    µM
-                  </span>
-                </p>
-                {/* {res.confidence && (
-                  <p 
-                    className={`text-xs ${
-                      res.confidence === 'high' ? 'text-green-600' : 
-                      res.confidence === 'medium' ? 'text-yellow-600' : 
-                      'text-red-600'
-                    }`}
+                    {res.pesticide}
+                  </Typography>
+                  <Typography 
+                    variant="h6" 
+                    component="div"
+                    sx={{ fontWeight: 'bold', mb: 0.5 }}
                   >
-                    {res.confidence} confidence
-                  </p>
-                )} */}
-                <p 
-                  className="text-xs mt-1"
-                  style={{ color: colors.textSecondary }}
-                >
-                  Bright: {res.brightness.toFixed(2)}
-                </p>
-              </div>
+                    {res.concentration.toFixed(2)}
+                    <Typography 
+                      component="span" 
+                      variant="caption" 
+                      sx={{ ml: 0.5, color: 'text.secondary' }}
+                    >
+                      µM
+                    </Typography>
+                  </Typography>
+                  <Typography 
+                    variant="caption" 
+                    color="text.secondary"
+                    sx={{ display: 'block' }}
+                  >
+                    Bright: {res.brightness.toFixed(2)}
+                  </Typography>
+                </Paper>
+              </Grid>
             ))}
-          </div>
-        </div>
-      )}
-    </div>
+          </Grid>
+        </Collapse>
+      </CardContent>
+    </Card>
   );
 };

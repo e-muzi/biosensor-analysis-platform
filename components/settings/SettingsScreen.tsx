@@ -1,87 +1,57 @@
 import React from 'react';
-import { useThemeStore } from '../../state/themeStore';
+import { 
+  Container, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Box
+} from '@mui/material';
 import { DataSettings } from './DataSettings';
 import { CalibrationSettings } from './CalibrationSettings';
 import { AboutSection } from './AboutSection';
 
 export const SettingsScreen: React.FC = () => {
-  const { getColors } = useThemeStore();
-  const colors = getColors();
-
   return (
-    <div 
-      className="p-4 md:p-8 max-w-3xl mx-auto flex flex-col space-y-8"
-      style={{ backgroundColor: colors.background }}
-    >
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header Section */}
-      <div className="text-center mb-6">
-        <h1 
-          className="text-3xl font-bold mb-2"
-          style={{ color: colors.text }}
-        >
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h3" component="h1" gutterBottom>
           Settings
-        </h1>
-        <p 
-          className="text-sm"
-          style={{ color: colors.textSecondary }}
-        >
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Configure your pesticide analysis preferences
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {/* Data Section */}
-      <section 
-        className="rounded-xl p-6 space-y-4"
-        style={{ 
-          backgroundColor: colors.surface,
-          border: `1px solid ${colors.border}`,
-          boxShadow: `0 4px 6px ${colors.shadow}`
-        }}
-      >
-        <h2 
-          className="text-xl font-bold mb-1"
-          style={{ color: colors.text }}
-        >
-          Data Management
-        </h2>
-        <DataSettings />
-      </section>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Data Management
+          </Typography>
+          <DataSettings />
+        </CardContent>
+      </Card>
 
       {/* Calibration Section */}
-      <section 
-        className="rounded-xl p-6 space-y-4"
-        style={{ 
-          backgroundColor: colors.surface,
-          border: `1px solid ${colors.border}`,
-          boxShadow: `0 4px 6px ${colors.shadow}`
-        }}
-      >
-        <h2 
-          className="text-xl font-bold mb-1"
-          style={{ color: colors.text }}
-        >
-          Calibration
-        </h2>
-        <p 
-          className="text-sm mb-4"
-          style={{ color: colors.textSecondary }}
-        >
-          Manage the calibration concentrations for each pesticide. These values are used for all analyses.
-        </p>
-        <CalibrationSettings />
-      </section>
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <Typography variant="h5" component="h2" gutterBottom>
+            Calibration
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Manage the calibration concentrations for each pesticide. These values are used for all analyses.
+          </Typography>
+          <CalibrationSettings />
+        </CardContent>
+      </Card>
 
       {/* About Section */}
-      <section 
-        className="rounded-xl p-6"
-        style={{ 
-          backgroundColor: colors.surface,
-          border: `1px solid ${colors.border}`,
-          boxShadow: `0 4px 6px ${colors.shadow}`
-        }}
-      >
-        <AboutSection />
-      </section>
-    </div>
+      <Card>
+        <CardContent>
+          <AboutSection />
+        </CardContent>
+      </Card>
+    </Container>
   );
 };

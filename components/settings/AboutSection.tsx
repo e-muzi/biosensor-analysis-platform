@@ -1,4 +1,14 @@
 import React from 'react';
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Avatar,
+  Link,
+  Chip,
+  Button
+} from '@mui/material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { getVersionInfo } from '../../utils/version';
 
@@ -8,93 +18,99 @@ export const AboutSection: React.FC = () => {
   const versionInfo = getVersionInfo();
 
   return (
-    <section>
-      <h2 
-        className="text-xl font-bold mb-4"
-        style={{ color: colors.text }}
-      >
+    <Box>
+      <Typography variant="h5" component="h2" gutterBottom>
         About
-      </h2>
+      </Typography>
       
-      <div 
-        className="p-6 rounded-xl text-center space-y-4"
-        style={{ 
-          backgroundColor: colors.background,
-          border: `1px solid ${colors.border}`
-        }}
-      >
-        {/* Team Information */}
-        <div className="space-y-2">
-          <div 
-            className="w-16 h-16 mx-auto rounded-full overflow-hidden bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center"
-            style={{ border: `3px solid ${iGEMColors.primary}` }}
-          >
-            <div className="w-16 h-16 text-white font-bold text-sm">
-              <img 
-                src="/hkjs_logo.png" 
-                alt="HK-JOINT-SCHOOL" 
-                className="w-full h-full object-cover"
-              />
-            </div>
-          </div>
-          
-          <h3 
-            className="text-lg font-semibold"
-            style={{ color: colors.text }}
-          >
-            HK-JOINT-SCHOOL
-          </h3>
-          <p 
-            className="text-sm font-medium"
-            style={{ color: iGEMColors.primary }}
-          >
-            iGEM 2025
-          </p>
-        </div>
+      <Card sx={{ textAlign: 'center' }}>
+        <CardContent sx={{ p: 4 }}>
+          {/* Team Information */}
+          <Box sx={{ mb: 4 }}>
+            <Avatar
+              src="/hkjs_logo.png"
+              alt="HK-JOINT-SCHOOL"
+              sx={{
+                width: 80,
+                height: 80,
+                mx: 'auto',
+                mb: 2,
+                border: 3,
+                borderColor: iGEMColors.primary
+              }}
+            />
+            
+            <Typography variant="h6" component="h3" gutterBottom>
+              HK-JOINT-SCHOOL
+            </Typography>
+            <Chip
+              label="iGEM 2025"
+              sx={{
+                backgroundColor: iGEMColors.primary,
+                color: 'white',
+                fontWeight: 'bold'
+              }}
+            />
+          </Box>
 
-        {/* App Information */}
-        <div className="space-y-2">
-          <h4 
-            className="text-md font-semibold"
-            style={{ color: colors.text }}
-          >
-            Pesticide Biosensor Analysis App
-          </h4>
-          <div 
-            className="text-xs space-y-1"
-            style={{ color: colors.textSecondary }}
-          >
-            <p>Version: <span className="font-mono">v{versionInfo.version}</span></p>
-            <p>Build Date: 01/07/2025</p>
-            <p>Last Updated: {versionInfo.buildDate} </p>
-            <p>Platform: {versionInfo.platform}</p>
-          </div>
-        </div>
+          {/* App Information */}
+          <Box sx={{ mb: 4 }}>
+            <Typography variant="h6" component="h4" gutterBottom>
+              Pesticide Biosensor Analysis App
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              <Typography variant="body2" color="text.secondary">
+                Version: <Typography component="span" sx={{ fontFamily: 'monospace' }}>v{versionInfo.version}</Typography>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Build Date: 01/07/2025
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Last Updated: {versionInfo.buildDate}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Platform: {versionInfo.platform}
+              </Typography>
+            </Box>
+          </Box>
 
-        {/* Links */}
-        <div className="pt-4 space-y-2">
-          <a 
-            href="https://github.com/e-muzi/biosensor-apptesting-2" 
-            target="_blank" 
-            rel="noopener noreferrer" 
-            className="inline-block px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:opacity-80"
-            style={{ 
-              backgroundColor: iGEMColors.primary,
-              color: 'white'
-            }}
-          >
-            📁 Project GitHub link
-          </a>
-          
-          <div 
-            className="text-xs"
-            style={{ color: colors.textSecondary }}
-          >
-            <p>Developed for iGEM 2025 Competition</p>
-            <p>For bugs, contact <a href="mailto:s2021060@cpu.edu.hk" className="text-blue-500 hover:underline">s2021060@cpu.edu.hk</a></p>
-          </div>
-        </div>
-      </div>
-    </section>
+          {/* Links */}
+          <Box sx={{ pt: 2 }}>
+            <Button
+              component={Link}
+              href="https://github.com/e-muzi/biosensor-apptesting-2"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="contained"
+              sx={{
+                backgroundColor: iGEMColors.primary,
+                mb: 2,
+                '&:hover': {
+                  backgroundColor: iGEMColors.primaryDark,
+                }
+              }}
+            >
+              📁 Project GitHub link
+            </Button>
+            
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                Developed for iGEM 2025 Competition
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                For bugs, contact{' '}
+                <Link 
+                  href="mailto:s2021060@cpu.edu.hk" 
+                  color="primary"
+                  sx={{ textDecoration: 'underline' }}
+                >
+                  s2021060@cpu.edu.hk
+                </Link>
+              </Typography>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+    </Box>
   );
-}; 
+};

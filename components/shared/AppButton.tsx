@@ -1,74 +1,94 @@
 import React from 'react';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
+import { Button, ButtonProps, styled } from '@mui/material';
+import { iGEMColors } from '../../state/themeStore';
 
-interface AppButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface AppButtonProps extends Omit<ButtonProps, 'variant'> {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'danger' | 'outline';
-  className?: string;
 }
 
-// TODO: Add a loading state to the buttons
-export const AppButton: React.FC<AppButtonProps> = ({ children, variant = 'primary', className = '', ...props }) => {
-  const { getColors } = useThemeStore();
-  const colors = getColors();
-
-  const baseClasses = 'px-4 py-2 rounded-lg font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center';
-  
-  {/* AppButton styles */}
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'primary':
-        return {
-          backgroundColor: iGEMColors.primary,
-          color: 'white',
-          boxShadow: `0 2px 4px ${colors.shadow}`,
-          ':hover': {
-            backgroundColor: iGEMColors.primaryDark,
-            transform: 'translateY(-1px)',
-            boxShadow: `0 4px 8px ${colors.shadow}`,
-          }
-        };
-      case 'secondary':
-        return {
-          backgroundColor: colors.surface,
-          color: colors.text,
-          border: `1px solid ${colors.border}`,
-          ':hover': {
-            backgroundColor: colors.border,
-          }
-        };
-      case 'danger':
-        return {
-          backgroundColor: '#DC2626',
-          color: 'white',
-          ':hover': {
-            backgroundColor: '#B91C1C',
-          }
-        };
-      case 'outline':
-        return {
-          backgroundColor: 'transparent',
-          color: iGEMColors.primary,
-          border: `2px solid ${iGEMColors.primary}`,
-          ':hover': {
-            backgroundColor: iGEMColors.primary,
-            color: 'white',
-          }
-        };
-      default:
-        return {};
-    }
+// Custom styled button variants
+const StyledButton = styled(Button, {
+  shouldForwardProp: (prop) => prop !== 'appVariant',
+})<{ appVariant?: string }>(({ theme, appVariant }) => {
+  const baseStyles = {
+    textTransform: 'none' as const,
+    fontWeight: 600,
+    borderRadius: 8,
+    padding: '8px 16px',
+    minWidth: 'auto',
+    transition: 'all 0.2s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-1px)',
+    },
+    '&:disabled': {
+      opacity: 0.5,
+      cursor: 'not-allowed',
+    },
   };
 
-  const styles = getVariantStyles();
+  switch (appVariant) {
+    case 'primary':
+      return {
+        ...baseStyles,
+        backgroundColor: iGEMColors.primary,
+        color: 'white',
+        boxShadow: `0 2px 4px ${theme.palette.mode === 'dark' ? iGEMColors.dark.shadow : iGEMColors.light.shadow}`,
+        '&:hover': {
+          ...baseStyles['&:hover'],
+          backgroundColor: iGEMColors.primaryDark,
+          boxShadow: `0 4px 8px ${theme.palette.mode === 'dark' ? iGEMColors.dark.shadow : iGEMColors.light.shadow}`,
+        },
+      };
+    case 'secondary':
+      return {
+        ...baseStyles,
+        backgroundColor: theme.palette.background.paper,
+        color: theme.palette.text.primary,
+        border: `1px solid ${theme.palette.divider}`,
+        '&:hover': {
+          ...baseStyles['&:hover'],
+          backgroundColor: theme.palette.action.hover,
+        },
+      };
+    case 'danger':
+      return {
+        ...baseStyles,
+        backgroundColor: '#DC2626',
+        color: 'white',
+        '&:hover': {
+          ...baseStyles['&:hover'],
+          backgroundColor: '#B91C1C',
+        },
+      };
+    case 'outline':
+      return {
+        ...baseStyles,
+        backgroundColor: 'transparent',
+        color: iGEMColors.primary,
+        border: `2px solid ${iGEMColors.primary}`,
+        '&:hover': {
+          ...baseStyles['&:hover'],
+          backgroundColor: iGEMColors.primary,
+          color: 'white',
+        },
+      };
+    default:
+      return baseStyles;
+  }
+});
 
+export const AppButton: React.FC<AppButtonProps> = ({ 
+  children, 
+  variant = 'primary', 
+  ...props 
+}) => {
   return (
-    <button 
-      className={`${baseClasses} ${className}`}
-      style={styles}
+    <StyledButton 
+      appVariant={variant}
       {...props}
     >
       {children}
-    </button>
+    </StyledButton>
   );
 };

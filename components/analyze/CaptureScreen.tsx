@@ -1,4 +1,15 @@
 import React, { useState, useCallback } from 'react';
+import { 
+  Container, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Grid, 
+  Box, 
+  Alert,
+  Paper,
+  Chip
+} from '@mui/material';
 import { analyzeWithCalibrationStrips } from '../../utils/analysis';
 import { AppButton } from '../shared';
 import { CameraCapture, ImageUpload, ImageDisplay, ImageAlignment } from './';
@@ -107,25 +118,16 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   }
 
   return (
-    <div 
-      className="p-4 md:p-6 max-w-4xl mx-auto flex flex-col items-center space-y-6"
-      style={{ backgroundColor: colors.background }}
-    >
+    <Container maxWidth="md" sx={{ py: 4 }}>
       {/* Header Section */}
-      <div className="w-full text-center mb-6">
-        <h2 
-          className="text-3xl font-bold mb-2"
-          style={{ color: colors.text }}
-        >
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h3" component="h2" gutterBottom>
           Pesticide Analysis
-        </h2>
-        <p 
-          className="text-sm"
-          style={{ color: colors.textSecondary }}
-        >
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Capture or upload an image of your test strip for analysis
-        </p>
-      </div>
+        </Typography>
+      </Box>
       
       {isCameraOpen ? (
         <CameraCapture 
@@ -136,116 +138,142 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
       ) : (
         <>
           {/* Image Display Section */}
-          <div 
-            className="w-full max-w-md p-6 rounded-xl border-2 border-dashed"
-            style={{ 
-              backgroundColor: colors.surface,
-              borderColor: colors.border
+          <Card 
+            sx={{ 
+              maxWidth: 'md',
+              mx: 'auto',
+              mb: 4,
+              border: 2,
+              borderColor: 'divider',
+              borderStyle: 'dashed'
             }}
           >
-            <ImageDisplay imageSrc={imageSrc} showROIs={false} />
-            {imageSrc && !isUploadedImage && (
-              <div 
-                className="text-center text-sm mt-3 p-2 rounded-lg"
-                style={{ 
-                  backgroundColor: `${iGEMColors.primary}20`,
-                  color: iGEMColors.primary 
-                }}
-              >
-                ✅ Auto-cropped test kit area ready for analysis
-              </div>
-            )}
-            {imageSrc && isUploadedImage && (
-              <div 
-                className="text-center text-sm mt-3 p-2 rounded-lg"
-                style={{ 
-                  backgroundColor: `${iGEMColors.accent}20`,
-                  color: iGEMColors.accentDark 
-                }}
-              >
-                📷 Uploaded image - use alignment tool for precise cropping
-              </div>
-            )}
-          </div>
+            <CardContent sx={{ p: 3 }}>
+              <ImageDisplay imageSrc={imageSrc} showROIs={false} />
+              {imageSrc && !isUploadedImage && (
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Chip
+                    label="✅ Auto-cropped test kit area ready for analysis"
+                    sx={{
+                      backgroundColor: `${iGEMColors.primary}20`,
+                      color: iGEMColors.primary,
+                      fontWeight: 'medium'
+                    }}
+                  />
+                </Box>
+              )}
+              {imageSrc && isUploadedImage && (
+                <Box sx={{ textAlign: 'center', mt: 2 }}>
+                  <Chip
+                    label="📷 Uploaded image - use alignment tool for precise cropping"
+                    sx={{
+                      backgroundColor: `${iGEMColors.accent}20`,
+                      color: iGEMColors.accentDark,
+                      fontWeight: 'medium'
+                    }}
+                  />
+                </Box>
+              )}
+            </CardContent>
+          </Card>
           
           {/* Action Buttons */}
           {!imageSrc && (
-            <div className="w-full max-w-md space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <AppButton onClick={handleOpenCamera} className="w-full">
-                  📷 Use Camera
-                </AppButton>
-                <ImageUpload onImageSelect={handleImageSelect} onOpenCamera={handleOpenCamera} />
-              </div>
+            <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
+              <Grid container spacing={2} sx={{ mb: 3 }}>
+                <Grid item xs={12} sm={6}>
+                  <AppButton 
+                    onClick={handleOpenCamera} 
+                    variant="primary"
+                    fullWidth
+                    size="large"
+                  >
+                    📷 Use Camera
+                  </AppButton>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <ImageUpload onImageSelect={handleImageSelect} onOpenCamera={handleOpenCamera} />
+                </Grid>
+              </Grid>
               
-              <div 
-                className="text-center text-xs p-3 rounded-lg"
-                style={{ 
-                  backgroundColor: colors.surface,
-                  color: colors.textSecondary,
-                  border: `1px solid ${colors.border}`
+              <Paper 
+                sx={{ 
+                  p: 2, 
+                  textAlign: 'center',
+                  backgroundColor: 'background.paper',
+                  border: 1,
+                  borderColor: 'divider'
                 }}
               >
-                💡 Tip: Ensure good lighting and a clear view of the test strip
-              </div>
-            </div>
+                <Typography variant="caption" color="text.secondary">
+                  💡 Tip: Ensure good lighting and a clear view of the test strip
+                </Typography>
+              </Paper>
+            </Box>
           )}
           
           {imageSrc && !showAlignment && (
-            <div className="w-full max-w-md space-y-4">
+            <Box sx={{ maxWidth: 'md', mx: 'auto' }}>
               {!isUploadedImage && (
-                <div 
-                  className="text-center text-sm p-3 rounded-lg mb-4"
-                  style={{ 
-                    backgroundColor: colors.surface,
-                    border: `1px solid ${colors.border}`,
-                    color: colors.textSecondary
+                <Paper 
+                  sx={{ 
+                    p: 2, 
+                    mb: 3,
+                    border: 1,
+                    borderColor: 'divider'
                   }}
                 >
-                  <p className="mb-2">
-                    <strong style={{ color: colors.text }}>Auto-crop completed!</strong>
-                  </p>
-                  <p>You can proceed with analysis or adjust the crop if needed.</p>
-                </div>
+                  <Typography variant="body2" sx={{ mb: 1, textAlign: 'center' }}>
+                    <strong>Auto-crop completed!</strong>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center' }}>
+                    You can proceed with analysis or adjust the crop if needed.
+                  </Typography>
+                </Paper>
               )}
               
-              <div className="grid grid-cols-2 gap-4">
-                <AppButton onClick={handleClearImage} variant="outline" className="w-full">
-                  Clear Image
-                </AppButton>
-                <AppButton 
-                  onClick={handleAnalyze} 
-                  disabled={isAnalyzing}
-                  className="w-full"
-                >
-                  {isAnalyzing ? '🔬 Analyzing...' : '🔬 Analyze'}
-                </AppButton>
-              </div>
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid item xs={12} sm={6}>
+                  <AppButton 
+                    onClick={handleClearImage} 
+                    variant="outline" 
+                    fullWidth
+                  >
+                    Clear Image
+                  </AppButton>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <AppButton 
+                    onClick={handleAnalyze} 
+                    disabled={isAnalyzing}
+                    variant="primary"
+                    fullWidth
+                  >
+                    {isAnalyzing ? '🔬 Analyzing...' : '🔬 Analyze'}
+                  </AppButton>
+                </Grid>
+              </Grid>
               
               <AppButton 
                 onClick={() => setShowAlignment(true)}
                 variant="secondary"
-                className="w-full"
+                fullWidth
               >
-                {isUploadedImage ? '🔧 Adjust & Crop Image' : '🔧 Adjust Crop'}
+                {isUploadedImage ? '🔧 Adjust & Crop Image' : '�� Adjust Crop'}
               </AppButton>
-            </div>
+            </Box>
           )}
           
           {error && (
-            <div 
-              className="w-full max-w-md p-4 rounded-lg text-sm"
-              style={{ 
-                backgroundColor: '#DC2626',
-                color: 'white',
-                border: '1px solid #B91C1C'
-              }}
+            <Alert 
+              severity="error" 
+              sx={{ maxWidth: 'md', mx: 'auto', mt: 2 }}
             >
               ❌ {error}
-            </div>
+            </Alert>
           )}
         </>
       )}
-    </div>
+    </Container>
   );
 };

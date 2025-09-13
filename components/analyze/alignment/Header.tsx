@@ -1,4 +1,5 @@
 import React from 'react';
+import { Typography, Box } from '@mui/material';
 
 interface AlignmentHeaderProps {
   title: string;
@@ -7,27 +8,31 @@ interface AlignmentHeaderProps {
   subtitleColor: string;
 }
 
-export const AlignmentHeader: React.FC<AlignmentHeaderProps> = ({
-  title,
-  subtitle,
-  textColor,
-  subtitleColor,
+export const AlignmentHeader: React.FC<AlignmentHeaderProps> = ({ 
+  title, 
+  subtitle, 
+  textColor, 
+  subtitleColor 
 }) => {
   return (
-    <div className="text-center">
-      <h2 
-        className="text-3xl font-bold mb-2"
-        style={{ color: textColor }}
+    <Box sx={{ textAlign: 'center', mb: 4 }}>
+      <Typography 
+        variant="h3" 
+        component="h2" 
+        gutterBottom
+        sx={{ 
+          fontWeight: 'bold',
+          color: textColor
+        }}
       >
         {title}
-      </h2>
-      <p 
-        className="text-sm"
-        style={{ color: subtitleColor }}
+      </Typography>
+      <Typography 
+        variant="body2"
+        sx={{ color: subtitleColor }}
       >
         {subtitle}
-      </p>
-    </div>
+      </Typography>
+    </Box>
   );
 };
-

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ThemeProvider, CssBaseline } from '@mui/material';
 import type { Screen, CalibrationResult } from './types';
 
 import { CaptureScreen, AnalysisResultScreen } from './components/analyze';
@@ -6,6 +7,7 @@ import { HistoryScreen } from './components/history';
 import { SettingsScreen } from './components/settings';
 import { Layout } from './components/shared';
 import { useThemeStore } from './state/themeStore';
+import { getMuiTheme } from './state/muiTheme';
 
 interface AnalysisData {
   results: CalibrationResult[];
@@ -69,8 +71,11 @@ export default function App() {
   };
 
   return (
-    <Layout currentTab={currentTab} onTabChange={handleTabChange}>
-      {renderScreen()}
-    </Layout>
+    <ThemeProvider theme={getMuiTheme(theme)}>
+      <CssBaseline />
+      <Layout currentTab={currentTab} onTabChange={handleTabChange}>
+        {renderScreen()}
+      </Layout>
+    </ThemeProvider>
   );
 }

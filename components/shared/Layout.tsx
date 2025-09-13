@@ -1,4 +1,22 @@
 import React from 'react';
+import { 
+  AppBar, 
+  Toolbar, 
+  Typography, 
+  IconButton, 
+  Box, 
+  Container,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper
+} from '@mui/material';
+import { 
+  Science as ScienceIcon,
+  History as HistoryIcon,
+  Settings as SettingsIcon,
+  LightMode as LightModeIcon,
+  DarkMode as DarkModeIcon
+} from '@mui/icons-material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 
 interface LayoutProps {
@@ -8,8 +26,7 @@ interface LayoutProps {
 }
 
 export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze', onTabChange }) => {
-  const { theme, getColors } = useThemeStore();
-  const colors = getColors();
+  const { theme, toggleTheme } = useThemeStore();
 
   const handleTabChange = (tab: 'analyze' | 'history' | 'settings') => {
     if (onTabChange) {
@@ -17,123 +34,173 @@ export const Layout: React.FC<LayoutProps> = ({ children, currentTab = 'analyze'
     }
   };
 
+  const getTabValue = () => {
+    switch (currentTab) {
+      case 'analyze': return 0;
+      case 'history': return 1;
+      case 'settings': return 2;
+      default: return 0;
+    }
+  };
+
+  const handleBottomNavChange = (event: React.SyntheticEvent, newValue: number) => {
+    switch (newValue) {
+      case 0: handleTabChange('analyze'); break;
+      case 1: handleTabChange('history'); break;
+      case 2: handleTabChange('settings'); break;
+    }
+  };
+
   return (
-    <div 
-      className="flex flex-col h-screen"
-      style={{ backgroundColor: colors.background }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
       {/* Header with Team Logo and Name */}
-      <header 
-        className="flex items-center justify-between px-4 py-3 border-b"
-        style={{ 
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-          boxShadow: `0 2px 4px ${colors.shadow}`
+      <AppBar 
+        position="static" 
+        elevation={2}
+        sx={{ 
+          backgroundColor: 'background.paper',
+          color: 'text.primary',
+          borderBottom: 1,
+          borderColor: 'divider'
         }}
       >
-        <div className="flex items-center space-x-3">
-          {/* Team Logo */}
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center">
-            <img 
-              src="/hkjs_logo.png" 
-              alt="HK-JOINT-SCHOOL" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          
-          {/* Team Name */}
-          <div>
-            <h1 
-              className="text-lg font-bold"
-              style={{ color: colors.text }}
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            {/* Team Logo */}
+            <Box
+              sx={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                background: `linear-gradient(135deg, ${iGEMColors.primary}, ${iGEMColors.primaryDark})`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
             >
-              HK-Joint-School
-            </h1>
-            <p 
-              className="text-xs"
-              style={{ color: colors.textSecondary }}
-            >
-              iGEM 2025
-            </p>
-          </div>
-        </div>
+              <img 
+                src="/hkjs_logo.png" 
+                alt="HK-JOINT-SCHOOL" 
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </Box>
+            
+            {/* Team Name */}
+            <Box>
+              <Typography variant="h6" component="h1" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
+                HK-Joint-School
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary', lineHeight: 1 }}>
+                iGEM 2025
+              </Typography>
+            </Box>
+          </Box>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={() => useThemeStore.getState().toggleTheme()}
-          className="p-2 rounded-full transition-colors"
-          style={{ 
-            backgroundColor: theme === 'dark' ? colors.surface : colors.border,
-            color: colors.text 
-          }}
-        >
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </button>
-      </header>
+          {/* Theme Toggle */}
+          <IconButton
+            onClick={toggleTheme}
+            sx={{
+              backgroundColor: theme === 'dark' ? 'background.paper' : 'grey.200',
+              color: 'text.primary',
+              '&:hover': {
+                backgroundColor: theme === 'dark' ? 'grey.700' : 'grey.300',
+              }
+            }}
+          >
+            {theme === 'dark' ? <LightModeIcon /> : <DarkModeIcon />}
+          </IconButton>
+        </Toolbar>
+      </AppBar>
 
       {/* Main Content */}
-      <main 
-        className="flex-1 overflow-y-auto"
-        style={{
-          // Reserve space so fixed bottom nav doesn't cover content
+      <Box 
+        component="main" 
+        sx={{ 
+          flex: 1, 
+          overflow: 'auto',
           paddingBottom: 'calc(64px + env(safe-area-inset-bottom, 0px))'
         }}
       >
         {children}
-      </main>
+      </Box>
 
-      {/* Bottom Navigation (fixed for mobile) */}
-      <nav 
-        className="fixed bottom-0 left-0 right-0 flex justify-around py-2 border-t"
-        style={{ 
-          backgroundColor: colors.surface,
-          borderColor: colors.border,
-          boxShadow: `0 -2px 4px ${colors.shadow}`,
-          paddingBottom: 'calc(8px + env(safe-area-inset-bottom, 0px))'
+      {/* Bottom Navigation */}
+      <Paper 
+        elevation={8}
+        sx={{ 
+          position: 'fixed',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          borderTop: 1,
+          borderColor: 'divider',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)'
         }}
       >
-        <button
-          onClick={() => handleTabChange('analyze')}
-          className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all ${
-            currentTab === 'analyze' ? 'scale-105' : ''
-          }`}
-          style={{
-            backgroundColor: currentTab === 'analyze' ? iGEMColors.primary : 'transparent',
-            color: currentTab === 'analyze' ? 'white' : colors.textSecondary
+        <BottomNavigation
+          value={getTabValue()}
+          onChange={handleBottomNavChange}
+          showLabels
+          sx={{
+            backgroundColor: 'background.paper',
+            '& .MuiBottomNavigationAction-root': {
+              color: 'text.secondary',
+              '&.Mui-selected': {
+                color: 'primary.main',
+                backgroundColor: 'transparent',
+                '& .MuiBottomNavigationAction-label': {
+                  fontWeight: 'bold',
+                }
+              },
+              '&:hover': {
+                backgroundColor: 'action.hover',
+              }
+            }
           }}
         >
-          <span className="text-2xl mb-1">🔬</span>
-          <span className="text-sm font-medium">Analyze</span>
-        </button>
-
-        <button
-          onClick={() => handleTabChange('history')}
-          className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all ${
-            currentTab === 'history' ? 'scale-105' : ''
-          }`}
-          style={{
-            backgroundColor: currentTab === 'history' ? iGEMColors.primary : 'transparent',
-            color: currentTab === 'history' ? 'white' : colors.textSecondary
-          }}
-        >
-          <span className="text-2xl mb-1">📊</span>
-          <span className="text-sm font-medium">History</span>
-        </button>
-
-        <button
-          onClick={() => handleTabChange('settings')}
-          className={`flex flex-col items-center py-2 px-4 rounded-lg transition-all ${
-            currentTab === 'settings' ? 'scale-105' : ''
-          }`}
-          style={{
-            backgroundColor: currentTab === 'settings' ? iGEMColors.primary : 'transparent',
-            color: currentTab === 'settings' ? 'white' : colors.textSecondary
-          }}
-        >
-          <span className="text-2xl mb-1">⚙️</span>
-          <span className="text-sm font-medium">Settings</span>
-        </button>
-      </nav>
-    </div>
+          <BottomNavigationAction
+            label="Analyze"
+            icon={<ScienceIcon />}
+            sx={{
+              '&.Mui-selected': {
+                backgroundColor: iGEMColors.primary,
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: iGEMColors.primaryDark,
+                }
+              }
+            }}
+          />
+          <BottomNavigationAction
+            label="History"
+            icon={<HistoryIcon />}
+            sx={{
+              '&.Mui-selected': {
+                backgroundColor: iGEMColors.primary,
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: iGEMColors.primaryDark,
+                }
+              }
+            }}
+          />
+          <BottomNavigationAction
+            label="Settings"
+            icon={<SettingsIcon />}
+            sx={{
+              '&.Mui-selected': {
+                backgroundColor: iGEMColors.primary,
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: iGEMColors.primaryDark,
+                }
+              }
+            }}
+          />
+        </BottomNavigation>
+      </Paper>
+    </Box>
   );
-}; 
+};

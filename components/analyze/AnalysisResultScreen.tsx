@@ -1,4 +1,13 @@
 import React from 'react';
+import { 
+  Container, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Grid, 
+  Box,
+  Paper
+} from '@mui/material';
 import { useHistoryStore } from '../../state/historyStore';
 import { useThemeStore} from '../../state/themeStore';
 import { AppButton } from '../shared';
@@ -37,76 +46,81 @@ export const AnalysisResultScreen: React.FC<AnalysisResultScreenProps> = ({ resu
   };
 
   return (
-    <div 
-      className="p-4 md:p-6 max-w-4xl mx-auto flex flex-col items-center space-y-6"
-      style={{ backgroundColor: colors.background }}
-    >
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header Section */}
-      <div className="text-center mb-6">
-        <h2 
-          className="text-3xl font-bold mb-2"
-          style={{ color: colors.text }}
-        >
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h3" component="h2" gutterBottom>
           Analysis Results
-        </h2>
-        <p 
-          className="text-sm"
-          style={{ color: colors.textSecondary }}
-        >
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Your pesticide analysis has been completed successfully
-        </p>
-      </div>
+        </Typography>
+      </Box>
 
       {/* Results Container */}
-      <div 
-        className="w-full p-6 rounded-xl shadow-lg flex flex-col md:flex-row items-center gap-6"
-        style={{ 
-          backgroundColor: colors.surface,
-          border: `1px solid ${colors.border}`,
-          boxShadow: `0 4px 6px ${colors.shadow}`
-        }}
-      >
-        {/* Image Section */}
-        <div className="w-full md:w-1/2">
-          <h3 
-            className="text-lg font-semibold mb-3"
-            style={{ color: colors.text }}
-          >
-            Analyzed Sample
-          </h3>
-          <img 
-            src={imageSrc} 
-            alt="Analyzed sample" 
-            className="rounded-lg w-full max-h-80 object-contain border"
-            style={{ borderColor: colors.border }}
-          />
-        </div>
+      <Card sx={{ mb: 4 }}>
+        <CardContent sx={{ p: 4 }}>
+          <Grid container spacing={4} alignItems="center">
+            {/* Image Section */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="h6" component="h3" gutterBottom>
+                Analyzed Sample
+              </Typography>
+              <Box
+                component="img"
+                src={imageSrc}
+                alt="Analyzed sample"
+                sx={{
+                  width: '100%',
+                  maxHeight: 320,
+                  objectFit: 'contain',
+                  borderRadius: 1,
+                  border: 1,
+                  borderColor: 'divider'
+                }}
+              />
+            </Grid>
 
-        {/* Results Section */}
-        <div className="w-full md:w-1/2">
-          <h3 
-            className="text-lg font-semibold mb-4"
-            style={{ color: colors.text }}
-          >
-            Pesticide Detection Results
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {results.map(result => (
-              <ResultCard key={result.pesticide} result={result} />
-            ))}
-          </div>
-        </div>
-      </div>
+            {/* Results Section */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography variant="h6" component="h3" gutterBottom>
+                Pesticide Detection Results
+              </Typography>
+              <Grid container spacing={2}>
+                {results.map(result => (
+                  <Grid size={{ xs: 12, sm: 6 }} key={result.pesticide}>
+                    <ResultCard result={result} />
+                  </Grid>
+                ))}
+              </Grid>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
       {/* Action Buttons */}
-      <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-        <AppButton onClick={onDiscard} variant="outline" className="flex-1">
-          Discard & Recapture
-        </AppButton>
-        <AppButton onClick={handleSave} className="flex-1">
-          💾 Save Results
-        </AppButton>
-      </div>
-    </div>
+      <Grid container spacing={2} sx={{ maxWidth: 'md', mx: 'auto' }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <AppButton 
+            onClick={onDiscard} 
+            variant="outline" 
+            fullWidth
+            size="large"
+          >
+            Discard & Recapture
+          </AppButton>
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <AppButton 
+            onClick={handleSave} 
+            variant="primary"
+            fullWidth
+            size="large"
+          >
+            💾 Save Results
+          </AppButton>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };

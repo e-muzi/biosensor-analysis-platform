@@ -1,5 +1,5 @@
 import React from 'react';
-import { useThemeStore } from '../../state/themeStore';
+import { Box, Typography, Paper } from '@mui/material';
 
 interface EmptyStateProps {
   icon: React.ReactNode;
@@ -9,36 +9,42 @@ interface EmptyStateProps {
 
 //EmptyState...my brain is going to be empty also -_-
 export const EmptyState: React.FC<EmptyStateProps> = ({ icon, title, description }) => {
-  const { getColors } = useThemeStore();
-  const colors = getColors();
-
   return (
-    <div 
-      className="text-center py-16 rounded-xl"
-      style={{ 
-        backgroundColor: colors.surface,
-        border: `1px solid ${colors.border}`,
-        boxShadow: `0 4px 6px ${colors.shadow}`
+    <Paper 
+      sx={{ 
+        textAlign: 'center', 
+        py: 8, 
+        px: 4,
+        border: 1,
+        borderColor: 'divider'
       }}
     >
-      <div 
-        className="mx-auto h-16 w-16 mb-4"
-        style={{ color: colors.textSecondary }}
+      <Box 
+        sx={{ 
+          mx: 'auto', 
+          mb: 3,
+          color: 'text.secondary',
+          '& svg': {
+            fontSize: 64
+          }
+        }}
       >
         {icon}
-      </div>
-      <h3 
-        className="text-lg font-semibold mb-2"
-        style={{ color: colors.text }}
+      </Box>
+      <Typography 
+        variant="h6" 
+        component="h3"
+        gutterBottom
+        sx={{ fontWeight: 600 }}
       >
         {title}
-      </h3>
-      <p 
-        className="text-sm"
-        style={{ color: colors.textSecondary }}
+      </Typography>
+      <Typography 
+        variant="body2" 
+        color="text.secondary"
       >
         {description}
-      </p>
-    </div>
+      </Typography>
+    </Paper>
   );
-}; 
+};

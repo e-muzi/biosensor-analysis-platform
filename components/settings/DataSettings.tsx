@@ -1,4 +1,22 @@
 import React, { useRef } from 'react';
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Card, 
+  CardContent, 
+  Grid,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
+import { 
+  Download as DownloadIcon,
+  Upload as UploadIcon,
+  Delete as DeleteIcon
+} from '@mui/icons-material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { SettingsSection } from './SettingsSection';
 import { useHistoryStore } from '../../state/historyStore';
@@ -11,6 +29,7 @@ export const DataSettings: React.FC = () => {
   const { records, setRecords, clearHistory } = useHistoryStore();
   const { userCalibrations, setCalibration } = useCalibrationStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showClearDialog, setShowClearDialog] = React.useState(false);
 
   // Export data as JSON
   const handleExport = () => {
@@ -61,73 +80,77 @@ export const DataSettings: React.FC = () => {
 
   // Confirm before clearing history
   const handleClearHistory = () => {
-    if (window.confirm('Are you sure you want to clear all analysis history? This cannot be undone.')) {
-      clearHistory();
-      window.location.reload();
-    }
+    clearHistory();
+    setShowClearDialog(false);
+    window.location.reload();
   };
 
   return (
-    <section>
-      <div 
-        className="p-4 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4 mb-4"
-        style={{ 
-          backgroundColor: colors.surface,
-          border: `1px solid ${colors.border}`
-        }}
-      >
-        <div>
-          <h3 
-            className="text-lg font-semibold mb-1"
-            style={{ color: iGEMColors.primary }}
-          >
-            Export / Import
-          </h3>
-          <p 
-            className="text-sm"
-            style={{ color: colors.textSecondary }}
-          >
-            Backup or transfer your analysis history and calibration settings.
-          </p>
-        </div>
-        <div className="flex gap-2 mt-2 md:mt-0">
-          <button
-            className="px-4 py-2 rounded font-bold transition-colors"
-            style={{ 
-              backgroundColor: iGEMColors.primary,
-              color: 'white'
-            }}
-            onClick={handleExport}
-          >
-            Export
-          </button>
-          <button
-            className="px-4 py-2 rounded font-bold transition-colors"
-            style={{ 
-              backgroundColor: colors.background,
-              color: colors.text,
-              border: `1px solid ${colors.border}`
-            }}
-            onClick={() => fileInputRef.current?.click()}
-          >
-            Import
-          </button>
-          <input
-            type="file"
-            accept="application/json"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleImport}
-          />
-        </div>
-      </div>
+    <Box>
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Grid container spacing={3} alignItems="center">
+            <Grid size={{ xs: 12, md: 8 }}>
+              <Typography variant="h6" sx={{ color: iGEMColors.primary, mb: 1 }}>
+                Export / Import
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Backup or transfer your analysis history and calibration settings.
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
+                <Button
+                  variant="contained"
+                  startIcon={<DownloadIcon />}
+                  onClick={handleExport}
+                  sx={{ backgroundColor: iGEMColors.primary }}
+                >
+                  Export
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<UploadIcon />}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Import
+                </Button>
+                <input
+                  type="file"
+                  accept="application/json"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleImport}
+                />
+              </Box>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
       <SettingsSection
         title="Clear History"
         description="Permanently delete all analysis history from this device. This cannot be undone."
         actionLabel="Clear"
         actionDescription="Remove all analysis history from this device."
-        onAction={handleClearHistory}
+        onAction={() => setShowClearDialog(true)}
+        icon={<DeleteIcon />}
       />
-    </section>
+
+      <Dialog open={showClearDialog} onClose={() => setShowClearDialog(false)}>
+        <DialogTitle>Clear History</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to clear all analysis history? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowClearDialog(false)}>Cancel</Button>
+          <Button onClick={handleClearHistory} color="error" variant="contained">
+            Clear History
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
-}; 
+};

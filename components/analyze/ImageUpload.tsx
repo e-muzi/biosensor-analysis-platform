@@ -27,13 +27,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {
         accept="image/*"
         ref={fileInputRef}
         onChange={handleImageChange}
-        className="hidden"
+        style={{ display: 'none' }}
       />
-      <div className="flex space-x-4">
-        <AppButton onClick={() => fileInputRef.current?.click()} variant="secondary">
-          Upload Image
-        </AppButton>
-      </div>
+      <AppButton 
+        onClick={() => fileInputRef.current?.click()} 
+        variant="secondary"
+        fullWidth
+        size="large"
+      >
+        📁 Upload Image
+      </AppButton>
     </>
   );
-}; 
+};
