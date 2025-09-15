@@ -36,7 +36,6 @@ interface ThemeState {
   getColors: () => typeof iGEMColors.light;
 }
 
-// Actually I personally prefer light theme but sometimes dark theme better for my eyes...
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({

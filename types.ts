@@ -39,3 +39,27 @@ export interface HistoryRecord {
 }
 
 export type Screen = 'capture' | 'history' | 'settings' | 'analysis' | 'alignment';
+export interface PesticideROI {
+  name: string;
+  roi: {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  };
+}
+
+// Detection mode types
+export type DetectionMode = "calibration" | "normalization";
+
+export interface ROI {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface NormalizationResult {
+  name: string;
+  brightness: number;
+}

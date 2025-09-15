@@ -1,211 +1,127 @@
-import React, { useState } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
-  TextField, 
-  Grid,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions
-} from '@mui/material';
-import { Edit as EditIcon, RestartAlt as RestartAltIcon } from '@mui/icons-material';
-import { useThemeStore, iGEMColors } from '../../state/themeStore';
-import { useCalibrationStore } from '../../state/calibrationStore';
-import { PREDEFINED_PESTICIDES } from '../../state/pesticideStore';
-import { AppButton } from '../shared';
+import { Container, Typography, Box, Card, CardContent, TextField, Button, Grid, Alert } from "@mui/material";
+import { useState } from "react";
+import { AppButton } from "../shared/AppButton";
+import { useCalibrationStore } from "../../state/calibrationStore";
+import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
 
-export const CalibrationSettings: React.FC = () => {
-  const { getColors } = useThemeStore();
-  const colors = getColors();
-  
+export function CalibrationSettings() {
   const { userCalibrations, setCalibration, resetCalibration, resetAll } = useCalibrationStore();
-  const [localCal, setLocalCal] = useState(() => {
-    // Deep copy to avoid direct mutation
-    return Object.fromEntries(
-      PREDEFINED_PESTICIDES.map(p => [p.name, [...(userCalibrations[p.name] || p.curve.map(pt => pt.concentration))]])
-    );
-  });
-  const [editing, setEditing] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState<string | null>(null);
-  const [nameEdits, setNameEdits] = useState(() => {
-    // Map of pesticide name to display name
-    return Object.fromEntries(PREDEFINED_PESTICIDES.map(p => [p.name, p.name]));
-  });
-  const [showResetDialog, setShowResetDialog] = useState(false);
+  const [editingPesticide, setEditingPesticide] = useState<string | null>(null);
+  const [tempConcentrations, setTempConcentrations] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (pesticide: string, idx: number, value: string) => {
-    setLocalCal(prev => ({
-      ...prev,
-      [pesticide]: prev[pesticide].map((v: number, i: number) => i === idx ? Number(value) : v)
-    }));
+  const handleEditStart = (pesticide: string) => {
+    setEditingPesticide(pesticide);
+    setTempConcentrations(userCalibrations[pesticide]?.join(", ") || "");
+    setError(null);
   };
 
-  const handleSave = (pesticide: string) => {
-    setCalibration(pesticide, localCal[pesticide]);
-    setEditing(null);
+  const handleEditCancel = () => {
+    setEditingPesticide(null);
+    setTempConcentrations("");
+    setError(null);
+  };
+
+  const handleEditSave = () => {
+    if (!editingPesticide) return;
+
+    try {
+      const concentrations = tempConcentrations
+        .split(",")
+        .map(s => parseFloat(s.trim()))
+        .filter(n => !isNaN(n) && n >= 0);
+
+      if (concentrations.length < 2) {
+        setError("At least 2 concentration values are required");
+        return;
+      }
+
+      setCalibration(editingPesticide, concentrations);
+      setEditingPesticide(null);
+      setTempConcentrations("");
+      setError(null);
+    } catch (err) {
+      setError("Invalid concentration values. Please use comma-separated numbers.");
+    }
   };
 
   const handleReset = (pesticide: string) => {
     resetCalibration(pesticide);
-    setLocalCal(prev => ({
-      ...prev,
-      [pesticide]: PREDEFINED_PESTICIDES.find(p => p.name === pesticide)?.curve.map(pt => pt.concentration) || []
-    }));
-    setEditing(null);
-  };
-
-  const handleResetAll = () => {
-    resetAll();
-    setLocalCal(Object.fromEntries(
-      PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
-    ));
-    setEditing(null);
-    setShowResetDialog(false);
-  };
-
-  // Double-click to edit pesticide name
-  const handleNameDoubleClick = (pesticide: string) => {
-    setEditingName(pesticide);
-  };
-
-  // Save new name on blur or Enter
-  const handleNameChange = (pesticide: string, value: string) => {
-    setNameEdits(prev => ({ ...prev, [pesticide]: value }));
-  };
-  const handleNameBlur = (pesticide: string) => {
-    setEditingName(null);
-  };
-  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, pesticide: string) => {
-    if (e.key === 'Enter') {
-      setEditingName(null);
-    }
   };
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
-        Calibration Strip Settings
-      </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Set the calibration concentrations for each pesticide. Double-click the name to edit. You can reset to default at any time.
+    <Container maxWidth="md" sx={{ py: 3 }}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
+        Calibration Settings
       </Typography>
       
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-        {Object.keys(localCal).map((pesticide, idx) => (
-          <Card key={pesticide}>
+      <Typography variant="body1" sx={{ mb: 3 }}>
+        Configure calibration concentrations for different pesticides. These values are used for all analyses.
+      </Typography>
+
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {error}
+        </Alert>
+      )}
+
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        {PREDEFINED_PESTICIDES.map((pesticide) => (
+          <Card key={pesticide.name} sx={{ mb: 2 }}>
             <CardContent>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Box>
-                  {editingName === pesticide ? (
-                    <TextField
-                      variant="standard"
-                      value={nameEdits[pesticide]}
-                      autoFocus
-                      onChange={e => handleNameChange(pesticide, e.target.value)}
-                      onBlur={() => handleNameBlur(pesticide)}
-                      onKeyDown={e => handleNameKeyDown(e, pesticide)}
-                      sx={{ minWidth: 120 }}
-                    />
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+                <Typography variant="h6">{pesticide.name}</Typography>
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  {editingPesticide === pesticide.name ? (
+                    <>
+                      <Button size="small" onClick={handleEditSave} variant="contained">
+                        Save
+                      </Button>
+                      <Button size="small" onClick={handleEditCancel}>
+                        Cancel
+                      </Button>
+                    </>
                   ) : (
-                    <Typography
-                      variant="h6"
-                      onDoubleClick={() => handleNameDoubleClick(pesticide)}
-                      sx={{ 
-                        cursor: 'pointer',
-                        color: iGEMColors.primary,
-                        fontWeight: 600,
-                        userSelect: 'none'
-                      }}
-                      title="Double-click to edit name"
-                    >
-                      {nameEdits[pesticide]}
-                    </Typography>
+                    <>
+                      <Button size="small" onClick={() => handleEditStart(pesticide.name)}>
+                        Edit
+                      </Button>
+                      <Button size="small" onClick={() => handleReset(pesticide.name)} color="warning">
+                        Reset
+                      </Button>
+                    </>
                   )}
                 </Box>
-                <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button
-                    variant="outlined"
-                    startIcon={<EditIcon />}
-                    onClick={() => setEditing(pesticide)}
-                    disabled={editing === pesticide}
-                    size="small"
-                  >
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="error"
-                    startIcon={<RestartAltIcon />}
-                    onClick={() => handleReset(pesticide)}
-                    size="small"
-                  >
-                    Reset
-                  </Button>
-                </Box>
               </Box>
-              
-              <Grid container spacing={1} sx={{ mb: 2 }}>
-                {localCal[pesticide].map((val: number, idx: number) => (
-                  <Grid size={{}} key={idx}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5 }}>
-                        #{idx + 1}
-                      </Typography>
-                      <TextField
-                        type="number"
-                        size="small"
-                        value={val}
-                        disabled={editing !== pesticide}
-                        onChange={e => handleInputChange(pesticide, idx, e.target.value)}
-                        sx={{ width: 80 }}
-                      />
-                    </Box>
-                  </Grid>
-                ))}
-              </Grid>
-              
-              {editing === pesticide && (
-                <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                  <AppButton onClick={() => handleSave(pesticide)} variant="primary">
-                    Save
-                  </AppButton>
-                  <AppButton onClick={() => setEditing(null)} variant="secondary">
-                    Cancel
-                  </AppButton>
-                </Box>
+
+              {editingPesticide === pesticide.name ? (
+                <TextField
+                  fullWidth
+                  label="Concentrations (comma-separated)"
+                  value={tempConcentrations}
+                  onChange={(e) => setTempConcentrations(e.target.value)}
+                  placeholder="0, 25, 50, 75, 100"
+                  helperText="Enter concentration values separated by commas"
+                />
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  Current concentrations: {userCalibrations[pesticide.name]?.join(", ") || "Not set"}
+                </Typography>
               )}
             </CardContent>
           </Card>
         ))}
-      </Box>
-      
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-        <AppButton 
-          onClick={() => setShowResetDialog(true)} 
-          variant="danger"
-        >
-          Reset All to Default
-        </AppButton>
-      </Box>
 
-      <Dialog open={showResetDialog} onClose={() => setShowResetDialog(false)}>
-        <DialogTitle>Reset All Calibrations</DialogTitle>
-        <DialogContent>
-          <Typography>
-            Are you sure you want to reset all calibration settings to default? This will overwrite all your custom calibrations.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowResetDialog(false)}>Cancel</Button>
-          <Button onClick={handleResetAll} color="error" variant="contained">
-            Reset All
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+        <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
+          <AppButton 
+            variant="outline" 
+            color="warning"
+            onClick={resetAll}
+          >
+            Reset All Calibrations
+          </AppButton>
+        </Box>
+      </Box>
+    </Container>
   );
-};
+}

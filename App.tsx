@@ -1,81 +1,122 @@
-import { useEffect, useState } from 'react';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import type { Screen, CalibrationResult } from './types';
+import { useState, useCallback } from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { Layout } from "./components/shared/Layout";
+import { CaptureScreen } from "./components/analyze/CaptureScreen";
+import { ImageAlignment } from "./components/analyze/ImageAlignment";
+import { AnalysisResultScreen } from "./components/analyze/AnalysisResultScreen";
+import { HistoryScreen } from "./components/history/HistoryScreen";
+import { SettingsScreen } from "./components/settings/SettingsScreen";
+import { useThemeStore } from "./state/themeStore";
+import { useHistoryStore } from "./state/historyStore";
+import { lightTheme, darkTheme } from "./state/muiTheme";
+import type { CalibrationResult } from "./types";
 
-import { CaptureScreen, AnalysisResultScreen } from './components/analyze';
-import { HistoryScreen } from './components/history';
-import { SettingsScreen } from './components/settings';
-import { Layout } from './components/shared';
-import { useThemeStore } from './state/themeStore';
-import { getMuiTheme } from './state/muiTheme';
+function App() {
+  const { theme } = useThemeStore();
+  const { addRecord } = useHistoryStore();
 
-interface AnalysisData {
-  results: CalibrationResult[];
-  imageSrc: string;
-}
+  const [currentScreen, setCurrentScreen] = useState<"analyze" | "history" | "settings">("analyze");
+  const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [analysisResults, setAnalysisResults] = useState<CalibrationResult[]>([]);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showAlignment, setShowAlignment] = useState(false);
 
-export default function App() {
-  const [activeScreen, setActiveScreen] = useState<Screen>('capture');
-  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
-  const [currentTab, setCurrentTab] = useState<'analyze' | 'history' | 'settings'>('analyze');
-  const theme = useThemeStore(state => state.theme);
+  const handleAlignmentConfirm = useCallback((alignedImageSrc: string) => {
+    setCapturedImage(alignedImageSrc);
+    setShowAlignment(false);
+  }, []);
 
-  useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  const handleAlignmentBack = useCallback(() => {
+    setShowAlignment(false);
+  }, []);
+
+  const handleAnalysisComplete = useCallback((results: CalibrationResult[], imageSrc: string) => {
+    setAnalysisResults(results);
+    setCapturedImage(imageSrc); // Add this line to fix the analysis bug
+    setIsAnalyzing(false);
+    
+    // Save to history
+    const historyItem = {
+      id: Date.now().toString(),
+      name: `Analysis ${new Date().toLocaleString()}`,
+      timestamp: new Date().toISOString(),
+      imageSrc,
+      results: results.map(r => ({
+        pesticide: r.pesticide,
+        brightness: r.testBrightness,
+        concentration: r.estimatedConcentration,
+        confidence: r.confidence
+      })),
+    };
+    addRecord(historyItem);
+  }, [addRecord]);
+
+  const handleNewAnalysis = useCallback(() => {
+    setCapturedImage(null);
+    setAnalysisResults([]);
+    setShowAlignment(false);
+    setCurrentScreen("analyze");
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setCapturedImage(null);
+    setAnalysisResults([]);
+    setShowAlignment(false);
+    setCurrentScreen("analyze");
+  }, []);
+
+  const renderCurrentScreen = () => {
+    if (showAlignment && capturedImage) {
+      return (
+        <ImageAlignment
+          imageSrc={capturedImage}
+          onConfirm={handleAlignmentConfirm}
+          
+          
+        />
+      );
     }
-  }, [theme]);
 
-  const handleAnalysisComplete = (results: CalibrationResult[], imageSrc: string) => {
-    setAnalysisData({ results, imageSrc });
-    setActiveScreen('analysis');
-  };
-
-  const handleDiscard = () => {
-    setAnalysisData(null);
-    setActiveScreen('capture');
-  };
-  
-  const handleSave = () => {
-    setAnalysisData(null);
-    setCurrentTab('history');
-  }
-
-  const handleTabChange = (tab: 'analyze' | 'history' | 'settings') => {
-    setCurrentTab(tab);
-    // Reset to capture screen when switching to analyze tab
-    if (tab === 'analyze') {
-      setActiveScreen('capture');
-    }
-  };
-
-  const renderScreen = () => {
-    // If we're in analysis mode, show the analysis screen regardless of tab
-    if (activeScreen === 'analysis' && analysisData) {
-      return <AnalysisResultScreen {...analysisData} onDiscard={handleDiscard} onSave={handleSave} />;
+    if (analysisResults.length > 0 && capturedImage) {
+      return (
+        <AnalysisResultScreen results={analysisResults}
+          
+          imageSrc={capturedImage}
+          onBack={handleBack}
+          onNewAnalysis={handleNewAnalysis}
+          isAnalyzing={isAnalyzing}
+        />
+      );
     }
 
-    // Otherwise, render based on current tab
-    switch (currentTab) {
-      case 'analyze':
-        return <CaptureScreen onAnalysisComplete={handleAnalysisComplete} />;
-      case 'history':
+    switch (currentScreen) {
+      case "analyze":
+        return (
+          <CaptureScreen
+            onAnalysisComplete={handleAnalysisComplete}
+          />
+        );
+      case "history":
         return <HistoryScreen />;
-      case 'settings':
+      case "settings":
         return <SettingsScreen />;
       default:
-        return <CaptureScreen onAnalysisComplete={handleAnalysisComplete} />;
+        return null;
     }
   };
 
   return (
-    <ThemeProvider theme={getMuiTheme(theme)}>
+    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
       <CssBaseline />
-      <Layout currentTab={currentTab} onTabChange={handleTabChange}>
-        {renderScreen()}
+      <Layout 
+        currentTab={currentScreen} 
+        onTabChange={setCurrentScreen}
+      >
+        {renderCurrentScreen()}
       </Layout>
     </ThemeProvider>
   );
 }
+
+export default App;

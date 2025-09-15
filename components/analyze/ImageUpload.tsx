@@ -3,7 +3,7 @@ import { AppButton } from '../shared';
 
 interface ImageUploadProps {
   onImageSelect: (imageSrc: string) => void;
-  onOpenCamera: () => void;
+  onOpenCamera?: () => void; // Make this optional since it's not used
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {

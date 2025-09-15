@@ -4,6 +4,7 @@ import { CameraAlt, History, Settings } from '@mui/icons-material';
 import { useThemeStore } from '../../state/themeStore';
 import type { Screen } from '../../types';
 
+// This component is not used now
 interface NavigationProps {
   activeScreen: Screen;
   onScreenChange: (screen: Screen) => void;

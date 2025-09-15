@@ -1,7 +1,6 @@
 import React from 'react';
 import { 
   Box, 
-  Typography, 
   Button, 
   Paper,
   Grid,
@@ -31,6 +30,7 @@ interface AlignmentControlsProps {
   accentColor: string;
 }
 
+// Main Alignment Controls
 export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
   scale,
   rotation,
@@ -141,14 +141,14 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
       
       <Box sx={{ textAlign: 'center' }}>
         <Grid container spacing={2} justifyContent="center">
-          <Grid size={12}>
+          <Grid size={{ xs: 12 }}>
             <Chip
               label={`Scale: ${(scale * 100).toFixed(0)}%`}
               size="small"
               sx={{ backgroundColor: accentColor, color: 'black' }}
             />
           </Grid>
-          <Grid size={12}>
+          <Grid size={{ xs: 12 }}>
             <Chip
               label={`Rotation: ${rotation}°`}
               size="small"
@@ -160,3 +160,6 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
     </Paper>
   );
 };
+
+// Export as Controls for compatibility
+export const Controls = AlignmentControls;
