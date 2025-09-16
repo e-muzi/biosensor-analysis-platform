@@ -14,8 +14,8 @@ export const CaptureActions: React.FC<CaptureActionsProps> = ({
   onImageSelect
 }) => {
   return (
-    <Box sx={{ maxWidth: "md", mx: "auto" }}>
-      <Grid container spacing={2} sx={{ mb: 3 }}>
+    <Box sx={{ maxWidth: "md", mx: "auto", px: 2 }}> 
+      <Grid container spacing={3} sx={{ mb: 4 }}> 
         <Grid size={{ xs: 12, sm: 6 }}>
           <AppButton 
             onClick={onOpenCamera} 
@@ -33,11 +33,12 @@ export const CaptureActions: React.FC<CaptureActionsProps> = ({
       
       <Paper 
         sx={{ 
-          p: 2, 
+          p: 3, 
           textAlign: "center",
           backgroundColor: "background.paper",
           border: 1,
-          borderColor: "divider"
+          borderColor: "divider",
+          mx: 2 
         }}
       >
         <Typography variant="caption" color="text.secondary">

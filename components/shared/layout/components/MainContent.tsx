@@ -12,7 +12,9 @@ export const MainContent: React.FC<MainContentProps> = ({ children }) => {
       sx={{ 
         flex: 1, 
         overflow: "auto",
-        paddingBottom: "calc(64px + env(safe-area-inset-bottom, 0px))"
+        paddingBottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
+        paddingX: { xs: 2, sm: 3, md: 4 }, 
+        paddingY: 2 
       }}
     >
       {children}
