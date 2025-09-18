@@ -1,7 +1,8 @@
 import { calculateBrightnessForRoi } from "../imageProcessing/colorUtils";
 import { calculateCalibrationStripBrightnesses } from "./brightnessAnalysis";
 import { estimateConcentrationFromCalibration } from "./calibrationAnalysis";
-import { CALIBRATION_STRIPS, PESTICIDE_ROIS } from "../constants/roiConstants";
+import { CALIBRATION_STRIPS, PESTICIDE_CENTER_POINTS } from "../constants/roiConstants";
+import { sampleAllPesticidePixels } from "../imageProcessing/pixelSampling";
 import type { CalibrationResult, PesticideROI } from "../../types";
 
 // Calculate brightness for multiple ROIs
@@ -35,7 +36,7 @@ export function calculateMultipleBrightness(
   });
 }
 
-// Analyze image with calibration strips
+// Analyze image with calibration strips using new 5-pixel sampling method
 export function analyzeWithCalibrationStrips(image: HTMLImageElement): Promise<CalibrationResult[]> {
   return new Promise((resolve, reject) => {
     try {
@@ -56,9 +57,10 @@ export function analyzeWithCalibrationStrips(image: HTMLImageElement): Promise<C
         // Calculate calibration strip brightnesses
         const calibrationBrightnesses = calculateCalibrationStripBrightnesses(ctx, strip);
         
-        // Calculate test area brightness
-        const testROI = PESTICIDE_ROIS[index];
-        const testBrightness = calculateBrightnessForRoi(ctx, testROI.roi);
+        // Use new 5-pixel sampling method for test area brightness
+        const centerPoint = PESTICIDE_CENTER_POINTS[index];
+        const samplingResults = sampleAllPesticidePixels(ctx, [centerPoint]);
+        const testBrightness = samplingResults[0]?.averageBrightness || 0;
         
         // Estimate concentration
         const { concentration, confidence } = estimateConcentrationFromCalibration(

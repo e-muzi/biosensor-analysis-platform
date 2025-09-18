@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Card, CardContent, Box, Chip } from "@mui/material";
 import { ImageDisplay } from "../../ImageDisplay";
 import { iGEMColors } from "../../../../state/themeStore";
@@ -13,6 +13,8 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
   imageSrc, 
   isUploadedImage 
 }) => {
+  const imageRef = useRef<HTMLImageElement>(null);
+  
   return (
     <Card 
       sx={{ 
@@ -25,7 +27,7 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({
       }}
     >
       <CardContent sx={{ p: 3 }}>
-        <ImageDisplay imageSrc={imageSrc} showROIs={false} />
+        <ImageDisplay ref={imageRef} imageSrc={imageSrc} showROIs={false} />
         {imageSrc && !isUploadedImage && (
           <Box sx={{ textAlign: "center", mt: 2 }}>
             <Chip

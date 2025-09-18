@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import {
   Box,
   Container,
@@ -26,6 +27,8 @@ export function AnalysisResultScreen({
   onNewAnalysis,
   isAnalyzing,
 }: AnalysisResultScreenProps) {
+  const imageRef = useRef<HTMLImageElement>(null);
+
   if (isAnalyzing) {
     return (
       <Container maxWidth="md" sx={{ py: 3 }}>
@@ -62,7 +65,7 @@ export function AnalysisResultScreen({
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ImageDisplay imageSrc={imageSrc} />
+          <ImageDisplay ref={imageRef} imageSrc={imageSrc} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>

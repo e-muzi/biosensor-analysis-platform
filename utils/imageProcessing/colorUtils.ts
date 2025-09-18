@@ -1,11 +1,18 @@
-// Converts RGB color to HSV. Returns V (value/brightness) component.
+// Calculate true brightness using luminance formula (weighted average)
 export function rgbToHsv_V(r: number, g: number, b: number): number {
+  // Use standard luminance formula: 0.299*R + 0.587*G + 0.114*B
+  // This gives a more accurate representation of perceived brightness
+  const brightness = (0.299 * r) + (0.587 * g) + (0.114 * b);
+  return Math.round(brightness);
+}
+
+// Alternative: HSV V component (maximum RGB value)
+export function rgbToHsv_V_Max(r: number, g: number, b: number): number {
   r /= 255;
   g /= 255;
   b /= 255;
-
   const max = Math.max(r, g, b);
-  return max * 255; // Return V component on a 0-255 scale
+  return max * 255;
 }
 
 // Calculate brightness for a given region of interest
