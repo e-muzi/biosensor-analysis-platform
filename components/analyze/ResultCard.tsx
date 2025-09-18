@@ -43,23 +43,21 @@ export function ResultCard({ result }: ResultCardProps) {
             {result.pesticide}
           </Typography>
           <Chip
-            label={detectionMode === 'calibration' 
+            label={detectionMode === 'strip' 
               ? getConcentrationLabel(result.estimatedConcentration)
-              : getBrightnessLabel(result.testBrightness)
+              : getConcentrationLabel(result.estimatedConcentration)
             }
-            color={detectionMode === 'calibration'
+            color={detectionMode === 'strip'
               ? getConcentrationColor(result.estimatedConcentration)
-              : getBrightnessColor(result.testBrightness)
+              : getConcentrationColor(result.estimatedConcentration)
             }
             size="small"
           />
         </Box>
         
-        {detectionMode === 'calibration' && (
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Concentration: {result.estimatedConcentration.toFixed(3)} ppm
-          </Typography>
-        )}
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          Concentration: {result.estimatedConcentration.toFixed(3)} ppm
+        </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Brightness: {result.testBrightness.toFixed(2)}
@@ -69,11 +67,9 @@ export function ResultCard({ result }: ResultCardProps) {
           Confidence: {result.confidence}
         </Typography>
 
-        {detectionMode === 'normalization' && (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
-            Normalization mode - brightness analysis only
-          </Typography>
-        )}
+        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, fontStyle: 'italic' }}>
+          {detectionMode === 'preset' ? 'Preset mode' : 'Strip mode'} - concentration analysis
+        </Typography>
       </CardContent>
     </Card>
   );

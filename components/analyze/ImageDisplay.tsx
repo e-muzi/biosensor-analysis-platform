@@ -48,7 +48,7 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
             />
             {showROIs && (
               <>
-                {detectionMode === 'calibration' && <CalibrationStrips />}
+                {detectionMode === 'strip' && <CalibrationStrips />}
                 <TestAreas />
               </>
             )}

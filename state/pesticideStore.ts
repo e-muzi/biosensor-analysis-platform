@@ -48,6 +48,16 @@ export const PREDEFINED_PESTICIDES: Pesticide[] = [
       { concentration: 180, brightness: 255 },
     ],
   },
+  {
+    name: 'Atrazine',
+    curve: [
+      { concentration: 0, brightness: 12 },
+      { concentration: 25, brightness: 60 },
+      { concentration: 75, brightness: 180 },
+      { concentration: 125, brightness: 240 },
+      { concentration: 200, brightness: 255 },
+    ],
+  },
 ];
 
 

@@ -1,18 +1,8 @@
 import { analyzeWithCalibrationStrips } from './brightnessCalculations';
-import { calculateMultipleBrightness, PESTICIDE_ROIS } from './normalizationAnalysis';
+import { analyzeWithPresetCurves } from './presetAnalysis';
 import type { CalibrationResult, AnalysisResult } from '../../types';
 
-export type DetectionMode = 'calibration' | 'normalization';
-
-// Convert normalization results to analysis results format
-function convertNormalizationToAnalysis(normalizationResults: { name: string; brightness: number; }[]): AnalysisResult[] {
-  return normalizationResults.map(result => ({
-    pesticide: result.name,
-    brightness: result.brightness,
-    concentration: 0, // In normalization mode, we don't calculate concentration
-    confidence: 'medium' as const
-  }));
-}
+export type DetectionMode = 'preset' | 'strip';
 
 // Convert calibration results to analysis results format
 function convertCalibrationToAnalysis(calibrationResults: CalibrationResult[]): AnalysisResult[] {
@@ -24,18 +14,20 @@ function convertCalibrationToAnalysis(calibrationResults: CalibrationResult[]): 
   }));
 }
 
+
 // Unified analysis function that switches based on mode
 export async function analyzeImage(
   image: HTMLImageElement, 
   mode: DetectionMode
 ): Promise<{ calibrationResults?: CalibrationResult[]; analysisResults: AnalysisResult[] }> {
-  if (mode === 'calibration') {
+  if (mode === 'strip') {
     const calibrationResults = await analyzeWithCalibrationStrips(image);
     const analysisResults = convertCalibrationToAnalysis(calibrationResults);
     return { calibrationResults, analysisResults };
   } else {
-    const normalizationResults = await calculateMultipleBrightness(image, PESTICIDE_ROIS);
-    const analysisResults = convertNormalizationToAnalysis(normalizationResults);
-    return { analysisResults };
+    // Preset mode - use predefined curves
+    const presetResults = await analyzeWithPresetCurves(image);
+    const analysisResults = convertCalibrationToAnalysis(presetResults);
+    return { calibrationResults: presetResults, analysisResults };
   }
 }

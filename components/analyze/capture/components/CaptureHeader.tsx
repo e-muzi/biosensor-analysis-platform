@@ -13,17 +13,17 @@ export const CaptureHeader: React.FC = () => {
           Pesticide Analysis
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {detectionMode === 'calibration' 
+          {detectionMode === 'strip' 
             ? "Capture or upload an image of your test strip with calibration strips for analysis"
-            : "Capture or upload an image of your test strip for brightness analysis"
+            : "Capture or upload an image of your test strip for preset curve analysis"
           }
         </Typography>
       </Box>
       
-      {detectionMode === 'normalization' && (
+      {detectionMode === 'preset' && (
         <Alert severity="info" sx={{ mb: 3 }}>
           <Typography variant="body2">
-            <strong>Normalization Mode:</strong> The app will analyze brightness directly without calibration strips. 
+            <strong>Preset Mode:</strong> The app will use predefined calibration curves for analysis. 
             Make sure your test strip is well-lit and positioned clearly in the frame.
           </Typography>
         </Alert>

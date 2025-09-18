@@ -15,14 +15,14 @@ export const DetectionModeSettings: React.FC = () => {
   const { detectionMode, setDetectionMode } = useModeStore();
 
   const handleModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setDetectionMode(event.target.value as 'calibration' | 'normalization');
+    setDetectionMode(event.target.value as 'preset' | 'strip');
   };
 
   return (
     <Box>
       <FormControl component="fieldset">
         <FormLabel component="legend" sx={{ mb: 2 }}>
-          Detection Method
+          Calibration Method
         </FormLabel>
         <RadioGroup
           value={detectionMode}
@@ -30,29 +30,29 @@ export const DetectionModeSettings: React.FC = () => {
           sx={{ mb: 2 }}
         >
           <FormControlLabel
-            value="calibration"
+            value="preset"
             control={<Radio />}
             label={
               <Box>
                 <Typography variant="body1" fontWeight="medium">
-                  Calibration Mode
+                  Preset Mode
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Uses calibration strips for concentration estimation
+                  Uses predefined calibration curves for concentration estimation
                 </Typography>
               </Box>
             }
           />
           <FormControlLabel
-            value="normalization"
+            value="strip"
             control={<Radio />}
             label={
               <Box>
                 <Typography variant="body1" fontWeight="medium">
-                  Normalization Mode
+                  Strip Mode
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Direct brightness analysis without calibration strips
+                  Uses physical calibration strips for concentration estimation
                 </Typography>
               </Box>
             }
@@ -60,10 +60,10 @@ export const DetectionModeSettings: React.FC = () => {
         </RadioGroup>
       </FormControl>
 
-      {detectionMode === 'normalization' && (
+      {detectionMode === 'preset' && (
         <Alert severity="info" sx={{ mt: 2 }}>
-          In normalization mode, the app will analyze brightness directly without requiring calibration strips. 
-          This mode uses predefined regions of interest for each pesticide.
+          In preset mode, the app uses predefined calibration curves for concentration estimation. 
+          These curves are based on RGB values and concentrations stored in the code.
         </Alert>
       )}
     </Box>

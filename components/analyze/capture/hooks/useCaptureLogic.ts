@@ -50,19 +50,13 @@ export function useCaptureLogic(
       const { calibrationResults, analysisResults } = await analyzeImage(img, detectionMode);
       
       // For backward compatibility, we still pass CalibrationResult[] to onAnalysisComplete
-      // If in normalization mode, we create CalibrationResult-like objects
+      // Both preset and strip modes return CalibrationResult objects
       if (calibrationResults) {
         onAnalysisComplete(calibrationResults, imageSrc);
       } else {
-        // Convert analysis results to calibration result format for compatibility
-        const compatibilityResults: CalibrationResult[] = analysisResults.map(result => ({
-          pesticide: result.pesticide,
-          testBrightness: result.brightness,
-          calibrationBrightnesses: [], // Empty for normalization mode
-          estimatedConcentration: result.concentration,
-          confidence: result.confidence || 'medium' // Ensure confidence is never undefined
-        }));
-        onAnalysisComplete(compatibilityResults, imageSrc);
+        // This should not happen in the new system as both modes return CalibrationResult[]
+        console.warn("Unexpected: analysisResults without calibrationResults");
+        onAnalysisComplete([], imageSrc);
       }
     } catch (err) {
       console.error(err);

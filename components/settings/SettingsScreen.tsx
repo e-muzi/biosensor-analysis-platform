@@ -34,7 +34,7 @@ export const SettingsScreen: React.FC = () => {
             Detection Method
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-            Choose between calibration strip-based analysis or direct normalization analysis.
+            Choose between preset curve-based analysis or physical calibration strip analysis.
           </Typography>
           <DetectionModeSettings />
         </CardContent>
@@ -50,8 +50,8 @@ export const SettingsScreen: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Calibration Section - Only show in calibration mode */}
-      {detectionMode === 'calibration' && (
+      {/* Calibration Section - Show for both modes */}
+      {(detectionMode === 'preset' || detectionMode === 'strip') && (
         <Card sx={{ mb: 4 }}>
           <CardContent>
             <Typography variant="h5" component="h2" gutterBottom>

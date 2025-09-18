@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type DetectionMode = 'calibration' | 'normalization';
+export type DetectionMode = 'preset' | 'strip';
 
 interface ModeState {
   detectionMode: DetectionMode;
@@ -11,7 +11,7 @@ interface ModeState {
 export const useModeStore = create<ModeState>()(
   persist(
     (set) => ({
-      detectionMode: 'calibration', // Default mode
+      detectionMode: 'preset', // Default mode
       setDetectionMode: (mode) => set({ detectionMode: mode }),
     }),
     {
