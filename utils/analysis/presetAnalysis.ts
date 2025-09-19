@@ -37,9 +37,12 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
         const samplingResult = samplingResults[index];
         const testBrightness = samplingResult?.averageBrightness || 0;
         
-        // Get RGB values from the sampled pixel
-        const pixel = samplingResult?.pixels?.[0];
-        const testRGB = pixel ? { r: pixel.r, g: pixel.g, b: pixel.b } : { r: 0, g: 0, b: 0 };
+        // Calculate average RGB from all sampled pixels (5-pixel sampling)
+        const pixels = samplingResult?.pixels || [];
+        const averageR = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length : 0;
+        const averageG = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length : 0;
+        const averageB = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length : 0;
+        const testRGB = { r: averageR, g: averageG, b: averageB };
         
         // Debug logging
         console.log(`Debug: ${coordinate.name} - Coordinate: (${coordinate.x}, ${coordinate.y})`);

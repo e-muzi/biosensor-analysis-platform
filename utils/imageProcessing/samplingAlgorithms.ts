@@ -420,8 +420,9 @@ export function samplePixelsAtClick(
 }
 
 /**
- * Sample RGB values from specific pixel coordinates
+ * Sample RGB values from specific pixel coordinates with 5-pixel sampling
  * This replaces the ROI-based detection with direct coordinate sampling
+ * Samples center pixel + 4 nearby pixels (cross pattern) for better accuracy
  */
 export function samplePixelsAtCoordinates(
   ctx: CanvasRenderingContext2D,
@@ -432,54 +433,95 @@ export function samplePixelsAtCoordinates(
   return coordinates.map(coord => {
     try {
       // Ensure coordinates are within canvas bounds
-      const x = Math.max(0, Math.min(canvas.width - 1, coord.x));
-      const y = Math.max(0, Math.min(canvas.height - 1, coord.y));
+      const centerX = Math.max(0, Math.min(canvas.width - 1, coord.x));
+      const centerY = Math.max(0, Math.min(canvas.height - 1, coord.y));
       
-      // Get pixel data at the specific coordinate
-      const imageData = ctx.getImageData(x, y, 1, 1);
-      const data = imageData.data;
+      // Define 5-pixel sampling pattern: center + 4 nearby pixels (cross pattern)
+      const samplingOffsets = [
+        { x: 0, y: 0 },    // Center pixel
+        { x: -1, y: 0 },   // Left
+        { x: 1, y: 0 },    // Right
+        { x: 0, y: -1 },   // Up
+        { x: 0, y: 1 }     // Down
+      ];
       
-      const rRaw = data[0];
-      const gRaw = data[1];
-      const bRaw = data[2];
-      const a = data[3];
+      const pixels: PixelWithPriority[] = [];
+      let totalR = 0, totalG = 0, totalB = 0, totalBrightness = 0;
+      let validPixelsCount = 0;
       
-      // Apply alpha correction if needed
-      const { r, g, b } = correctPremultipliedAlpha(rRaw, gRaw, bRaw, a);
+      // Sample each pixel in the pattern
+      samplingOffsets.forEach(offset => {
+        const pixelX = centerX + offset.x;
+        const pixelY = centerY + offset.y;
+        
+        // Ensure pixel is within canvas bounds
+        if (pixelX >= 0 && pixelX < canvas.width && pixelY >= 0 && pixelY < canvas.height) {
+          // Get pixel data
+          const imageData = ctx.getImageData(pixelX, pixelY, 1, 1);
+          const data = imageData.data;
+          
+          const rRaw = data[0];
+          const gRaw = data[1];
+          const bRaw = data[2];
+          const a = data[3];
+          
+          // Apply alpha correction if needed
+          const { r, g, b } = correctPremultipliedAlpha(rRaw, gRaw, bRaw, a);
+          
+          // Calculate brightness using luminance formula
+          const brightness = calculateLuminance(r, g, b);
+          
+          // Create pixel result
+          const pixel: PixelWithPriority = {
+            x: pixelX / canvas.width,
+            y: pixelY / canvas.height,
+            r,
+            g,
+            b,
+            brightness,
+            priority: getPixelPriority(r, g, b)
+          };
+          
+          pixels.push(pixel);
+          totalR += r;
+          totalG += g;
+          totalB += b;
+          totalBrightness += brightness;
+          validPixelsCount++;
+        }
+      });
       
-      // Calculate brightness using luminance formula
-      const brightness = calculateLuminance(r, g, b);
+      // Calculate averages
+      const averageR = validPixelsCount > 0 ? totalR / validPixelsCount : 0;
+      const averageG = validPixelsCount > 0 ? totalG / validPixelsCount : 0;
+      const averageB = validPixelsCount > 0 ? totalB / validPixelsCount : 0;
+      const averageBrightness = validPixelsCount > 0 ? totalBrightness / validPixelsCount : 0;
       
-      // Create a single pixel result
-      const pixel: PixelWithPriority = {
-        x: x / canvas.width,
-        y: y / canvas.height,
-        r,
-        g,
-        b,
-        brightness,
-        priority: getPixelPriority(r, g, b)
-      };
+      // Debug logging
+      console.log(`Debug: ${coord.name} - 5-pixel sampling at (${centerX}, ${centerY}):`);
+      console.log(`  Valid pixels: ${validPixelsCount}/5`);
+      console.log(`  Average RGB: (${averageR.toFixed(1)}, ${averageG.toFixed(1)}, ${averageB.toFixed(1)})`);
+      console.log(`  Average brightness: ${averageBrightness.toFixed(2)}`);
       
       return {
         pesticide: coord.name,
         centerPoint: {
-          x: x / canvas.width,
-          y: y / canvas.height,
+          x: centerX / canvas.width,
+          y: centerY / canvas.height,
           width: 0,
           height: 0
         },
         samplingArea: {
-          x: x / canvas.width,
-          y: y / canvas.height,
-          width: 1 / canvas.width,
-          height: 1 / canvas.height
+          x: (centerX - 1) / canvas.width,
+          y: (centerY - 1) / canvas.height,
+          width: 3 / canvas.width,
+          height: 3 / canvas.height
         },
-        pixels: [pixel],
-        averageBrightness: brightness,
-        validPixels: 1,
-        totalPixels: 1,
-        invalidPixelsFiltered: 0,
+        pixels,
+        averageBrightness,
+        validPixels: validPixelsCount,
+        totalPixels: 5,
+        invalidPixelsFiltered: 5 - validPixelsCount,
         samplingMethod: 'coordinate_based'
       };
       

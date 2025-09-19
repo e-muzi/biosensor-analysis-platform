@@ -13,15 +13,15 @@ export interface Pesticide {
 // These curves represent realistic biosensor responses where higher concentrations
 // result in darker colors (lower RGB values)
 const ACEPHATE_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },      // Bright green
-  { concentration: 0.3, rgb: { r: 65, g: 180, b: 8 } },    // Slightly darker
-  { concentration: 1, rgb: { r: 58, g: 160, b: 12 } },     // Darker green
-  { concentration: 3, rgb: { r: 45, g: 140, b: 15 } },     // More dark
-  { concentration: 10, rgb: { r: 35, g: 120, b: 18 } },    // Darker
-  { concentration: 30, rgb: { r: 28, g: 100, b: 20 } },    // Much darker
-  { concentration: 100, rgb: { r: 22, g: 80, b: 22 } },    // Very dark
-  { concentration: 300, rgb: { r: 18, g: 60, b: 25 } },    // Almost black-green
-  { concentration: 1000, rgb: { r: 15, g: 40, b: 28 } },   // Darkest
+  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
+  { concentration: 0.3, rgb: { r: 65, g: 180, b: 8 } }, 
+  { concentration: 1, rgb: { r: 58, g: 160, b: 12 } }, 
+  { concentration: 3, rgb: { r: 45, g: 140, b: 15 } },  
+  { concentration: 10, rgb: { r: 35, g: 120, b: 18 } }, 
+  { concentration: 30, rgb: { r: 28, g: 100, b: 20 } }, 
+  { concentration: 100, rgb: { r: 22, g: 80, b: 22 } },
+  { concentration: 300, rgb: { r: 18, g: 60, b: 25 } }, 
+  { concentration: 1000, rgb: { r: 15, g: 40, b: 28 } }, 
 ];
 
 const GLYPHOSATE_CURVE = [

@@ -266,8 +266,14 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
               </Typography>
               
               {samplingResults.map((result) => {
-                const pixel = result.pixels[0]; // Get the single pixel from coordinate sampling
+                const pixels = result.pixels || [];
                 const coordinate = result.centerPoint;
+                
+                // Calculate average RGB from all pixels
+                const averageR = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length : 0;
+                const averageG = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length : 0;
+                const averageB = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length : 0;
+                
                 return (
                   <Box key={result.pesticide} mb={2} sx={{ 
                     border: '1px solid #4fc3f7', 
@@ -286,7 +292,7 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
                         sx={{ backgroundColor: '#4fc3f7', color: 'white', fontSize: '0.7rem', height: '20px' }}
                       />
                       <Chip 
-                        label={`RGB: (${pixel?.r || 0}, ${pixel?.g || 0}, ${pixel?.b || 0})`}
+                        label={`Avg RGB: (${averageR.toFixed(1)}, ${averageG.toFixed(1)}, ${averageB.toFixed(1)})`}
                         size="small"
                         sx={{ backgroundColor: '#ff9800', color: 'white', fontSize: '0.7rem', height: '20px' }}
                       />
@@ -295,11 +301,40 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
                         size="small"
                         sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
                       />
+                      <Chip 
+                        label={`Pixels: ${result.validPixels}/5`}
+                        size="small"
+                        sx={{ backgroundColor: '#4caf50', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                      />
                     </Box>
                     
-                    <Typography variant="caption" sx={{ color: '#e0e0e0', fontSize: '0.7rem', display: 'block' }}>
-                      Direct pixel sampling at absolute coordinates
+                    <Typography variant="caption" sx={{ color: '#e0e0e0', fontSize: '0.7rem', display: 'block', mb: 0.5 }}>
+                      5-pixel sampling (center + 4 nearby) at absolute coordinates
                     </Typography>
+                    
+                    {/* Show individual pixel details */}
+                    {pixels.length > 0 && (
+                      <Box ml={1}>
+                        <Typography variant="caption" sx={{ color: '#e0e0e0', fontSize: '0.6rem', display: 'block', mb: 0.3 }}>
+                          Individual pixels:
+                        </Typography>
+                        {pixels.slice(0, 3).map((pixel, pixelIndex) => (
+                          <Typography key={pixelIndex} variant="caption" sx={{ 
+                            color: pixelIndex === 0 ? '#4fc3f7' : '#e0e0e0',
+                            fontSize: '0.6rem',
+                            display: 'block',
+                            lineHeight: 1.2
+                          }}>
+                            {pixelIndex === 0 ? '🏆 ' : '  '}RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(1)}
+                          </Typography>
+                        ))}
+                        {pixels.length > 3 && (
+                          <Typography variant="caption" sx={{ color: '#e0e0e0', fontSize: '0.6rem', display: 'block' }}>
+                            ... and {pixels.length - 3} more
+                          </Typography>
+                        )}
+                      </Box>
+                    )}
                   </Box>
                 );
               })}
