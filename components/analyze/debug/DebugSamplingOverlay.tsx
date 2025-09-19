@@ -1,28 +1,45 @@
-import React from 'react';
-import { Box, Typography, Paper, Chip, Switch, FormControlLabel } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Paper, Chip, Switch, FormControlLabel, IconButton, Collapse } from '@mui/material';
+import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import type { SamplingResult } from '../../../utils/imageProcessing/pixelSampling';
 
 interface DebugSamplingOverlayProps {
   samplingResults: SamplingResult[];
+  manualClickResult: SamplingResult | null;
   showDebug: boolean;
+  isPixelPickerMode: boolean;
   onToggleDebug: (show: boolean) => void;
+  onTogglePixelPicker: (enabled: boolean) => void;
   imageWidth: number;
   imageHeight: number;
 }
 
 export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
   samplingResults,
+  manualClickResult,
   showDebug,
+  isPixelPickerMode,
   onToggleDebug,
+  onTogglePixelPicker,
   imageWidth,
   imageHeight
 }) => {
+  const [isPanelExpanded, setIsPanelExpanded] = useState(true);
   console.log('Debug: DebugSamplingOverlay render', { showDebug, samplingResults: samplingResults.length, imageWidth, imageHeight });
 
   return (
     <>
-      {/* Debug Toggle - Always visible */}
-      <Box position="absolute" top={10} right={10} zIndex={1000}>
+      {/* Debug Controls - Always visible */}
+      <Box 
+        position="absolute" 
+        top={10} 
+        right={10} 
+        zIndex={1000} 
+        display="flex" 
+        flexDirection="column" 
+        gap={1}
+        sx={{ pointerEvents: 'auto' }}
+      >
         <FormControlLabel
           control={
             <Switch
@@ -34,7 +51,55 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
           label="Debug"
           sx={{ color: 'white', '& .MuiFormControlLabel-label': { fontSize: '0.8rem' } }}
         />
+        {showDebug && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={isPixelPickerMode}
+                onChange={(e) => onTogglePixelPicker(e.target.checked)}
+                size="small"
+                color="secondary"
+              />
+            }
+            label="Pixel Picker"
+            sx={{ color: 'white', '& .MuiFormControlLabel-label': { fontSize: '0.8rem' } }}
+          />
+        )}
       </Box>
+
+      {/* Manual Click Overlay - Show clicked area */}
+      {showDebug && isPixelPickerMode && manualClickResult && (
+        <Box
+          position="absolute"
+          left={manualClickResult.samplingArea.x * imageWidth}
+          top={manualClickResult.samplingArea.y * imageHeight}
+          width={manualClickResult.samplingArea.width * imageWidth}
+          height={manualClickResult.samplingArea.height * imageHeight}
+          border="3px solid #ff6b6b"
+          sx={{ 
+            backgroundColor: 'rgba(255, 107, 107, 0.2)',
+            pointerEvents: 'none'
+          }}
+          zIndex={2}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Typography
+            variant="caption"
+            sx={{
+              color: '#ff6b6b',
+              fontWeight: 'bold',
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '0.8rem'
+            }}
+          >
+            🎯 Manual Click ({manualClickResult.validPixels} pixels)
+          </Typography>
+        </Box>
+      )}
 
       {/* Sampling Area Overlays - Only show when debug is enabled */}
       {showDebug && samplingResults.map((result) => {
@@ -51,33 +116,45 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
         const textColor = result.validPixels > 0 ? '#4fc3f7' : '#ff6b6b';
 
         return (
-          <Box
-            key={result.pesticide}
-            position="absolute"
-            left={overlayX}
-            top={overlayY}
-            width={overlayWidth}
-            height={overlayHeight}
-            border={`2px solid ${borderColor}`}
-            sx={{ backgroundColor }}
-            zIndex={999}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Typography
-              variant="caption"
-              sx={{
-                color: textColor,
-                fontWeight: 'bold',
-                backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                padding: '2px 4px',
-                borderRadius: '2px',
-                fontSize: '0.7rem'
+          <Box key={result.pesticide}>
+            {/* ROI Border */}
+            <Box
+              position="absolute"
+              left={overlayX}
+              top={overlayY}
+              width={overlayWidth}
+              height={overlayHeight}
+              border={`1px solid ${borderColor}`}
+              sx={{ 
+                backgroundColor: 'transparent',
+                pointerEvents: 'none'
               }}
+              zIndex={2}
+            />
+            
+            {/* Label positioned outside the ROI */}
+            <Box
+              position="absolute"
+              left={overlayX + overlayWidth + 5}
+              top={overlayY}
+              zIndex={2}
+              sx={{ pointerEvents: 'none' }}
             >
-              {result.pesticide} {result.validPixels === 0 ? '⚠️' : `(${result.validPixels})`}
-            </Typography>
+              <Typography
+                variant="caption"
+                sx={{
+                  color: textColor,
+                  fontWeight: 'bold',
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  padding: '1px 3px',
+                  borderRadius: '2px',
+                  fontSize: '0.6rem',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {result.pesticide} {result.validPixels === 0 ? '⚠️' : `(${result.validPixels})`}
+              </Typography>
+            </Box>
           </Box>
         );
       })}
@@ -86,112 +163,173 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
       {showDebug && (
       <Box
         position="absolute"
-        bottom={10}
-        left={10}
+        top={80}
         right={10}
-        maxHeight="40vh"
+        width="350px"
+        maxHeight="70vh"
         overflow="auto"
         zIndex={1000}
+        sx={{ pointerEvents: 'auto' }}
       >
         <Paper
           elevation={8}
           sx={{
             backgroundColor: 'rgba(0, 0, 0, 0.9)',
             color: 'white',
-            padding: 2,
+            padding: 1.5,
             maxHeight: '100%',
-            overflow: 'auto'
+            overflow: 'auto',
+            fontSize: '0.8rem'
           }}
         >
-          <Typography variant="h6" gutterBottom sx={{ color: '#4fc3f7' }}>
-            Debug: Priority-Based Sampling (Brightness + Color Bonus)
-          </Typography>
+          {/* Panel Header with Collapse Button */}
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={1}>
+            <Typography variant="subtitle1" sx={{ color: '#4fc3f7', fontSize: '1rem' }}>
+              Debug Panel
+            </Typography>
+            <IconButton
+              size="small"
+              onClick={() => setIsPanelExpanded(!isPanelExpanded)}
+              sx={{ color: 'white', padding: '2px' }}
+            >
+              {isPanelExpanded ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
+          </Box>
           
+          <Collapse in={isPanelExpanded}>
+          {isPixelPickerMode && (
+            <Typography variant="caption" sx={{ color: '#ff6b6b', mb: 1, fontWeight: 'bold', display: 'block' }}>
+              🎯 Click on image to analyze pixels
+            </Typography>
+          )}
+          
+          {/* Manual Click Result */}
+          {manualClickResult && (
+            <Box key="manual-click" mb={3}>
+              <Typography variant="subtitle1" sx={{ color: '#ff6b6b', fontWeight: 'bold' }}>
+                🎯 Manual Click Result
+              </Typography>
+              
+              <Box display="flex" gap={0.5} mb={1} flexWrap="wrap">
+                <Chip 
+                  label={`Click: (${manualClickResult.centerPoint.x.toFixed(2)}, ${manualClickResult.centerPoint.y.toFixed(2)})`}
+                  size="small"
+                  sx={{ backgroundColor: '#ff6b6b', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                />
+                <Chip 
+                  label={`Bright: ${manualClickResult.averageBrightness.toFixed(0)}`}
+                  size="small"
+                  sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                />
+                <Chip 
+                  label={`Pixels: ${manualClickResult.validPixels}`}
+                  size="small"
+                  sx={{ backgroundColor: '#4caf50', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                />
+              </Box>
+
+              <Box ml={1}>
+                {manualClickResult.pixels.length > 0 ? (
+                  manualClickResult.pixels.slice(0, 5).map((pixel, pixelIndex) => {
+                    // Use pre-calculated brightness instead of recalculating
+                    const colorBonus = (pixel.g * 0.3) + (pixel.b * 0.2);
+                    const priority = pixel.brightness + colorBonus;
+                    const isTopPixel = pixelIndex === 0;
+                    return (
+                      <Box key={pixelIndex} mb={0.3}>
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: isTopPixel ? '#ff6b6b' : '#e0e0e0',
+                            fontWeight: isTopPixel ? 'bold' : 'normal',
+                            fontSize: '0.7rem',
+                            lineHeight: 1.2
+                          }}
+                        >
+                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(0)}
+                        </Typography>
+                      </Box>
+                    );
+                  })
+                ) : (
+                  <Typography variant="caption" sx={{ color: '#ff6b6b', fontSize: '0.7rem' }}>
+                    No valid pixels found
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          )}
+
+          {/* Automatic Sampling Results */}
           {samplingResults.map((result) => (
             <Box key={result.pesticide} mb={2}>
               <Typography variant="subtitle1" sx={{ color: '#81c784', fontWeight: 'bold' }}>
                 {result.pesticide}
               </Typography>
               
-              <Box display="flex" gap={1} mb={1} flexWrap="wrap">
+              <Box display="flex" gap={0.5} mb={1} flexWrap="wrap">
                 <Chip 
-                  label={`Center: (${result.centerPoint.x.toFixed(3)}, ${result.centerPoint.y.toFixed(3)})`}
+                  label={`Bright: ${result.averageBrightness.toFixed(0)}`}
                   size="small"
-                  sx={{ backgroundColor: '#ff9800', color: 'white' }}
+                  sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
                 <Chip 
-                  label={`Avg Brightness: ${result.averageBrightness.toFixed(1)}`}
+                  label={`Pixels: ${result.validPixels}`}
                   size="small"
-                  sx={{ backgroundColor: '#9c27b0', color: 'white' }}
-                />
-                <Chip 
-                  label={`Valid: ${result.validPixels}/${result.totalPixels}`}
-                  size="small"
-                  sx={{ backgroundColor: '#4caf50', color: 'white' }}
-                />
-                <Chip 
-                  label={`Invalid Filtered: ${result.invalidPixelsFiltered}`}
-                  size="small"
-                  sx={{ backgroundColor: '#f44336', color: 'white' }}
+                  sx={{ backgroundColor: '#4caf50', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
                 <Chip 
                   label={`Method: ${result.samplingMethod}`}
                   size="small"
-                  sx={{ backgroundColor: '#2196f3', color: 'white' }}
+                  sx={{ backgroundColor: '#2196f3', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
                 {(result.pesticide === 'Acephate' || result.pesticide === 'Atrazine') && (
                   <Chip 
-                    label="Edge Pesticide"
+                    label="Edge"
                     size="small"
-                    sx={{ backgroundColor: '#ff5722', color: 'white' }}
+                    sx={{ backgroundColor: '#ff5722', color: 'white', fontSize: '0.7rem', height: '20px' }}
                   />
                 )}
               </Box>
 
-              <Box ml={2}>
-                <Typography variant="caption" sx={{ color: '#b0bec5', display: 'block', mb: 1 }}>
-                  Sampling Area: ({result.samplingArea.x.toFixed(3)}, {result.samplingArea.y.toFixed(3)}) 
-                  {result.samplingArea.width.toFixed(3)} × {result.samplingArea.height.toFixed(3)}
-                </Typography>
-                
+              <Box ml={1}>
                 {result.errorMessage && (
-                  <Typography variant="caption" sx={{ color: '#ff6b6b', display: 'block', mb: 1, fontWeight: 'bold' }}>
-                    ⚠️ Error: {result.errorMessage}
+                  <Typography variant="caption" sx={{ color: '#ff6b6b', display: 'block', mb: 1, fontWeight: 'bold', fontSize: '0.7rem' }}>
+                    ⚠️ {result.errorMessage}
                   </Typography>
                 )}
                 
                 {result.pixels.length > 0 ? (
-                  result.pixels.map((pixel, pixelIndex) => {
-                    // Calculate priority score for display using improved formula
-                    const brightness = (0.299 * pixel.r) + (0.587 * pixel.g) + (0.114 * pixel.b);
+                  result.pixels.slice(0, 3).map((pixel, pixelIndex) => {
+                    // Use pre-calculated brightness instead of recalculating
                     const colorBonus = (pixel.g * 0.3) + (pixel.b * 0.2);
-                    const priority = brightness + colorBonus;
+                    const priority = pixel.brightness + colorBonus;
                     const isTopPixel = pixelIndex === 0;
                     return (
-                      <Box key={pixelIndex} mb={0.5}>
+                      <Box key={pixelIndex} mb={0.3}>
                         <Typography 
                           variant="caption" 
                           sx={{ 
                             color: isTopPixel ? '#4fc3f7' : '#e0e0e0',
-                            fontWeight: isTopPixel ? 'bold' : 'normal'
+                            fontWeight: isTopPixel ? 'bold' : 'normal',
+                            fontSize: '0.7rem',
+                            lineHeight: 1.2
                           }}
                         >
-                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: ({pixel.x}, {pixel.y}) | 
-                          RGB({pixel.r}, {pixel.g}, {pixel.b}) | 
-                          Priority: {priority.toFixed(1)} | 
-                          Brightness: {pixel.brightness.toFixed(1)}
+                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(0)}
                         </Typography>
                       </Box>
                     );
                   })
                 ) : (
-                  <Typography variant="caption" sx={{ color: '#ff6b6b' }}>
+                  <Typography variant="caption" sx={{ color: '#ff6b6b', fontSize: '0.7rem' }}>
                     No valid pixels found
                   </Typography>
                 )}
               </Box>
             </Box>
           ))}
+          </Collapse>
         </Paper>
       </Box>
       )}

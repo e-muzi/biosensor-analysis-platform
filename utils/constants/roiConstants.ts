@@ -33,27 +33,27 @@ export const CALIBRATION_STRIPS: CalibrationStrip[] = [
   {
     name: PREDEFINED_PESTICIDES[0].name, // Acephate
     roi: { x: 0.04, y: 0.15, width: 0.06, height: 0.7 },
-    concentrations: [0, 25, 50, 75, 100] // µM concentrations (top to bottom)
+    concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
     name: PREDEFINED_PESTICIDES[1].name, // Glyphosate
     roi: { x: 0.12, y: 0.15, width: 0.06, height: 0.7 },
-    concentrations: [0, 50, 100, 150, 200] // µM concentrations (top to bottom)
+    concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
     name: PREDEFINED_PESTICIDES[2].name, // Mancozeb
     roi: { x: 0.78, y: 0.15, width: 0.06, height: 0.7 },
-    concentrations: [0, 30, 60, 90, 120] // µM concentrations (top to bottom)
+    concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
     name: PREDEFINED_PESTICIDES[3].name, // Cypermethrin
     roi: { x: 0.86, y: 0.15, width: 0.06, height: 0.7 },
-    concentrations: [0, 45, 90, 135, 180] // µM concentrations (top to bottom)
+    concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
     name: PREDEFINED_PESTICIDES[4].name, // Atrazine
     roi: { x: 0.94, y: 0.15, width: 0.06, height: 0.7 },
-    concentrations: [0, 25, 60, 125, 200] // µM concentrations (top to bottom)
+    concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   }
 ];
 

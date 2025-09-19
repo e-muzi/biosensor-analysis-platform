@@ -13,11 +13,12 @@ export const TestAreas = () => {
             top: `${roi.y * 100}%`,
             width: `${roi.width * 100}%`,
             height: `${roi.height * 100}%`,
-            border: "2px solid",
+            border: "1px solid",
             borderColor: "primary.main",
-            backgroundColor: "rgba(25, 118, 210, 0.1)",
+            backgroundColor: "transparent",
             pointerEvents: "none",
             borderRadius: 1,
+            zIndex: 1,
           }}
         />
       ))}

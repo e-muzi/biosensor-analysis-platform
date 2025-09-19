@@ -1,6 +1,11 @@
 export interface CalibrationPoint {
   concentration: number;
-  brightness: number;
+  rgb: {
+    r: number;
+    g: number;
+    b: number;
+  };
+  brightness?: number; // Optional for backward compatibility
 }
 
 export interface AnalysisResult {

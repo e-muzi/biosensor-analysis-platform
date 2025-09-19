@@ -1,7 +1,9 @@
 import { calculateBrightnessForRoi } from "../imageProcessing/colorUtils";
 import type { CalibrationStrip } from "../../types";
 
+
 // Calculate brightness for each segment of a vertical calibration strip
+// strip mode only
 export function calculateCalibrationStripBrightnesses(
   ctx: CanvasRenderingContext2D, 
   strip: CalibrationStrip

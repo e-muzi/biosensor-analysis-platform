@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Card, CardContent, TextField, Button, Grid, Alert } from "@mui/material";
+import { Container, Typography, Box, Card, CardContent, TextField, Button, Alert } from "@mui/material";
 import { useState } from "react";
 import { AppButton } from "../shared/AppButton";
 import { useCalibrationStore } from "../../state/calibrationStore";
@@ -115,7 +115,7 @@ export function CalibrationSettings() {
                         borderRadius: 1,
                         fontSize: "0.875rem"
                       }}>
-                        {point.concentration}µM → {point.brightness}
+                        {point.concentration} µM → RGB({point.rgb.r}, {point.rgb.g}, {point.rgb.b})
                       </Box>
                     ))}
                   </Box>

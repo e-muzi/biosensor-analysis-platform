@@ -23,16 +23,38 @@ export interface SamplingResult {
   errorMessage?: string;
 }
 
-// Enhanced pixel validation function - more lenient to capture all visible pixels
+// Enhanced pixel validation function - more sophisticated filtering
 function isValidPixel(r: number, g: number, b: number): boolean {
-  // Filter out pure black only
+  // Filter out pure black
   if (r === 0 && g === 0 && b === 0) return false;
   
-  // Filter out very dark pixels (likely noise or shadows)
-  // Use a more lenient threshold to avoid filtering out dim but valid pixels
-  const minThreshold = 5; // Reduced from 10/20 to 5
-  if (r < minThreshold && g < minThreshold && b < minThreshold) return false;
+  // Calculate brightness using standard luminance formula
+  const brightness = (0.299 * r) + (0.587 * g) + (0.114 * b);
   
+  // Filter out very dark pixels (likely noise or shadows)
+  if (brightness < 5) return false;
+  
+  // Filter out pixels that are too close to white (likely background)
+  if (brightness > 250 && r > 250 && g > 250 && b > 250) return false;
+  
+  // For biosensor detection, we want to capture colored pixels
+  // Check if there's sufficient color variation (not just grayscale)
+  const maxChannel = Math.max(r, g, b);
+  const minChannel = Math.min(r, g, b);
+  const colorRange = maxChannel - minChannel;
+  
+  // Include pixels with some color variation or sufficient brightness
+  if (colorRange > 10 || brightness > 50) return true;
+  
+  return false;
+}
+
+// Ultra-lenient validation for manual clicking
+function isValidPixelForManualClick(r: number, g: number, b: number): boolean {
+  // Only filter out pure black pixels for manual clicking
+  if (r === 0 && g === 0 && b === 0) return false;
+  
+  // Accept any non-black pixel for manual analysis
   return true;
 }
 
@@ -45,7 +67,10 @@ function getPixelPriority(r: number, g: number, b: number): number {
   // Add color intensity bonus for green/blue channels
   const colorBonus = (g * 0.3) + (b * 0.2);
   
-  return brightness + colorBonus;
+  // Add extra bonus for green pixels (common in biosensors)
+  const greenBonus = g > r && g > b ? g * 0.1 : 0;
+  
+  return brightness + colorBonus + greenBonus;
 }
 
 // Helper function to create error result
@@ -128,9 +153,17 @@ export function sampleFivePixels(
 ): SamplingResult {
   const canvas = ctx.canvas;
   
-  // Convert percentage coordinates to pixel coordinates
-  const pixelCenterX = Math.floor(canvas.width * centerX);
-  const pixelCenterY = Math.floor(canvas.height * centerY);
+  // Validate canvas context and dimensions
+  if (!canvas || canvas.width === 0 || canvas.height === 0) {
+    console.error(`Debug: Invalid canvas for ${pesticideName} - width: ${canvas?.width}, height: ${canvas?.height}`);
+    return createErrorResult(pesticideName, centerX, centerY, "Invalid canvas dimensions");
+  }
+  
+  console.log(`Debug: Canvas dimensions for ${pesticideName}: ${canvas.width}x${canvas.height}`);
+  
+  // Convert percentage coordinates to pixel coordinates with better precision
+  const pixelCenterX = Math.round(canvas.width * centerX);
+  const pixelCenterY = Math.round(canvas.height * centerY);
   
   console.log(`Debug: Spiral sampling ${pesticideName} at center (${centerX}, ${centerY}) -> pixel (${pixelCenterX}, ${pixelCenterY})`);
   
@@ -226,6 +259,12 @@ export function sampleFivePixels(
               const r = data[dataIndex];
               const g = data[dataIndex + 1];
               const b = data[dataIndex + 2];
+              const alpha = data[dataIndex + 3];
+              
+              // Enhanced debug logging for first few pixels
+              if (allValidPixels.length < 3) {
+                console.log(`Debug: ${pesticideName} pixel at (${x}, ${y}): RGBA(${r}, ${g}, ${b}, ${alpha})`);
+              }
               
             // Validate pixel
             if (isValidPixel(r, g, b)) {
@@ -381,9 +420,9 @@ export function detectAndAdjustROI(
 ): { x: number; y: number; adjusted: boolean } {
   const canvas = ctx.canvas;
   
-  // Convert percentage coordinates to pixel coordinates
-  const pixelCenterX = Math.floor(canvas.width * originalCenterX);
-  const pixelCenterY = Math.floor(canvas.height * originalCenterY);
+  // Convert percentage coordinates to pixel coordinates with better precision
+  const pixelCenterX = Math.round(canvas.width * originalCenterX);
+  const pixelCenterY = Math.round(canvas.height * originalCenterY);
   
   // Define search area around the original center (20x20 pixels)
   const searchRadius = 10;
@@ -497,8 +536,8 @@ function sampleEdgePesticide(
       const g = data[dataIndex + 1];
       const b = data[dataIndex + 2];
       
-      // Very lenient validation for edge pesticides
-      if (r > 0 || g > 0 || b > 0) { // Only exclude pure black
+      // Ultra-lenient validation for edge pesticides - only exclude pure black
+      if (isValidPixelForManualClick(r, g, b)) {
         const brightness = rgbToHsv_V(r, g, b);
         const priority = getPixelPriority(r, g, b);
         
@@ -551,6 +590,120 @@ function sampleEdgePesticide(
     averageBrightness,
     validPixels: validPixelsCount,
     totalPixels: roiWidth * roiHeight,
+    invalidPixelsFiltered,
+    samplingMethod: 'expanded_spiral'
+  };
+}
+
+// Manual pixel sampling at clicked coordinates
+export function samplePixelsAtClick(
+  ctx: CanvasRenderingContext2D,
+  clickX: number,
+  clickY: number,
+  canvasWidth: number,
+  canvasHeight: number,
+  sampleRadius: number = 10
+): SamplingResult {
+  const canvas = ctx.canvas;
+  
+  // Convert display coordinates to natural image coordinates with better precision
+  const naturalX = Math.round((clickX / canvasWidth) * canvas.width);
+  const naturalY = Math.round((clickY / canvasHeight) * canvas.height);
+  
+  console.log(`Debug: Manual pixel sampling at click (${clickX}, ${clickY}) -> natural (${naturalX}, ${naturalY})`);
+  
+  // Debug: Sample the exact click point first
+  if (naturalX >= 0 && naturalX < canvas.width && naturalY >= 0 && naturalY < canvas.height) {
+    const clickImageData = ctx.getImageData(naturalX, naturalY, 1, 1);
+    const clickData = clickImageData.data;
+    const clickR = clickData[0];
+    const clickG = clickData[1];
+    const clickB = clickData[2];
+    const clickBrightness = rgbToHsv_V(clickR, clickG, clickB);
+    console.log(`Debug: Click point RGB(${clickR}, ${clickG}, ${clickB}) brightness: ${clickBrightness.toFixed(1)}`);
+  }
+  
+  // Define sampling area around clicked point
+  const startX = Math.max(0, naturalX - sampleRadius);
+  const endX = Math.min(canvas.width, naturalX + sampleRadius);
+  const startY = Math.max(0, naturalY - sampleRadius);
+  const endY = Math.min(canvas.height, naturalY + sampleRadius);
+  
+  const areaWidth = endX - startX;
+  const areaHeight = endY - startY;
+  
+  if (areaWidth <= 0 || areaHeight <= 0) {
+    return createErrorResult('Manual Click', clickX / canvasWidth, clickY / canvasHeight, "Invalid sampling area");
+  }
+  
+  const imageData = ctx.getImageData(startX, startY, areaWidth, areaHeight);
+  const data = imageData.data;
+  
+  const validPixels: Array<PixelData & { priority: number }> = [];
+  let invalidPixelsFiltered = 0;
+  
+  // Sample pixels in the area
+  for (let y = 0; y < areaHeight; y++) {
+    for (let x = 0; x < areaWidth; x++) {
+      const dataIndex = (y * areaWidth + x) * 4;
+      const r = data[dataIndex];
+      const g = data[dataIndex + 1];
+      const b = data[dataIndex + 2];
+      
+      // Ultra-lenient validation for manual sampling - only exclude pure black
+      if (isValidPixelForManualClick(r, g, b)) {
+        const brightness = rgbToHsv_V(r, g, b);
+        const priority = getPixelPriority(r, g, b);
+        
+        const pixelData: PixelData & { priority: number } = {
+          x: startX + x,
+          y: startY + y,
+          r,
+          g,
+          b,
+          brightness,
+          priority
+        };
+        
+        validPixels.push(pixelData);
+      } else {
+        invalidPixelsFiltered++;
+      }
+    }
+  }
+  
+  // Sort by priority and take top pixels
+  validPixels.sort((a, b) => b.priority - a.priority);
+  const selectedPixels = validPixels.slice(0, Math.min(25, validPixels.length));
+  
+  const pixels: PixelData[] = selectedPixels.map(p => ({
+    x: p.x,
+    y: p.y,
+    r: p.r,
+    g: p.g,
+    b: p.b,
+    brightness: p.brightness
+  }));
+  
+  const validPixelsCount = pixels.length;
+  const totalBrightness = pixels.reduce((sum, p) => sum + p.brightness, 0);
+  const averageBrightness = validPixelsCount > 0 ? totalBrightness / validPixelsCount : 0;
+  
+  console.log(`Debug: Manual sampling complete - ${validPixelsCount} pixels, avg brightness: ${averageBrightness.toFixed(1)}`);
+  
+  return {
+    pesticide: 'Manual Click',
+    centerPoint: { x: clickX / canvasWidth, y: clickY / canvasHeight },
+    samplingArea: {
+      x: startX / canvas.width,
+      y: startY / canvas.height,
+      width: areaWidth / canvas.width,
+      height: areaHeight / canvas.height
+    },
+    pixels,
+    averageBrightness,
+    validPixels: validPixelsCount,
+    totalPixels: areaWidth * areaHeight,
     invalidPixelsFiltered,
     samplingMethod: 'expanded_spiral'
   };

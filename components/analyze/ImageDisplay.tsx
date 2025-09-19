@@ -14,7 +14,17 @@ interface ImageDisplayProps {
 export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
   ({ imageSrc, showROIs = true }, ref) => {
     const { detectionMode } = useModeStore();
-    const { showDebug, samplingResults, toggleDebug, performSampling, clearSamplingResults } = useDebugSampling();
+    const { 
+      showDebug, 
+      samplingResults, 
+      manualClickResult,
+      isPixelPickerMode,
+      toggleDebug, 
+      togglePixelPickerMode,
+      performSampling, 
+      handleImageClick,
+      clearSamplingResults 
+    } = useDebugSampling();
     const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
 
     // Perform sampling when image loads and debug is enabled
@@ -71,6 +81,29 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
       }
     };
 
+    // Handle image click for pixel picking
+    const handleImageClickEvent = (e: React.MouseEvent<HTMLImageElement>) => {
+      if (!isPixelPickerMode || !imageSrc) return;
+      
+      const img = e.currentTarget;
+      const rect = img.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+      
+      console.log('Debug: Image clicked at', clickX, clickY, 'image dimensions:', img.width, img.height);
+      
+      // Create canvas to get context for sampling
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      
+      if (ctx) {
+        ctx.drawImage(img, 0, 0);
+        handleImageClick(ctx, clickX, clickY, img.width, img.height);
+      }
+    };
+
     return (
       <Box
         sx={{
@@ -98,10 +131,15 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
               src={imageSrc}
               alt="Sample"
               onLoad={handleImageLoad}
+              onClick={handleImageClickEvent}
               sx={{
                 width: "100%",
                 height: "100%",
-                objectFit: "contain"
+                objectFit: "contain",
+                cursor: isPixelPickerMode ? 'crosshair' : 'default',
+                position: "relative",
+                zIndex: 0,
+                pointerEvents: "auto"
               }}
             />
             {showROIs && (
@@ -112,8 +150,11 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
             )}
             <DebugSamplingOverlay
               samplingResults={samplingResults}
+              manualClickResult={manualClickResult}
               showDebug={showDebug}
+              isPixelPickerMode={isPixelPickerMode}
               onToggleDebug={toggleDebug}
+              onTogglePixelPicker={togglePixelPickerMode}
               imageWidth={imageDimensions.width}
               imageHeight={imageDimensions.height}
             />

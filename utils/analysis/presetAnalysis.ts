@@ -1,5 +1,5 @@
-import { calculateBrightnessForRoi } from "../imageProcessing/colorUtils";
-import { estimateConcentrationFromCalibration } from "./calibrationAnalysis";
+import { calculateBrightnessForRoi, calculateAverageRGBForRoi, rgbToHsv_V } from "../imageProcessing/colorUtils";
+import { estimateConcentrationFromCalibration, estimateConcentrationFromRGB } from "./calibrationAnalysis";
 import { PESTICIDE_ROIS } from "../constants/roiConstants";
 import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
 import type { CalibrationResult } from "../../types";
@@ -29,24 +29,28 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
           return;
         }
 
-        // Calculate test area brightness
-        const testBrightness = calculateBrightnessForRoi(ctx, pesticideROI.roi);
+        // Calculate test area RGB values
+        const testRGB = calculateAverageRGBForRoi(ctx, pesticideROI.roi);
+        const testBrightness = rgbToHsv_V(testRGB.r, testRGB.g, testRGB.b);
         
-        // Extract concentrations and brightnesses from the preset curve
-        const concentrations = pesticide.curve.map(point => point.concentration);
-        const calibrationBrightnesses = pesticide.curve.map(point => point.brightness);
+        // Debug logging
+        console.log(`Debug: ${pesticideROI.name} - Test RGB: (${testRGB.r}, ${testRGB.g}, ${testRGB.b}), Brightness: ${testBrightness.toFixed(1)}`);
+        console.log(`Debug: ${pesticideROI.name} - ROI: x=${pesticideROI.roi.x.toFixed(3)}, y=${pesticideROI.roi.y.toFixed(3)}, w=${pesticideROI.roi.width.toFixed(3)}, h=${pesticideROI.roi.height.toFixed(3)}`);
         
-        // Estimate concentration using the preset curve
-        const { concentration, confidence } = estimateConcentrationFromCalibration(
-          testBrightness, 
-          calibrationBrightnesses, 
-          concentrations
+        // Use RGB comparison for concentration estimation
+        const { concentration, confidence } = estimateConcentrationFromRGB(
+          testRGB,
+          pesticide.curve
         );
+        
+        console.log(`Debug: ${pesticideROI.name} - Estimated concentration: ${concentration.toFixed(3)} µM, Confidence: ${confidence}`);
         
         results.push({
           pesticide: pesticideROI.name,
           testBrightness,
-          calibrationBrightnesses,
+          calibrationBrightnesses: pesticide.curve.map(point => 
+            point.brightness || rgbToHsv_V(point.rgb.r, point.rgb.g, point.rgb.b)
+          ),
           estimatedConcentration: concentration,
           confidence
         });

@@ -56,7 +56,7 @@ export function ResultCard({ result }: ResultCardProps) {
         </Box>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Concentration: {result.estimatedConcentration.toFixed(3)} ppm
+          Concentration: {result.estimatedConcentration.toFixed(3)} µM
         </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>

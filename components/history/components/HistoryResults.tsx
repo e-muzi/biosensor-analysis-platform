@@ -49,7 +49,7 @@ export function HistoryResults({ results }: HistoryResultsProps) {
                   />
                 </Box>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                  Concentration: {result.concentration.toFixed(3)} ppm
+                  Concentration: {result.concentration.toFixed(3)} µM
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Brightness: {result.brightness.toFixed(2)}

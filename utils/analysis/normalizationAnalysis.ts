@@ -1,5 +1,6 @@
 import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
 
+// Not used 
 // Defines a Region of Interest as a rectangle { x, y, width, height } in percentage
 export interface ROI {
   x: number;
