@@ -20,14 +20,20 @@ export async function analyzeImage(
   image: HTMLImageElement, 
   mode: DetectionMode
 ): Promise<{ calibrationResults?: CalibrationResult[]; analysisResults: AnalysisResult[] }> {
+  console.log(`Debug: UNIFIED ANALYSIS - Starting analysis with mode: ${mode}, image: ${image.naturalWidth}x${image.naturalHeight}`);
+  
   if (mode === 'strip') {
+    console.log('Debug: UNIFIED ANALYSIS - Using strip mode (analyzeWithCalibrationStrips)');
     const calibrationResults = await analyzeWithCalibrationStrips(image);
     const analysisResults = convertCalibrationToAnalysis(calibrationResults);
+    console.log('Debug: UNIFIED ANALYSIS - Strip mode results:', calibrationResults.map(r => `${r.pesticide}: ${r.testBrightness.toFixed(2)}`));
     return { calibrationResults, analysisResults };
   } else {
+    console.log('Debug: UNIFIED ANALYSIS - Using preset mode (analyzeWithPresetCurves)');
     // Preset mode - use predefined curves
     const presetResults = await analyzeWithPresetCurves(image);
     const analysisResults = convertCalibrationToAnalysis(presetResults);
+    console.log('Debug: UNIFIED ANALYSIS - Preset mode results:', presetResults.map(r => `${r.pesticide}: ${r.testBrightness.toFixed(2)}`));
     return { calibrationResults: presetResults, analysisResults };
   }
 }

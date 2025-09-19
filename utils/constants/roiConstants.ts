@@ -75,3 +75,12 @@ export const PESTICIDE_CENTER_POINTS: PesticideROI[] = [
   { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.63, y: 0.39, width: 0, height: 0 } }, // Cypermethrin center
   { name: PREDEFINED_PESTICIDES[4].name, roi: { x: 0.76, y: 0.39, width: 0, height: 0 } }, // Atrazine center
 ];
+
+// NEW: Specific pixel coordinates for direct sampling
+export const PESTICIDE_COORDINATES = [
+  { name: PREDEFINED_PESTICIDES[0].name, x: 208, y: 621 }, // Acephate
+  { name: PREDEFINED_PESTICIDES[1].name, x: 406, y: 621 }, // Glyphosate
+  { name: PREDEFINED_PESTICIDES[2].name, x: 602, y: 621 }, // Mancozeb
+  { name: PREDEFINED_PESTICIDES[3].name, x: 803, y: 627 }, // Cypermethrin
+  { name: PREDEFINED_PESTICIDES[4].name, x: 1008, y: 621 }, // Atrazine
+];

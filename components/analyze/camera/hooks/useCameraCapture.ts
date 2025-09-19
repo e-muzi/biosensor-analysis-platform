@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { useCameraStream } from "./useCameraStream";
 import { useImageCapture } from "./useImageCapture";
-import { useTestKitDetection } from "./useTestKitDetection";
 
 // Camera Capture
 export function useCameraCapture(
@@ -22,12 +21,10 @@ export function useCameraCapture(
     captureImage
   } = useImageCapture();
 
-  const { autoDetectTestKit } = useTestKitDetection(
-    { current: null }, // imageRef - not used in camera capture
-    { current: null }, // canvasRef - not used in camera capture
-    () => {}, // setCropBounds - not used in camera capture
-    () => {} // setIsAutoDetecting - not used in camera capture
-  );
+  // Simple placeholder function for compatibility
+  const autoDetectTestKit = useCallback(() => {
+    console.log("Auto-detection disabled - using manual alignment instead");
+  }, []);
 
   const handleCapturePhoto = useCallback(async () => {
     if (!videoRef.current) return;

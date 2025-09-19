@@ -25,7 +25,6 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
   imageHeight
 }) => {
   const [isPanelExpanded, setIsPanelExpanded] = useState(true);
-  console.log('Debug: DebugSamplingOverlay render', { showDebug, samplingResults: samplingResults.length, imageWidth, imageHeight });
 
   return (
     <>
@@ -108,7 +107,6 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
         const overlayWidth = result.samplingArea.width * imageWidth;
         const overlayHeight = result.samplingArea.height * imageHeight;
         
-        console.log('Debug: Rendering overlay for', result.pesticide, { overlayX, overlayY, overlayWidth, overlayHeight });
 
         // Use different colors based on sampling success
         const borderColor = result.validPixels > 0 ? '#4fc3f7' : '#ff6b6b';
@@ -217,7 +215,7 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
                   sx={{ backgroundColor: '#ff6b6b', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
                 <Chip 
-                  label={`Bright: ${manualClickResult.averageBrightness.toFixed(0)}`}
+                  label={`Bright: ${manualClickResult.averageBrightness.toFixed(2)}`}
                   size="small"
                   sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
@@ -246,7 +244,7 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
                             lineHeight: 1.2
                           }}
                         >
-                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(0)}
+                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(2)}
                         </Typography>
                       </Box>
                     );
@@ -260,6 +258,54 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
             </Box>
           )}
 
+          {/* NEW: Coordinate-Based Detection Results */}
+          {samplingResults.length > 0 && (
+            <Box mb={3}>
+              <Typography variant="subtitle1" sx={{ color: '#4fc3f7', fontWeight: 'bold', mb: 1 }}>
+                🎯 Coordinate-Based Detection Results
+              </Typography>
+              
+              {samplingResults.map((result) => {
+                const pixel = result.pixels[0]; // Get the single pixel from coordinate sampling
+                const coordinate = result.centerPoint;
+                return (
+                  <Box key={result.pesticide} mb={2} sx={{ 
+                    border: '1px solid #4fc3f7', 
+                    borderRadius: 1, 
+                    p: 1, 
+                    backgroundColor: 'rgba(79, 195, 247, 0.1)' 
+                  }}>
+                    <Typography variant="subtitle2" sx={{ color: '#4fc3f7', fontWeight: 'bold', mb: 0.5 }}>
+                      {result.pesticide}
+                    </Typography>
+                    
+                    <Box display="flex" gap={0.5} mb={1} flexWrap="wrap">
+                      <Chip 
+                        label={`Coord: (${coordinate.x.toFixed(0)}, ${coordinate.y.toFixed(0)})`}
+                        size="small"
+                        sx={{ backgroundColor: '#4fc3f7', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                      />
+                      <Chip 
+                        label={`RGB: (${pixel?.r || 0}, ${pixel?.g || 0}, ${pixel?.b || 0})`}
+                        size="small"
+                        sx={{ backgroundColor: '#ff9800', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                      />
+                      <Chip 
+                        label={`Brightness: ${result.averageBrightness.toFixed(2)}`}
+                        size="small"
+                        sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
+                      />
+                    </Box>
+                    
+                    <Typography variant="caption" sx={{ color: '#e0e0e0', fontSize: '0.7rem', display: 'block' }}>
+                      Direct pixel sampling at absolute coordinates
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+          )}
+
           {/* Automatic Sampling Results */}
           {samplingResults.map((result) => (
             <Box key={result.pesticide} mb={2}>
@@ -269,7 +315,7 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
               
               <Box display="flex" gap={0.5} mb={1} flexWrap="wrap">
                 <Chip 
-                  label={`Bright: ${result.averageBrightness.toFixed(0)}`}
+                  label={`Bright: ${result.averageBrightness.toFixed(2)}`}
                   size="small"
                   sx={{ backgroundColor: '#9c27b0', color: 'white', fontSize: '0.7rem', height: '20px' }}
                 />
@@ -316,7 +362,7 @@ export const DebugSamplingOverlay: React.FC<DebugSamplingOverlayProps> = ({
                             lineHeight: 1.2
                           }}
                         >
-                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(0)}
+                          {isTopPixel ? '🏆 ' : ''}#{pixelIndex + 1}: RGB({pixel.r},{pixel.g},{pixel.b}) B:{pixel.brightness.toFixed(2)}
                         </Typography>
                       </Box>
                     );

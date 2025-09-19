@@ -36,6 +36,7 @@ export function useCaptureLogic(
   const handleAnalyze = useCallback(async () => {
     if (!imageSrc) return;
     
+    console.log(`Debug: CAPTURE LOGIC - Starting analysis with mode: ${detectionMode}, imageSrc: ${imageSrc.substring(0, 50)}...`);
     setIsAnalyzing(true);
     setError(null);
 
@@ -47,6 +48,7 @@ export function useCaptureLogic(
         img.onerror = reject;
       });
       
+      console.log(`Debug: CAPTURE LOGIC - Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
       const { calibrationResults, analysisResults } = await analyzeImage(img, detectionMode);
       
       // For backward compatibility, we still pass CalibrationResult[] to onAnalysisComplete

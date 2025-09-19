@@ -1,69 +1,12 @@
-// Calculate true brightness using luminance formula (weighted average)
-export function rgbToHsv_V(r: number, g: number, b: number): number {
-  // Use standard luminance formula: 0.299*R + 0.587*G + 0.114*B
-  // This gives a more accurate representation of perceived brightness
-  const brightness = (0.299 * r) + (0.587 * g) + (0.114 * b);
-  return Math.round(brightness);
+// Re-export brightness functions from the new brightness module
+export { rgbToHsv_V, calculateBrightnessForRoi } from './brightness';
+import { correctPremultipliedAlpha } from './pixelValidation';
+
+// Alternative: Maximum RGB value
+export function rgbToMax(r: number, g: number, b: number): number {
+  return Math.max(r, g, b);
 }
 
-// Alternative: HSV V component (maximum RGB value)
-export function rgbToHsv_V_Max(r: number, g: number, b: number): number {
-  r /= 255;
-  g /= 255;
-  b /= 255;
-  const max = Math.max(r, g, b);
-  return max * 255;
-}
-
-// Calculate brightness for a given region of interest
-export function calculateBrightnessForRoi(
-  ctx: CanvasRenderingContext2D, 
-  roi: { x: number; y: number; width: number; height: number }
-): number {
-  const canvas = ctx.canvas;
-  const roiX = Math.floor(canvas.width * roi.x);
-  const roiY = Math.floor(canvas.height * roi.y);
-  const roiWidth = Math.floor(canvas.width * roi.width);
-  const roiHeight = Math.floor(canvas.height * roi.height);
-  
-  if (roiWidth <= 0 || roiHeight <= 0) return 0;
-
-  const imageData = ctx.getImageData(roiX, roiY, roiWidth, roiHeight);
-  const data = imageData.data;
-  
-  let totalBrightness = 0;
-  let validPixelCount = 0;
-
-  // Filter out black/very dark pixels and focus on colored areas
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    
-    const brightness = rgbToHsv_V(r, g, b);
-    
-    // Only include pixels that are not pure black and have some color
-    if (brightness > 10 && (r > 5 || g > 5 || b > 5)) {
-      totalBrightness += brightness;
-      validPixelCount++;
-    }
-  }
-  
-  // If no valid pixels found, fall back to including all pixels
-  if (validPixelCount === 0) {
-    for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      
-      const brightness = rgbToHsv_V(r, g, b);
-      totalBrightness += brightness;
-      validPixelCount++;
-    }
-  }
-  
-  return totalBrightness / validPixelCount;
-}
 
 // Calculate average RGB values for a given region of interest
 export function calculateAverageRGBForRoi(
@@ -88,11 +31,15 @@ export function calculateAverageRGBForRoi(
 
   // Filter out black/very dark pixels and focus on colored areas
   for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
+    const rRaw = data[i];
+    const gRaw = data[i + 1];
+    const bRaw = data[i + 2];
+    const a = data[i + 3];
     
-    // Calculate brightness
+    // Apply alpha correction if needed
+    const { r, g, b } = correctPremultipliedAlpha(rRaw, gRaw, bRaw, a);
+    
+    // Calculate brightness using luminance formula
     const brightness = (0.299 * r) + (0.587 * g) + (0.114 * b);
     
     // Only include pixels that are not pure black and have some color
@@ -109,9 +56,13 @@ export function calculateAverageRGBForRoi(
   if (validPixelCount === 0) {
     console.log(`Debug: No valid colored pixels found, falling back to all pixels`);
     for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
+      const rRaw = data[i];
+      const gRaw = data[i + 1];
+      const bRaw = data[i + 2];
+      const a = data[i + 3];
+      
+      // Apply alpha correction if needed
+      const { r, g, b } = correctPremultipliedAlpha(rRaw, gRaw, bRaw, a);
       
       totalR += r;
       totalG += g;

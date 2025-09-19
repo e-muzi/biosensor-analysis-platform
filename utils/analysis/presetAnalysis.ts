@@ -1,7 +1,8 @@
-import { calculateBrightnessForRoi, calculateAverageRGBForRoi, rgbToHsv_V } from "../imageProcessing/colorUtils";
-import { estimateConcentrationFromCalibration, estimateConcentrationFromRGB } from "./calibrationAnalysis";
-import { PESTICIDE_ROIS } from "../constants/roiConstants";
+import { rgbToHsv_V } from "../imageProcessing/colorUtils";
+import { estimateConcentrationFromRGB } from "./calibrationAnalysis";
+import { PESTICIDE_COORDINATES } from "../constants/roiConstants";
 import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
+import { samplePesticidesAtCoordinates } from "../imageProcessing/pixelSampling";
 import type { CalibrationResult } from "../../types";
 
 // Analyze image using preset calibration curves
@@ -21,21 +22,28 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
 
       const results: CalibrationResult[] = [];
 
-      PESTICIDE_ROIS.forEach((pesticideROI) => {
+      // NEW: Use coordinate-based sampling instead of ROI-based
+      const samplingResults = samplePesticidesAtCoordinates(ctx, PESTICIDE_COORDINATES);
+
+      PESTICIDE_COORDINATES.forEach((coordinate, index) => {
         // Find the corresponding pesticide curve
-        const pesticide = PREDEFINED_PESTICIDES.find(p => p.name === pesticideROI.name);
+        const pesticide = PREDEFINED_PESTICIDES.find(p => p.name === coordinate.name);
         if (!pesticide) {
-          console.warn(`No preset curve found for pesticide: ${pesticideROI.name}`);
+          console.warn(`No preset curve found for pesticide: ${coordinate.name}`);
           return;
         }
 
-        // Calculate test area RGB values
-        const testRGB = calculateAverageRGBForRoi(ctx, pesticideROI.roi);
-        const testBrightness = rgbToHsv_V(testRGB.r, testRGB.g, testRGB.b);
+        // Get RGB and brightness from coordinate sampling
+        const samplingResult = samplingResults[index];
+        const testBrightness = samplingResult?.averageBrightness || 0;
+        
+        // Get RGB values from the sampled pixel
+        const pixel = samplingResult?.pixels?.[0];
+        const testRGB = pixel ? { r: pixel.r, g: pixel.g, b: pixel.b } : { r: 0, g: 0, b: 0 };
         
         // Debug logging
-        console.log(`Debug: ${pesticideROI.name} - Test RGB: (${testRGB.r}, ${testRGB.g}, ${testRGB.b}), Brightness: ${testBrightness.toFixed(1)}`);
-        console.log(`Debug: ${pesticideROI.name} - ROI: x=${pesticideROI.roi.x.toFixed(3)}, y=${pesticideROI.roi.y.toFixed(3)}, w=${pesticideROI.roi.width.toFixed(3)}, h=${pesticideROI.roi.height.toFixed(3)}`);
+        console.log(`Debug: ${coordinate.name} - Coordinate: (${coordinate.x}, ${coordinate.y})`);
+        console.log(`Debug: ${coordinate.name} - Test RGB: (${testRGB.r}, ${testRGB.g}, ${testRGB.b}), Brightness: ${testBrightness.toFixed(1)}`);
         
         // Use RGB comparison for concentration estimation
         const { concentration, confidence } = estimateConcentrationFromRGB(
@@ -43,10 +51,10 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
           pesticide.curve
         );
         
-        console.log(`Debug: ${pesticideROI.name} - Estimated concentration: ${concentration.toFixed(3)} µM, Confidence: ${confidence}`);
+        console.log(`Debug: ${coordinate.name} - Estimated concentration: ${concentration.toFixed(3)} µM, Confidence: ${confidence}`);
         
         results.push({
-          pesticide: pesticideROI.name,
+          pesticide: coordinate.name,
           testBrightness,
           calibrationBrightnesses: pesticide.curve.map(point => 
             point.brightness || rgbToHsv_V(point.rgb.r, point.rgb.g, point.rgb.b)

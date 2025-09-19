@@ -18,14 +18,12 @@ export function ImageAlignment({
 
   const {
     canvasRef,
-    imageRef,
     imageDisplaySize,
     scale,
     rotation,
-    isDetecting,
-    detectedBounds,
-    handleAutoDetect,
-    handleConfirmCrop,
+    imageTransform,
+    isDragging,
+    handleConfirm,
     handleMouseDown,
     handleMouseMove,
     handleMouseUp,
@@ -52,10 +50,8 @@ export function ImageAlignment({
           imageDisplaySize={imageDisplaySize}
           scale={scale}
           rotation={rotation}
-          isDetecting={isDetecting}
-          detectedBounds={detectedBounds}
-          onAutoDetect={handleAutoDetect}
-          onConfirm={handleConfirmCrop}
+          imageTransform={imageTransform}
+          isDragging={isDragging}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -64,17 +60,34 @@ export function ImageAlignment({
           onTouchEnd={handleTouchEnd}
         />
 
-        <AlignmentControls
-          scale={scale}
-          rotation={rotation}
-          onZoomIn={() => {}}
-          onZoomOut={() => {}}
-          onRotateLeft={() => {}}
-          onRotateRight={() => {}}
-          onReset={() => {}}
-          colors={colors}
-          accentColor="#FFD700"
-        />
+        <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+          <AlignmentControls
+            scale={scale}
+            rotation={rotation}
+            onZoomIn={() => {}}
+            onZoomOut={() => {}}
+            onRotateLeft={() => {}}
+            onRotateRight={() => {}}
+            onReset={() => {}}
+            colors={colors}
+            accentColor="#FFD700"
+          />
+          <button
+            onClick={handleConfirm}
+            style={{
+              padding: "12px 24px",
+              backgroundColor: "#2196F3",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            Confirm Alignment
+          </button>
+        </Box>
       </Box>
     </Container>
   );

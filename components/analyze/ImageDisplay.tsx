@@ -29,28 +29,24 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
 
     // Perform sampling when image loads and debug is enabled
     useEffect(() => {
-      console.log('Debug: useEffect triggered', { imageSrc: !!imageSrc, showDebug, ref: !!ref, refCurrent: ref && 'current' in ref ? !!ref.current : false });
-      
       if (imageSrc && showDebug && ref && 'current' in ref && ref.current) {
         const img = ref.current as HTMLImageElement;
-        console.log('Debug: Image element found', { complete: img.complete, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight, width: img.width, height: img.height });
         
         if (img.complete && img.naturalWidth > 0) {
-          console.log('Debug: Performing sampling for image', img.naturalWidth, 'x', img.naturalHeight);
           // Create canvas to get context for sampling
           const canvas = document.createElement('canvas');
           canvas.width = img.naturalWidth;
           canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          const ctx = canvas.getContext('2d', { 
+            premultipliedAlpha: false,
+            willReadFrequently: true 
+          }) as CanvasRenderingContext2D;
           
           if (ctx) {
             ctx.drawImage(img, 0, 0);
-            const results = performSampling(ctx);
-            console.log('Debug: Sampling results', results);
+            performSampling(ctx);
             setImageDimensions({ width: img.width, height: img.height });
           }
-        } else {
-          console.log('Debug: Image not ready for sampling', { complete: img.complete, naturalWidth: img.naturalWidth });
         }
       } else if (!showDebug) {
         clearSamplingResults();
@@ -70,7 +66,10 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
           const canvas = document.createElement('canvas');
           canvas.width = img.naturalWidth;
           canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          const ctx = canvas.getContext('2d', { 
+            premultipliedAlpha: false,
+            willReadFrequently: true 
+          }) as CanvasRenderingContext2D;
           
           if (ctx) {
             ctx.drawImage(img, 0, 0);
@@ -96,7 +95,10 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
       const canvas = document.createElement('canvas');
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const ctx = canvas.getContext('2d', { 
+        premultipliedAlpha: false,
+        willReadFrequently: true 
+      }) as CanvasRenderingContext2D;
       
       if (ctx) {
         ctx.drawImage(img, 0, 0);
