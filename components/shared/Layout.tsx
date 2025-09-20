@@ -26,8 +26,6 @@ export const Layout: React.FC<LayoutProps> = ({
       display: "flex", 
       flexDirection: "column", 
       minHeight: "100vh",
-      height: "100vh",
-      overflow: "hidden",
       touchAction: "pan-y"
     }}>
       <AppHeader />
