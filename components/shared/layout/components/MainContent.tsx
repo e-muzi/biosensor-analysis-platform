@@ -12,9 +12,13 @@ export const MainContent: React.FC<MainContentProps> = ({ children }) => {
       sx={{ 
         flex: 1, 
         overflow: "auto",
-        paddingBottom: "calc(64px + env(safe-area-inset-bottom, 0px))",
+        overflowY: "scroll",
+        WebkitOverflowScrolling: "touch", // Enable momentum scrolling on iOS
+        paddingBottom: "calc(80px + env(safe-area-inset-bottom, 0px))", // Increased padding for bottom nav
+        paddingTop: "env(safe-area-inset-top, 0px)", // Add top safe area padding
         paddingX: { xs: 2, sm: 3, md: 4 }, 
-        paddingY: 2 
+        paddingY: 2,
+        minHeight: 0 // Allow flex item to shrink below content size
       }}
     >
       {children}

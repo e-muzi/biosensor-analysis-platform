@@ -35,7 +35,14 @@ export function BottomNav({ currentTab, onTabChange }: BottomNavProps) {
   };
 
   return (
-    <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+    <Paper sx={{ 
+      position: 'fixed', 
+      bottom: 0, 
+      left: 0, 
+      right: 0,
+      zIndex: 1000, // Ensure it's above other content
+      paddingBottom: "env(safe-area-inset-bottom, 0px)" // Add safe area padding
+    }} elevation={3}>
       <BottomNavigation
         value={getTabIndex(currentTab)}
         onChange={(_, newValue) => handleBottomNavChange(newValue)}

@@ -22,7 +22,13 @@ export const Layout: React.FC<LayoutProps> = ({
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+    <Box sx={{ 
+      display: "flex", 
+      flexDirection: "column", 
+      minHeight: "100vh",
+      height: "100vh",
+      overflow: "hidden"
+    }}>
       <AppHeader />
       <MainContent>{children}</MainContent>
       <BottomNav 
