@@ -33,7 +33,7 @@ export function ImageAlignment({
   } = useAlignmentCanvas(imageSrc, onConfirm);
 
   return (
-    <Container maxWidth="md" sx={{ py: 3, pb: 8 }}>
+    <Container maxWidth="md" sx={{ py: 3, pb: 12 }}>
       <Box sx={{ textAlign: "center", mb: 3 }}>
         <Typography variant="h4" sx={{ mb: 1 }}>
           Align Test Kit

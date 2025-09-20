@@ -31,7 +31,7 @@ export function AnalysisResultScreen({
 
   if (isAnalyzing) {
     return (
-      <Container maxWidth="md" sx={{ py: 3, pb: 8 }}>
+      <Container maxWidth="md" sx={{ py: 3, pb: 12 }}>
         <Box sx={{ textAlign: "center" }}>
           <CircularProgress size={60} sx={{ mb: 2 }} />
           <Typography variant="h6">Analyzing image...</Typography>
@@ -41,7 +41,7 @@ export function AnalysisResultScreen({
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3, pb: 8 }}>
+    <Container maxWidth="lg" sx={{ py: 3, pb: 12 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
         <Button
           startIcon={<ArrowBackIcon />}

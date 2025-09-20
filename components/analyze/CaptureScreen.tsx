@@ -45,7 +45,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   }
 
   return (
-    <Box sx={{ pb: 8 }}>
+    <Box sx={{ pb: 12 }}>
       <CaptureHeader />
       
       {isCameraOpen ? (
@@ -90,4 +90,4 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
       )}
     </Box>
   );
-};
+}

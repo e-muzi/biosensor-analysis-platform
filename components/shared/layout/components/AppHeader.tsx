@@ -1,7 +1,7 @@
 import { AppBar, Toolbar, Typography, IconButton, Box } from "@mui/material";
 import { Brightness4 as Brightness4Icon, Brightness7 as Brightness7Icon } from "@mui/icons-material";
 import { useThemeStore, iGEMColors } from "../../../../state/themeStore";
-const hkjs_logo = "../../../../public/hkjs_logo.png";
+const hkjs_logo = "/hkjs_logo.PNG";
 
 // App Header
 export function AppHeader() {
