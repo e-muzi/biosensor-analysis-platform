@@ -33,7 +33,7 @@ export function HistoryScreen() {
         Analysis History
       </Typography>
       
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2, pb: 2 }}>
         {records.map((record) => (
           <HistoryItem 
             key={record.id} 

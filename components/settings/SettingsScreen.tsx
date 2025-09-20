@@ -66,7 +66,7 @@ export const SettingsScreen: React.FC = () => {
       )}
 
       {/* About Section */}
-      <Card>
+      <Card sx={{ mb: 4 }}>
         <CardContent>
           <AboutSection />
         </CardContent>

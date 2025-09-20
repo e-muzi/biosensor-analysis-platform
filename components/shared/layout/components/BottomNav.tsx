@@ -41,7 +41,8 @@ export function BottomNav({ currentTab, onTabChange }: BottomNavProps) {
       left: 0, 
       right: 0,
       zIndex: 1000, // Ensure it's above other content
-      paddingBottom: "env(safe-area-inset-bottom, 0px)" // Add safe area padding
+      paddingBottom: "env(safe-area-inset-bottom, 0px)", // Add safe area padding
+      height: "calc(56px + env(safe-area-inset-bottom, 0px))" // Explicit height calculation
     }} elevation={3}>
       <BottomNavigation
         value={getTabIndex(currentTab)}
