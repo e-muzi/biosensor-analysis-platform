@@ -4,16 +4,12 @@ import { CameraOverlays } from "../Overlays";
 
 interface CameraViewProps {
   videoRef: React.RefObject<HTMLVideoElement>;
-  detectedBounds: { x: number; y: number; width: number; height: number } | null;
-  isDetecting: boolean;
   isVideoReady?: boolean;
 }
 
-// Camera View
+// Camera View - Full camera view with pesticide guide dots
 export const CameraView: React.FC<CameraViewProps> = ({ 
   videoRef, 
-  detectedBounds, 
-  isDetecting,
   isVideoReady = false
 }) => {
   return (
@@ -30,9 +26,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
         }}
       />
       
-      {/* Test kit overlay with detailed layout */}
+      {/* Pesticide guide dots overlay */}
       <CameraOverlays 
-        detectedBounds={detectedBounds}
         videoWidth={videoRef.current?.videoWidth || 0}
         videoHeight={videoRef.current?.videoHeight || 0}
       />
@@ -47,22 +42,6 @@ export const CameraView: React.FC<CameraViewProps> = ({
             left: "50%",
             transform: "translateX(-50%)",
             backgroundColor: "rgba(255, 152, 0, 0.8)",
-            color: "white",
-            zIndex: 5
-          }}
-        />
-      )}
-
-      {/* Detection status indicator */}
-      {isDetecting && (
-        <Chip
-          label="🔍 Detecting test kit..."
-          sx={{
-            position: "absolute",
-            top: 80,
-            left: "50%",
-            transform: "translateX(-50%)",
-            backgroundColor: "rgba(25, 118, 210, 0.8)",
             color: "white",
             zIndex: 5
           }}

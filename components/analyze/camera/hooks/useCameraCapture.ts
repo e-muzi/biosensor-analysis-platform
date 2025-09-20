@@ -21,10 +21,6 @@ export function useCameraCapture(
     captureImage
   } = useImageCapture();
 
-  // Simple placeholder function for compatibility
-  const autoDetectTestKit = useCallback(() => {
-    console.log("Auto-detection disabled - using manual alignment instead");
-  }, []);
 
   const handleCapturePhoto = useCallback(async () => {
     if (!videoRef.current) return;
@@ -50,15 +46,10 @@ export function useCameraCapture(
   return {
     videoRef,
     isCapturing,
-    stream: null, // For compatibility
-    detectedBounds: null, // For compatibility
-    isDetecting: false, // For compatibility
     flashEnabled,
     toggleFlash,
     handleCapturePhoto,
     handleCapture,
-    detectTestKit: autoDetectTestKit,
-    error: null,
     openCamera: () => startCamera(onError, () => {}),
     closeCamera: stopCamera
   };

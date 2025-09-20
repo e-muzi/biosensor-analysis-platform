@@ -1,38 +1,35 @@
 import React from "react";
 import { Box } from "@mui/material";
-import { MainFrame } from "./overlays/components/MainFrame";
-import { DetectionOverlay } from "./overlays/components/DetectionOverlay";
-import { CornerIndicators } from "./overlays/components/CornerIndicators";
+import { PesticideGuideDots } from "./overlays/components/PesticideGuideDots";
+import { CameraTestAreas } from "./overlays/components/CameraTestAreas";
 
 interface CameraOverlaysProps {
-  detectedBounds: { x: number; y: number; width: number; height: number } | null;
   videoWidth: number;
   videoHeight: number;
 }
 
-// Camera Overlays
+// Camera Overlays - Full camera view with pesticide guide dots and green ROI boxes
 export const CameraOverlays: React.FC<CameraOverlaysProps> = ({ 
-  detectedBounds, 
   videoWidth, 
   videoHeight 
 }) => {
-  if (videoWidth === 0 || videoHeight === 0) return null;
+  // Use default dimensions if video dimensions are not available yet
+  const displayWidth = videoWidth || 1920;
+  const displayHeight = videoHeight || 1080;
 
   return (
-    <Box sx={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <Box sx={{ position: "relative", width: "90vmin", height: "60vmin", maxWidth: 600, maxHeight: 400 }}>
-        <MainFrame />
-        
-        {detectedBounds && (
-          <DetectionOverlay 
-            detectedBounds={detectedBounds}
-            videoWidth={videoWidth}
-            videoHeight={videoHeight}
-          />
-        )}
-        
-        <CornerIndicators />
-      </Box>
+    <Box sx={{ position: "absolute", inset: 0 }}>
+      {/* Green ROI boxes for pesticide test areas - always visible */}
+      <CameraTestAreas 
+        videoWidth={displayWidth}
+        videoHeight={displayHeight}
+      />
+      
+      {/* Pesticide guide dots at specific coordinates - always visible */}
+      <PesticideGuideDots 
+        videoWidth={displayWidth}
+        videoHeight={displayHeight}
+      />
     </Box>
   );
 };

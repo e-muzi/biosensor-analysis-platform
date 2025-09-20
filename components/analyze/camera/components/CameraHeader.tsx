@@ -1,12 +1,8 @@
 import React from "react";
 import { Paper, Box, Typography } from "@mui/material";
 
-interface CameraHeaderProps {
-  detectedBounds: { x: number; y: number; width: number; height: number } | null;
-}
-
-// Camera Header
-export const CameraHeader: React.FC<CameraHeaderProps> = ({ detectedBounds }) => {
+// Camera Header - Full camera view
+export const CameraHeader: React.FC = () => {
   return (
     <Paper
       sx={{
@@ -26,10 +22,7 @@ export const CameraHeader: React.FC<CameraHeaderProps> = ({ detectedBounds }) =>
           Position Test Kit
         </Typography>
         <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          {detectedBounds ? 
-            "✅ Test kit detected! Tap capture to analyze." : 
-            "Align the test kit within the frame. The app will automatically detect and crop the test kit area."
-          }
+          Align the test kit with the red guide dots. The entire camera view will be captured for analysis.
         </Typography>
       </Box>
     </Paper>

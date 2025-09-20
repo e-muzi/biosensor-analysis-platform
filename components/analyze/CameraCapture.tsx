@@ -20,8 +20,6 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
     videoRef,
     isCapturing,
     flashEnabled,
-    detectedBounds,
-    isDetecting,
     toggleFlash,
     handleCapturePhoto,
     openCamera,
@@ -54,18 +52,15 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       }}
     >
       <DialogContent sx={{ p: 0, height: "100%", position: "relative" }}>
-        <CameraHeader detectedBounds={detectedBounds} />
+        <CameraHeader />
         
         <CameraView 
           videoRef={videoRef}
-          detectedBounds={detectedBounds}
-          isDetecting={isDetecting}
         />
         
         <CameraControls
           flashEnabled={flashEnabled}
           isCapturing={isCapturing}
-          detectedBounds={detectedBounds}
           onToggleFlash={toggleFlash}
           onCapture={handleCapturePhoto}
           onClose={onClose}

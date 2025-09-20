@@ -15,6 +15,12 @@ export function useCameraStream() {
 
   const startCamera = useCallback(async (onError: (error: string) => void, onClose: () => void) => {
     try {
+      // Stop any existing stream first to prevent conflicts
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { 
           facingMode: "environment",
@@ -22,10 +28,20 @@ export function useCameraStream() {
           height: { ideal: 1080 }
         }
       });
+      
       if (videoRef.current) {
+        // Clear any existing srcObject first
+        videoRef.current.srcObject = null;
         videoRef.current.srcObject = stream;
-        // Explicitly play the video stream
-        await videoRef.current.play();
+        
+        // Wait for the video to be ready before playing
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current?.play();
+          } catch (playError) {
+            console.warn("Video play interrupted:", playError);
+          }
+        };
       }
       streamRef.current = stream;
     } catch (err) {

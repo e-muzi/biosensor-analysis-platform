@@ -10,17 +10,15 @@ import {
 interface CameraControlsProps {
   flashEnabled: boolean;
   isCapturing: boolean;
-  detectedBounds: { x: number; y: number; width: number; height: number } | null;
   onToggleFlash: () => void;
   onCapture: () => void;
   onClose: () => void;
 }
 
-// Camera Controls
+// Camera Controls - Full camera view
 export const CameraControls: React.FC<CameraControlsProps> = ({
   flashEnabled,
   isCapturing,
-  detectedBounds,
   onToggleFlash,
   onCapture,
   onClose
@@ -65,9 +63,9 @@ export const CameraControls: React.FC<CameraControlsProps> = ({
           sx={{
             width: 64,
             height: 64,
-            backgroundColor: detectedBounds ? "success.main" : "primary.main",
+            backgroundColor: "primary.main",
             "&:hover": {
-              backgroundColor: detectedBounds ? "success.dark" : "primary.dark",
+              backgroundColor: "primary.dark",
             },
             "&:disabled": {
               backgroundColor: "grey.600",
