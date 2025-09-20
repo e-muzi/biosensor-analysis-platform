@@ -27,7 +27,8 @@ export const Layout: React.FC<LayoutProps> = ({
       flexDirection: "column", 
       minHeight: "100vh",
       height: "100vh",
-      overflow: "hidden"
+      overflow: "hidden",
+      touchAction: "pan-y"
     }}>
       <AppHeader />
       <MainContent>{children}</MainContent>
