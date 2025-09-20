@@ -14,7 +14,7 @@ export function HistoryScreen() {
 
   if (records.length === 0) {
     return (
-      <Container maxWidth="md" sx={{ py: 3 }}>
+      <Container maxWidth="md" sx={{ py: 3, pb: 8 }}>
         <Typography variant="h4" sx={{ mb: 3 }}>
           Analysis History
         </Typography>
@@ -28,7 +28,7 @@ export function HistoryScreen() {
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 3 }}>
+    <Container maxWidth="md" sx={{ py: 3, pb: 8 }}>
       <Typography variant="h4" sx={{ mb: 3 }}>
         Analysis History
       </Typography>

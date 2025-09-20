@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import { CameraCapture, ImageAlignment } from "./";
 import { CaptureHeader } from "./capture/components/CaptureHeader";
 import { ImagePreview } from "./capture/components/ImagePreview";
@@ -45,7 +45,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   }
 
   return (
-    <>
+    <Box sx={{ pb: 8 }}>
       <CaptureHeader />
       
       {isCameraOpen ? (
@@ -88,6 +88,6 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
           )}
         </>
       )}
-    </>
+    </Box>
   );
 };

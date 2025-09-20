@@ -16,7 +16,7 @@ export const SettingsScreen: React.FC = () => {
   const { detectionMode } = useModeStore();
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4, pb: 8 }}>
       {/* Header Section */}
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h3" component="h1" gutterBottom>
