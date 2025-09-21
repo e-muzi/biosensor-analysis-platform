@@ -18,7 +18,7 @@ export function ImageAlignment({
 
   const {
     canvasRef,
-    imageDisplaySize,
+    imageRef,
     scale,
     rotation,
     imageTransform,
@@ -30,6 +30,12 @@ export function ImageAlignment({
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    handleZoomIn,
+    handleZoomOut,
+    handleRotateLeft,
+    handleRotateRight,
+    handleResetTransform,
+    setLocalImageDisplaySize,
   } = useAlignmentCanvas(imageSrc, onConfirm);
 
   return (
@@ -46,8 +52,8 @@ export function ImageAlignment({
       <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
         <CanvasStage
           canvasRef={canvasRef}
+          imageRef={imageRef}
           imageSrc={imageSrc}
-          imageDisplaySize={imageDisplaySize}
           scale={scale}
           rotation={rotation}
           imageTransform={imageTransform}
@@ -58,17 +64,18 @@ export function ImageAlignment({
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          setLocalImageDisplaySize={setLocalImageDisplaySize}
         />
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
           <AlignmentControls
             scale={scale}
             rotation={rotation}
-            onZoomIn={() => {}}
-            onZoomOut={() => {}}
-            onRotateLeft={() => {}}
-            onRotateRight={() => {}}
-            onReset={() => {}}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onRotateLeft={handleRotateLeft}
+            onRotateRight={handleRotateRight}
+            onReset={handleResetTransform}
             colors={colors}
             accentColor="#FFD700"
           />

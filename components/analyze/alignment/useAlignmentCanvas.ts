@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { useCanvasRefs, useCanvasState } from "./hooks/useCanvasState";
+import { useCanvasRefs } from "./hooks/useCanvasState";
 import { useImageTransform } from "./hooks/useImageTransform";
 
 export function useAlignmentCanvas(
@@ -7,13 +7,19 @@ export function useAlignmentCanvas(
   onConfirm: (alignedImageSrc: string) => void
 ) {
   const { canvasRef, imageRef } = useCanvasRefs();
-  const { imageDisplaySize } = useCanvasState();
+  // Default display size - will be updated by CanvasStage
+  const [localImageDisplaySize, setLocalImageDisplaySize] = useState<{ width: number; height: number }>({ width: 400, height: 300 });
 
   const {
     scale,
     rotation,
     imageTransform,
-    setImageTransform
+    setImageTransform,
+    handleZoomIn,
+    handleZoomOut,
+    handleRotateLeft,
+    handleRotateRight,
+    handleResetTransform
   } = useImageTransform();
 
   // State for tracking drag operations
@@ -47,8 +53,6 @@ export function useAlignmentCanvas(
 
   // Handle touch events for two-finger zoom and single finger drag
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    
     if (e.touches.length === 1) {
       // Single touch - start drag
       setIsDragging(true);
@@ -61,8 +65,6 @@ export function useAlignmentCanvas(
   }, []);
 
   const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    e.preventDefault();
-    
     if (e.touches.length === 1 && isDragging && dragStart) {
       // Single touch drag
       const deltaX = e.touches[0].clientX - dragStart.x;
@@ -97,15 +99,76 @@ export function useAlignmentCanvas(
     setDragStart(null);
   }, []);
 
-  // Simple confirm function - just pass the image source since we're not cropping
-  const handleConfirm = useCallback(() => {
-    onConfirm(imageSrc);
-  }, [imageSrc, onConfirm]);
+  // Apply transformations and crop to create aligned image
+  const handleConfirm = useCallback(async () => {
+    console.log('Debug: ALIGNMENT - handleConfirm called');
+    console.log('Debug: ALIGNMENT - imageTransform:', imageTransform);
+    console.log('Debug: ALIGNMENT - scale:', scale);
+    console.log('Debug: ALIGNMENT - rotation:', rotation);
+    
+    if (!canvasRef.current || !imageRef.current) {
+      console.log('Debug: ALIGNMENT - Missing refs, using original image');
+      onConfirm(imageSrc);
+      return;
+    }
+
+    try {
+      const image = imageRef.current;
+      console.log('Debug: ALIGNMENT - Creating aligned image...');
+      
+      // Create a new canvas for the final aligned image
+      const alignedCanvas = document.createElement('canvas');
+      const alignedCtx = alignedCanvas.getContext('2d', { 
+        premultipliedAlpha: false,
+        willReadFrequently: true 
+      }) as CanvasRenderingContext2D;
+      
+      if (!alignedCtx) {
+        onConfirm(imageSrc);
+        return;
+      }
+
+      // Set canvas size to match the original image dimensions
+      alignedCanvas.width = image.naturalWidth;
+      alignedCanvas.height = image.naturalHeight;
+
+      // Clear canvas
+      alignedCtx.clearRect(0, 0, alignedCanvas.width, alignedCanvas.height);
+
+      // Save context
+      alignedCtx.save();
+
+      // Apply the same transformations that were applied to the display canvas
+      // Convert display coordinates to natural image coordinates
+      const scaleX = image.naturalWidth / localImageDisplaySize.width;
+      const scaleY = image.naturalHeight / localImageDisplaySize.height;
+      
+      alignedCtx.translate(imageTransform.x * scaleX, imageTransform.y * scaleY);
+      alignedCtx.scale(scale, scale);
+      alignedCtx.rotate((rotation * Math.PI) / 180);
+
+      // Draw the image at natural size
+      alignedCtx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight);
+
+      // Restore context
+      alignedCtx.restore();
+
+      // Convert to data URL
+      const alignedImageSrc = alignedCanvas.toDataURL('image/jpeg', 0.9);
+      console.log('Debug: ALIGNMENT - Aligned image created, length:', alignedImageSrc.length);
+      console.log('Debug: ALIGNMENT - Calling onConfirm with aligned image');
+      onConfirm(alignedImageSrc);
+      
+    } catch (error) {
+      console.error('Error creating aligned image:', error);
+      // Fallback to original image if transformation fails
+      onConfirm(imageSrc);
+    }
+  }, [imageSrc, onConfirm, canvasRef, imageRef, imageTransform, scale, rotation, localImageDisplaySize]);
 
   return {
     canvasRef,
     imageRef,
-    imageDisplaySize,
     scale,
     rotation,
     imageTransform,
@@ -117,5 +180,11 @@ export function useAlignmentCanvas(
     handleTouchStart,
     handleTouchMove,
     handleTouchEnd,
+    handleZoomIn,
+    handleZoomOut,
+    handleRotateLeft,
+    handleRotateRight,
+    handleResetTransform,
+    setLocalImageDisplaySize,
   };
 }
