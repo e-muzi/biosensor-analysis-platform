@@ -1,5 +1,5 @@
 // Re-export brightness functions from the new brightness module
-export { rgbToHsv_V, calculateBrightnessForRoi } from './brightness';
+export { rgbToLuminance, calculateBrightnessForRoi } from './brightness';
 import { correctPremultipliedAlpha } from './pixelValidation';
 
 // Alternative: Maximum RGB value

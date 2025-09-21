@@ -16,7 +16,7 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 
 - **Built-in Calibration**: Each test kit includes vertical calibration strips with 5 known concentration points, eliminating the need for external calibration
 
-- **Image Processing**: Advanced image analysis using HSV color space conversion for accurate brightness measurements
+- **Image Processing**: Advanced image analysis using RGB luminance calculations for accurate brightness measurements
 
 - **Real-time Analysis**: Instant results with confidence levels (high/medium/low) based on calibration strip matching
 
@@ -101,7 +101,7 @@ The built files will be in the `dist/` directory, ready for deployment.
 
 3. **Analysis**
    - The app automatically analyzes both calibration strips and test areas
-   - Brightness values are calculated using HSV color space conversion
+   - Brightness values are calculated using RGB luminance formula
    - Concentrations are estimated by comparing test brightness to calibration curves
 
 4. **Results Interpretation**

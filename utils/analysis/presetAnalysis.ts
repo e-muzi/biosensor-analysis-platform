@@ -1,4 +1,4 @@
-import { rgbToHsv_V } from "../imageProcessing/colorUtils";
+import { rgbToLuminance } from "../imageProcessing/colorUtils";
 import { estimateConcentrationFromRGB } from "./calibrationAnalysis";
 import { PESTICIDE_COORDINATES } from "../constants/roiConstants";
 import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
@@ -60,7 +60,7 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
           pesticide: coordinate.name,
           testBrightness,
           calibrationBrightnesses: pesticide.curve.map(point => 
-            point.brightness || rgbToHsv_V(point.rgb.r, point.rgb.g, point.rgb.b)
+            point.brightness || rgbToLuminance(point.rgb.r, point.rgb.g, point.rgb.b)
           ),
           estimatedConcentration: concentration,
           confidence

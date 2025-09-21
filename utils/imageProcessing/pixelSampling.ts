@@ -20,7 +20,7 @@ export {
   calculateLuminance, 
   calculateMaxRGB,
   calculateAverageRGB,
-  rgbToHsv_V,
+  rgbToLuminance,
   calculateBrightnessForRoi 
 } from './brightness';
 

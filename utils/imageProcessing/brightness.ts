@@ -40,13 +40,13 @@ export function calculateAverageRGB(r: number, g: number, b: number): number {
 }
 
 /**
- * Legacy function for backward compatibility - now uses consistent luminance calculation
+ * Calculate RGB luminance
  * @param r Red channel (0-255)
  * @param g Green channel (0-255)
  * @param b Blue channel (0-255)
  * @returns Brightness value (0-255)
  */
-export function rgbToHsv_V(r: number, g: number, b: number): number {
+export function rgbToLuminance(r: number, g: number, b: number): number {
   // Use consistent luminance calculation
   return calculateLuminance(r, g, b);
 }
