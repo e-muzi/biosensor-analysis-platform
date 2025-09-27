@@ -47,11 +47,12 @@ export function HistoryItem({ record, onDelete, onUpdateName }: HistoryItemProps
           onDelete={onDelete}
           onToggleExpanded={handleToggleExpanded}
           recordId={record.id}
+          onDoubleClick={handleDoubleClick}
         />
       )}
 
       <Collapse in={isExpanded}>
-        <HistoryResults results={record.results} />
+        <HistoryResults results={record.results} imageSrc={record.imageSrc} />
       </Collapse>
     </Card>
   );

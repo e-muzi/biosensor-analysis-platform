@@ -1,8 +1,10 @@
 import { Box, Typography, Grid, Chip, Card, CardContent } from "@mui/material";
+import { ImageDisplay } from "../../analyze/ImageDisplay";
 import type { AnalysisResult } from "../../../types";
 
 interface HistoryResultsProps {
   results: AnalysisResult[];
+  imageSrc: string;
 }
 
 const getConcentrationLabel = (concentration: number): string => {
@@ -17,7 +19,7 @@ const getConcentrationColor = (concentration: number): "success" | "warning" | "
   return "error";
 };
 
-export function HistoryResults({ results }: HistoryResultsProps) {
+export function HistoryResults({ results, imageSrc }: HistoryResultsProps) {
   if (!results || results.length === 0) {
     return (
       <Box sx={{ textAlign: "center", py: 4 }}>
@@ -29,9 +31,22 @@ export function HistoryResults({ results }: HistoryResultsProps) {
   }
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 2, p: 2 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>
         Analysis Results
+      </Typography>
+      
+      {/* Original Image Display */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          Original Image
+        </Typography>
+        <ImageDisplay imageSrc={imageSrc} showROIs={false} />
+      </Box>
+
+      {/* Analysis Results */}
+      <Typography variant="subtitle1" sx={{ mb: 2 }}>
+        Detection Results
       </Typography>
       <Grid container spacing={2}>
         {results.map((result, index) => (

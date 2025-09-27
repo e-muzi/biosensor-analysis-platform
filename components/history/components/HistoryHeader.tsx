@@ -9,7 +9,8 @@ interface HistoryHeaderProps {
   isExpanded: boolean;
   onDelete: (id: string) => void;
   onToggleExpanded: () => void;
-  recordId: string; // Add this prop
+  recordId: string;
+  onDoubleClick: () => void;
 }
 
 export function HistoryHeader({
@@ -19,12 +20,9 @@ export function HistoryHeader({
   isExpanded,
   onDelete,
   onToggleExpanded,
-  recordId, // Add this parameter
+  recordId,
+  onDoubleClick,
 }: HistoryHeaderProps) {
-  const getTotalConcentration = (results: AnalysisResult[]) => {
-    return results.reduce((sum, result) => sum + result.concentration, 0);
-  };
-
   const getMaxConcentration = (results: AnalysisResult[]) => {
     return Math.max(...results.map(result => result.concentration));
   };
@@ -36,7 +34,13 @@ export function HistoryHeader({
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
       <Box sx={{ flexGrow: 1 }}>
-        <Typography variant="h6">{name}</Typography>
+        <Typography 
+          variant="h6" 
+          onDoubleClick={onDoubleClick}
+          sx={{ cursor: "pointer" }}
+        >
+          {name}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {formatDate(timestamp)}
         </Typography>

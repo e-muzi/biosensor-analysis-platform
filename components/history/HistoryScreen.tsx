@@ -5,11 +5,10 @@ import { useHistoryStore } from "../../state/historyStore";
 import { EmptyState } from "../shared/EmptyState";
 
 export function HistoryScreen() {
-  const { records, deleteRecord } = useHistoryStore();
+  const { records, deleteRecord, updateRecordName } = useHistoryStore();
 
   const handleUpdateName = (id: string, name: string) => {
-    // For now, we'll just console.log this since updateRecord doesn't exist in the store
-    console.log('Update record name:', id, name);
+    updateRecordName(id, name);
   };
 
   if (records.length === 0) {
