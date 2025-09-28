@@ -6,6 +6,7 @@ export interface CalibrationPoint {
 export interface AnalysisResult {
   pesticide: string;
   rgb: number; // Total RGB value (R + G + B)
+  brightness?: number; // Optional for backward compatibility
   concentration: number;
   confidence?: 'high' | 'medium' | 'low';
 }
@@ -25,7 +26,9 @@ export interface CalibrationStrip {
 export interface CalibrationResult {
   pesticide: string;
   testRGB: number;
+  testBrightness?: number; // Optional for backward compatibility
   calibrationRGBs: number[];
+  calibrationBrightnesses?: number[]; // Optional for backward compatibility
   estimatedConcentration: number;
   confidence: 'high' | 'medium' | 'low';
 }

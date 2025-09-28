@@ -47,7 +47,7 @@ export function ResultCard({ result }: ResultCardProps) {
         </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          RGB Value: {result.testRGB.toFixed(0)}
+          RGB Value: {(result.testRGB || result.testBrightness || 0).toFixed(0)}
         </Typography>
         
         <Typography variant="body2" color="text.secondary">

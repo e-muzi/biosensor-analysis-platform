@@ -67,7 +67,7 @@ export function HistoryResults({ results, imageSrc }: HistoryResultsProps) {
                   Concentration: {result.concentration.toFixed(3)} µM
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  RGB Value: {result.rgb.toFixed(0)}
+                  RGB Value: {(result.rgb || result.brightness || 0).toFixed(0)}
                 </Typography>
               </CardContent>
             </Card>
