@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
-import { Card, Collapse } from "@mui/material";
-import { HistoryHeader } from "./components/HistoryHeader";
-import { HistoryName } from "./components/HistoryName";
-import { HistoryResults } from "./components/HistoryResults";
-import { useHistoryItemLogic } from "./hooks/useHistoryItemLogic";
-import type { HistoryRecord } from "../../types";
+import { useState, useCallback } from 'react';
+import { Card, Collapse } from '@mui/material';
+import { HistoryHeader } from './components/HistoryHeader';
+import { HistoryName } from './components/HistoryName';
+import { HistoryResults } from './components/HistoryResults';
+import { useHistoryItemLogic } from './hooks/useHistoryItemLogic';
+import type { HistoryRecord } from '../../types';
 
 interface HistoryItemProps {
   record: HistoryRecord;
@@ -12,7 +12,11 @@ interface HistoryItemProps {
   onUpdateName: (id: string, name: string) => void;
 }
 
-export function HistoryItem({ record, onDelete, onUpdateName }: HistoryItemProps) {
+export function HistoryItem({
+  record,
+  onDelete,
+  onUpdateName,
+}: HistoryItemProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const {
     name,
@@ -21,7 +25,9 @@ export function HistoryItem({ record, onDelete, onUpdateName }: HistoryItemProps
     handleNameUpdate,
     handleKeyDown,
     handleDoubleClick,
-  } = useHistoryItemLogic(record.name, (newName) => onUpdateName(record.id, newName));
+  } = useHistoryItemLogic(record.name, newName =>
+    onUpdateName(record.id, newName)
+  );
 
   const handleToggleExpanded = useCallback(() => {
     setIsExpanded(!isExpanded);

@@ -13,7 +13,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = e => {
         onImageSelect(e.target?.result as string);
       };
       reader.readAsDataURL(file);
@@ -23,17 +23,17 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {
   return (
     <>
       <input
-        type="file"
-        accept="image/*"
+        type='file'
+        accept='image/*'
         ref={fileInputRef}
         onChange={handleImageChange}
         style={{ display: 'none' }}
       />
-      <AppButton 
-        onClick={() => fileInputRef.current?.click()} 
-        variant="secondary"
+      <AppButton
+        onClick={() => fileInputRef.current?.click()}
+        variant='secondary'
         fullWidth
-        size="large"
+        size='large'
       >
         📁 Upload Image
       </AppButton>

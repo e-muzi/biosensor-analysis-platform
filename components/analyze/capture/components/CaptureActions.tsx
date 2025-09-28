@@ -1,7 +1,7 @@
-import React from "react";
-import { Box, Grid, Paper, Typography } from "@mui/material";
-import { AppButton } from "../../../shared";
-import { ImageUpload } from "../../ImageUpload";
+import React from 'react';
+import { Box, Grid, Paper, Typography } from '@mui/material';
+import { AppButton } from '../../../shared';
+import { ImageUpload } from '../../ImageUpload';
 
 interface CaptureActionsProps {
   onOpenCamera: () => void;
@@ -11,37 +11,40 @@ interface CaptureActionsProps {
 // Capture Actions
 export const CaptureActions: React.FC<CaptureActionsProps> = ({
   onOpenCamera,
-  onImageSelect
+  onImageSelect,
 }) => {
   return (
-    <Box sx={{ maxWidth: "md", mx: "auto", px: 2 }}> 
-      <Grid container spacing={3} sx={{ mb: 4 }}> 
+    <Box sx={{ maxWidth: 'md', mx: 'auto', px: 2 }}>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <AppButton 
-            onClick={onOpenCamera} 
-            variant="primary"
+          <AppButton
+            onClick={onOpenCamera}
+            variant='primary'
             fullWidth
-            size="large"
+            size='large'
           >
             📷 Use Camera
           </AppButton>
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <ImageUpload onImageSelect={onImageSelect} onOpenCamera={onOpenCamera} />
+          <ImageUpload
+            onImageSelect={onImageSelect}
+            onOpenCamera={onOpenCamera}
+          />
         </Grid>
       </Grid>
-      
-      <Paper 
-        sx={{ 
-          p: 3, 
-          textAlign: "center",
-          backgroundColor: "background.paper",
+
+      <Paper
+        sx={{
+          p: 3,
+          textAlign: 'center',
+          backgroundColor: 'background.paper',
           border: 1,
-          borderColor: "divider",
-          mx: 2 
+          borderColor: 'divider',
+          mx: 2,
         }}
       >
-        <Typography variant="caption" color="text.secondary">
+        <Typography variant='caption' color='text.secondary'>
           💡 Tip: Ensure good lighting and a clear view of the test strip
         </Typography>
       </Paper>

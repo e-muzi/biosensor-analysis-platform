@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from "react";
-import { Typography, Box, TextField } from "@mui/material";
-import { iGEMColors } from "../../../../state/themeStore";
+import React, { useRef, useEffect } from 'react';
+import { Typography, Box, TextField } from '@mui/material';
+import { iGEMColors } from '../../../../state/themeStore';
 
 interface PesticideNameProps {
   name: string;
@@ -9,17 +9,20 @@ interface PesticideNameProps {
   onNameDoubleClick: (pesticide: string) => void;
   onNameChange: (pesticide: string, value: string) => void;
   onNameBlur: (pesticide: string) => void;
-  onNameKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, pesticide: string) => void;
+  onNameKeyDown: (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    pesticide: string
+  ) => void;
 }
 
-export function PesticideName({ 
-  name, 
-  editingName, 
-  nameEdits, 
-  onNameDoubleClick, 
-  onNameChange, 
-  onNameBlur, 
-  onNameKeyDown 
+export function PesticideName({
+  name,
+  editingName,
+  nameEdits,
+  onNameDoubleClick,
+  onNameChange,
+  onNameBlur,
+  onNameKeyDown,
 }: PesticideNameProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isEditing = editingName === name;
@@ -38,11 +41,11 @@ export function PesticideName({
         <TextField
           ref={inputRef}
           value={displayName}
-          onChange={(e) => onNameChange(name, e.target.value)}
+          onChange={e => onNameChange(name, e.target.value)}
           onBlur={() => onNameBlur(name)}
-          onKeyDown={(e) => onNameKeyDown(e, name)}
-          variant="outlined"
-          size="small"
+          onKeyDown={e => onNameKeyDown(e, name)}
+          variant='outlined'
+          size='small'
           sx={{
             '& .MuiOutlinedInput-root': {
               '& fieldset': {
@@ -63,13 +66,13 @@ export function PesticideName({
 
   return (
     <Box sx={{ mb: 1 }}>
-      <Typography 
-        variant="h6" 
+      <Typography
+        variant='h6'
         onDoubleClick={() => onNameDoubleClick(name)}
-        sx={{ 
+        sx={{
           color: iGEMColors.primary,
           fontWeight: 'bold',
-          cursor: 'pointer'
+          cursor: 'pointer',
         }}
       >
         {displayName}

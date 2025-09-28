@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import { PESTICIDE_ROIS, CALIBRATION_STRIPS, PESTICIDE_CENTER_POINTS } from '../../../utils/constants/roiConstants';
+import {
+  PESTICIDE_ROIS,
+  CALIBRATION_STRIPS,
+  PESTICIDE_CENTER_POINTS,
+} from '../../../utils/constants/roiConstants';
 import { useModeStore } from '../../../state/modeStore';
 
 interface CanvasStageProps {
@@ -34,9 +38,12 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
   onTouchStart,
   onTouchMove,
   onTouchEnd,
-  setLocalImageDisplaySize
+  setLocalImageDisplaySize,
 }) => {
-  const [localImageDisplaySize, setLocalImageDisplaySizeLocal] = useState<{ width: number; height: number }>({ width: 400, height: 300 });
+  const [localImageDisplaySize, setLocalImageDisplaySizeLocal] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 400, height: 300 });
   const { detectionMode } = useModeStore();
 
   // Calculate image display size when image loads
@@ -50,9 +57,9 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
         // Use a square container like the analysis page (aspectRatio: "1/1")
         const containerSize = 400; // Fixed size for consistent positioning
         const imageAspectRatio = image.naturalWidth / image.naturalHeight;
-        
+
         let displayWidth, displayHeight;
-        
+
         if (imageAspectRatio > 1) {
           // Landscape image - fit to width
           displayWidth = containerSize;
@@ -62,9 +69,15 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
           displayHeight = containerSize;
           displayWidth = containerSize * imageAspectRatio;
         }
-        
-        setLocalImageDisplaySizeLocal({ width: displayWidth, height: displayHeight });
-        setLocalImageDisplaySize({ width: displayWidth, height: displayHeight });
+
+        setLocalImageDisplaySizeLocal({
+          width: displayWidth,
+          height: displayHeight,
+        });
+        setLocalImageDisplaySize({
+          width: displayWidth,
+          height: displayHeight,
+        });
       }
     };
 
@@ -82,9 +95,9 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
     const image = imageRef.current;
     if (!canvas || !image || !image.complete) return;
 
-    const ctx = canvas.getContext('2d', { 
+    const ctx = canvas.getContext('2d', {
       premultipliedAlpha: false,
-      willReadFrequently: true 
+      willReadFrequently: true,
     }) as CanvasRenderingContext2D;
     if (!ctx) return;
 
@@ -100,15 +113,31 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
 
     // Apply transformations
     ctx.translate(imageTransform.x, imageTransform.y);
-    ctx.scale(scale * (imageTransform.scale || 1), scale * (imageTransform.scale || 1));
+    ctx.scale(
+      scale * (imageTransform.scale || 1),
+      scale * (imageTransform.scale || 1)
+    );
     ctx.rotate((rotation * Math.PI) / 180);
 
     // Draw the image
-    ctx.drawImage(image, 0, 0, localImageDisplaySize.width, localImageDisplaySize.height);
+    ctx.drawImage(
+      image,
+      0,
+      0,
+      localImageDisplaySize.width,
+      localImageDisplaySize.height
+    );
 
     // Restore context
     ctx.restore();
-  }, [imageSrc, localImageDisplaySize, scale, rotation, imageTransform, isDragging]);
+  }, [
+    imageSrc,
+    localImageDisplaySize,
+    scale,
+    rotation,
+    imageTransform,
+    isDragging,
+  ]);
 
   return (
     <Box sx={{ position: 'relative', display: 'inline-block' }}>
@@ -116,24 +145,24 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
         ref={imageRef}
         src={imageSrc}
         style={{ display: 'none' }}
-        alt="Test kit"
+        alt='Test kit'
       />
-      <Box 
-        sx={{ 
-          position: 'relative', 
-          width: "100%",
-          maxWidth: "md",
-          aspectRatio: "1/1",
+      <Box
+        sx={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: 'md',
+          aspectRatio: '1/1',
           borderRadius: 1,
-          overflow: "hidden",
+          overflow: 'hidden',
           mb: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           border: 2,
-          borderStyle: "dashed",
-          borderColor: "divider",
-          backgroundColor: "background.paper"
+          borderStyle: 'dashed',
+          borderColor: 'divider',
+          backgroundColor: 'background.paper',
         }}
       >
         <canvas
@@ -147,94 +176,95 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
             cursor: isDragging ? 'grabbing' : 'grab',
-            position: "relative",
+            position: 'relative',
             zIndex: 0,
-            pointerEvents: "auto"
+            pointerEvents: 'auto',
           }}
         />
-        
+
         {/* Calibration strips overlay - only in strip mode */}
-        {detectionMode === 'strip' && CALIBRATION_STRIPS.map((strip) => (
-          <Box
-            key={strip.name}
-            sx={{
-              position: "absolute",
-              left: `${strip.roi.x * 100}%`,
-              top: `${strip.roi.y * 100}%`,
-              width: `${strip.roi.width * 100}%`,
-              height: `${strip.roi.height * 100}%`,
-              border: "1px solid",
-              borderColor: "primary.main",
-              backgroundColor: "transparent",
-              pointerEvents: "none",
-              borderRadius: 1,
-              zIndex: 1,
-            }}
-          />
-        ))}
-        
+        {detectionMode === 'strip' &&
+          CALIBRATION_STRIPS.map(strip => (
+            <Box
+              key={strip.name}
+              sx={{
+                position: 'absolute',
+                left: `${strip.roi.x * 100}%`,
+                top: `${strip.roi.y * 100}%`,
+                width: `${strip.roi.width * 100}%`,
+                height: `${strip.roi.height * 100}%`,
+                border: '1px solid',
+                borderColor: 'primary.main',
+                backgroundColor: 'transparent',
+                pointerEvents: 'none',
+                borderRadius: 1,
+                zIndex: 1,
+              }}
+            />
+          ))}
+
         {/* Pesticide test areas overlay - always show */}
-        {PESTICIDE_ROIS.map((pesticide) => (
+        {PESTICIDE_ROIS.map(pesticide => (
           <Box
             key={pesticide.name}
             sx={{
-              position: "absolute",
+              position: 'absolute',
               left: `${pesticide.roi.x * 100}%`,
               top: `${pesticide.roi.y * 100}%`,
               width: `${pesticide.roi.width * 100}%`,
               height: `${pesticide.roi.height * 100}%`,
-              border: "1px solid",
-              borderColor: "primary.main",
-              backgroundColor: "transparent",
-              pointerEvents: "none",
+              border: '1px solid',
+              borderColor: 'primary.main',
+              backgroundColor: 'transparent',
+              pointerEvents: 'none',
               borderRadius: 1,
               zIndex: 1,
             }}
           />
         ))}
-        
+
         {/* Guide dots overlay - always show */}
-        {PESTICIDE_CENTER_POINTS.map((pesticide) => (
+        {PESTICIDE_CENTER_POINTS.map(pesticide => (
           <Box key={pesticide.name}>
             {/* Guide dot positioned at the center of the green box */}
             <Box
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 left: `${pesticide.roi.x * 100}%`,
                 top: `${pesticide.roi.y * 100}%`,
                 width: 8,
                 height: 8,
-                borderRadius: "50%",
-                backgroundColor: "red",
-                border: "2px solid white",
+                borderRadius: '50%',
+                backgroundColor: 'red',
+                border: '2px solid white',
                 zIndex: 15, // Higher than green boxes
-                transform: "translate(-50%, -50%)",
-                boxShadow: "0 0 8px rgba(255, 0, 0, 0.8)"
+                transform: 'translate(-50%, -50%)',
+                boxShadow: '0 0 8px rgba(255, 0, 0, 0.8)',
               }}
             />
-            
+
             {/* Pesticide label */}
             <Box
-              component="span"
+              component='span'
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 left: `${pesticide.roi.x * 100}%`,
                 top: `${pesticide.roi.y * 100}%`,
-                color: "red",
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
+                color: 'red',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 px: 0.5,
                 py: 0.2,
                 borderRadius: 0.5,
-                fontSize: "0.6rem",
-                fontWeight: "bold",
-                whiteSpace: "nowrap",
+                fontSize: '0.6rem',
+                fontWeight: 'bold',
+                whiteSpace: 'nowrap',
                 zIndex: 15,
-                border: "1px solid red",
-                transform: "translate(-50%, -120%)",
+                border: '1px solid red',
+                transform: 'translate(-50%, -120%)',
               }}
             >
               {pesticide.name}

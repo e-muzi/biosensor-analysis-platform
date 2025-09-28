@@ -16,7 +16,12 @@ export interface SamplingResult {
   validPixels: number;
   totalPixels: number;
   invalidPixelsFiltered: number;
-  samplingMethod: 'spiral_outward' | 'expanded_spiral' | 'fallback_5pixel' | 'error_no_valid_pixels' | 'coordinate_based';
+  samplingMethod:
+    | 'spiral_outward'
+    | 'expanded_spiral'
+    | 'fallback_5pixel'
+    | 'error_no_valid_pixels'
+    | 'coordinate_based';
   errorMessage?: string;
 }
 

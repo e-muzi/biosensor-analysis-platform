@@ -20,7 +20,7 @@ const defaultCalibrations: CalibrationSettings = Object.fromEntries(
 // This function stores the calibration settings for each pesticide in the browser's local storage
 export const useCalibrationStore = create<CalibrationStoreState>()(
   persist(
-    (set) => ({
+    set => ({
       userCalibrations: { ...defaultCalibrations },
       setCalibration: (pesticide, concentrations) =>
         set(state => ({
@@ -29,7 +29,7 @@ export const useCalibrationStore = create<CalibrationStoreState>()(
             [pesticide]: concentrations,
           },
         })),
-      resetCalibration: (pesticide) =>
+      resetCalibration: pesticide =>
         set(state => ({
           userCalibrations: {
             ...state.userCalibrations,
@@ -49,5 +49,7 @@ export const useCalibrationStore = create<CalibrationStoreState>()(
 
 export function getCalibrationForPesticide(pesticide: string): number[] {
   const store = useCalibrationStore.getState();
-  return store.userCalibrations[pesticide] || defaultCalibrations[pesticide] || [];
-} 
+  return (
+    store.userCalibrations[pesticide] || defaultCalibrations[pesticide] || []
+  );
+}

@@ -1,20 +1,20 @@
 import React, { useRef } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Button, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
   Grid,
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
 } from '@mui/material';
-import { 
+import {
   Download as DownloadIcon,
   Upload as UploadIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { useThemeStore, iGEMColors } from '../../state/themeStore';
 import { SettingsSection } from './SettingsSection';
@@ -24,7 +24,7 @@ import { useCalibrationStore } from '../../state/calibrationStore';
 export const DataSettings: React.FC = () => {
   const { getColors } = useThemeStore();
   const colors = getColors();
-  
+
   const { records, setRecords, clearHistory } = useHistoryStore();
   const { userCalibrations, setCalibration } = useCalibrationStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -36,7 +36,9 @@ export const DataSettings: React.FC = () => {
       history: records,
       calibrations: userCalibrations,
     };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json',
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -49,23 +51,29 @@ export const DataSettings: React.FC = () => {
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (!window.confirm('Importing will overwrite your current history and calibration settings. Continue?')) {
+    if (
+      !window.confirm(
+        'Importing will overwrite your current history and calibration settings. Continue?'
+      )
+    ) {
       e.target.value = '';
       return;
     }
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = event => {
       try {
         const data = JSON.parse(event.target?.result as string);
         if (data.history && Array.isArray(data.history)) {
           setRecords(data.history);
         }
         if (data.calibrations && typeof data.calibrations === 'object') {
-          Object.entries(data.calibrations).forEach(([pesticide, concentrations]) => {
-            if (Array.isArray(concentrations)) {
-              setCalibration(pesticide, concentrations as number[]);
+          Object.entries(data.calibrations).forEach(
+            ([pesticide, concentrations]) => {
+              if (Array.isArray(concentrations)) {
+                setCalibration(pesticide, concentrations as number[]);
+              }
             }
-          });
+          );
         }
         alert('Import successful!');
       } catch (err) {
@@ -88,19 +96,29 @@ export const DataSettings: React.FC = () => {
     <Box>
       <Card sx={{ mb: 3 }}>
         <CardContent>
-          <Grid container spacing={3} alignItems="center">
+          <Grid container spacing={3} alignItems='center'>
             <Grid size={{ xs: 12, md: 8 }}>
-              <Typography variant="h6" sx={{ color: iGEMColors.primary, mb: 1 }}>
+              <Typography
+                variant='h6'
+                sx={{ color: iGEMColors.primary, mb: 1 }}
+              >
                 Export / Import
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Backup or transfer your analysis history and calibration settings.
+              <Typography variant='body2' color='text.secondary'>
+                Backup or transfer your analysis history and calibration
+                settings.
               </Typography>
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
-              <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'flex-start', md: 'flex-end' } }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  gap: 1,
+                  justifyContent: { xs: 'flex-start', md: 'flex-end' },
+                }}
+              >
                 <Button
-                  variant="contained"
+                  variant='contained'
                   startIcon={<DownloadIcon />}
                   onClick={handleExport}
                   sx={{ backgroundColor: iGEMColors.primary }}
@@ -108,15 +126,15 @@ export const DataSettings: React.FC = () => {
                   Export
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant='outlined'
                   startIcon={<UploadIcon />}
                   onClick={() => fileInputRef.current?.click()}
                 >
                   Import
                 </Button>
                 <input
-                  type="file"
-                  accept="application/json"
+                  type='file'
+                  accept='application/json'
                   ref={fileInputRef}
                   style={{ display: 'none' }}
                   onChange={handleImport}
@@ -128,10 +146,10 @@ export const DataSettings: React.FC = () => {
       </Card>
 
       <SettingsSection
-        title="Clear History"
-        description="Permanently delete all analysis history from this device. This cannot be undone."
-        actionLabel="Clear"
-        actionDescription="Remove all analysis history from this device."
+        title='Clear History'
+        description='Permanently delete all analysis history from this device. This cannot be undone.'
+        actionLabel='Clear'
+        actionDescription='Remove all analysis history from this device.'
         onAction={() => setShowClearDialog(true)}
         icon={<DeleteIcon />}
       />
@@ -140,12 +158,17 @@ export const DataSettings: React.FC = () => {
         <DialogTitle>Clear History</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to clear all analysis history? This action cannot be undone.
+            Are you sure you want to clear all analysis history? This action
+            cannot be undone.
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowClearDialog(false)}>Cancel</Button>
-          <Button onClick={handleClearHistory} color="error" variant="contained">
+          <Button
+            onClick={handleClearHistory}
+            color='error'
+            variant='contained'
+          >
             Clear History
           </Button>
         </DialogActions>

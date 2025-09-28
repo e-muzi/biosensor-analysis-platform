@@ -1,6 +1,6 @@
-import React from "react";
-import { Grid } from "@mui/material";
-import { AppButton } from "../../../shared";
+import React from 'react';
+import { Grid } from '@mui/material';
+import { AppButton } from '../../../shared';
 
 interface AlignmentActionsProps {
   imageLoaded: boolean;
@@ -16,30 +16,30 @@ export const AlignmentActions: React.FC<AlignmentActionsProps> = ({
   cropBounds,
   onBack,
   onAutoCrop,
-  onConfirmCrop
+  onConfirmCrop,
 }) => {
   return (
-    <Grid container spacing={2} sx={{ maxWidth: "md", mx: "auto", mt: 4 }}>
+    <Grid container spacing={2} sx={{ maxWidth: 'md', mx: 'auto', mt: 4 }}>
       <Grid size={{ xs: 12, sm: 4 }}>
-        <AppButton onClick={onBack} variant="outline" fullWidth>
+        <AppButton onClick={onBack} variant='outline' fullWidth>
           ← Back
         </AppButton>
       </Grid>
       <Grid size={{ xs: 12, sm: 4 }}>
-        <AppButton 
-          onClick={onAutoCrop} 
+        <AppButton
+          onClick={onAutoCrop}
           disabled={!imageLoaded}
-          variant="secondary"
+          variant='secondary'
           fullWidth
         >
           🤖 Auto-Crop
         </AppButton>
       </Grid>
       <Grid size={{ xs: 12, sm: 4 }}>
-        <AppButton 
-          onClick={onConfirmCrop} 
+        <AppButton
+          onClick={onConfirmCrop}
           disabled={!cropBounds || !imageLoaded}
-          variant="primary"
+          variant='primary'
           fullWidth
         >
           ✅ Confirm Crop

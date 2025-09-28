@@ -13,37 +13,40 @@ export interface MovableDot {
 
 export function useMovableDots() {
   // Initialize with default positions from constants
-  const [dots, setDots] = useState<MovableDot[]>(() => 
+  const [dots, setDots] = useState<MovableDot[]>(() =>
     PESTICIDE_CENTER_POINTS.map(pesticide => ({
       name: pesticide.name,
-      position: { x: pesticide.roi.x, y: pesticide.roi.y }
+      position: { x: pesticide.roi.x, y: pesticide.roi.y },
     }))
   );
 
   // Update a specific dot's position
-  const updateDotPosition = useCallback((dotName: string, newPosition: DotPosition) => {
-    setDots(prevDots => 
-      prevDots.map(dot => 
-        dot.name === dotName 
-          ? { ...dot, position: newPosition }
-          : dot
-      )
-    );
-  }, []);
+  const updateDotPosition = useCallback(
+    (dotName: string, newPosition: DotPosition) => {
+      setDots(prevDots =>
+        prevDots.map(dot =>
+          dot.name === dotName ? { ...dot, position: newPosition } : dot
+        )
+      );
+    },
+    []
+  );
 
   // Reset all dots to default positions
   const resetDots = useCallback(() => {
-    setDots(PESTICIDE_CENTER_POINTS.map(pesticide => ({
-      name: pesticide.name,
-      position: { x: pesticide.roi.x, y: pesticide.roi.y }
-    })));
+    setDots(
+      PESTICIDE_CENTER_POINTS.map(pesticide => ({
+        name: pesticide.name,
+        position: { x: pesticide.roi.x, y: pesticide.roi.y },
+      }))
+    );
   }, []);
 
   // Get current dot positions for analysis
   const getDotPositions = useCallback(() => {
     return dots.map(dot => ({
       name: dot.name,
-      roi: { x: dot.position.x, y: dot.position.y, width: 0, height: 0 }
+      roi: { x: dot.position.x, y: dot.position.y, width: 0, height: 0 },
     }));
   }, [dots]);
 
@@ -51,6 +54,6 @@ export function useMovableDots() {
     dots,
     updateDotPosition,
     resetDots,
-    getDotPositions
+    getDotPositions,
   };
 }

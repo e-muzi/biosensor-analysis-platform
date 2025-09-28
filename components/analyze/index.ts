@@ -4,4 +4,4 @@ export { CameraCapture } from './CameraCapture';
 export { ImageUpload } from './ImageUpload';
 export { ImageDisplay } from './ImageDisplay';
 export { ResultCard } from './ResultCard';
-export { ImageAlignment } from './ImageAlignment'; 
+export { ImageAlignment } from './ImageAlignment';

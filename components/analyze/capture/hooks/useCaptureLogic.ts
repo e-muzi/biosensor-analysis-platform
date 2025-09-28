@@ -1,7 +1,7 @@
-import { useState, useCallback } from "react";
-import { analyzeImage } from "../../../../utils/analysis/unifiedAnalysis";
-import { useModeStore } from "../../../../state/modeStore";
-import type { CalibrationResult } from "../../../../types";
+import { useState, useCallback } from 'react';
+import { analyzeImage } from '../../../../utils/analysis/unifiedAnalysis';
+import { useModeStore } from '../../../../state/modeStore';
+import type { CalibrationResult } from '../../../../types';
 
 export function useCaptureLogic(
   onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void,
@@ -39,12 +39,12 @@ export function useCaptureLogic(
 
   const handleAlignmentConfirm = useCallback(
     (alignedImageSrc: string) => {
-      console.log("Debug: CAPTURE LOGIC - handleAlignmentConfirm called");
+      console.log('Debug: CAPTURE LOGIC - handleAlignmentConfirm called');
       console.log(
-        "Debug: CAPTURE LOGIC - alignedImageSrc length:",
+        'Debug: CAPTURE LOGIC - alignedImageSrc length:',
         alignedImageSrc.length
       );
-      console.log("Debug: CAPTURE LOGIC - Setting imageSrc to aligned image");
+      console.log('Debug: CAPTURE LOGIC - Setting imageSrc to aligned image');
       if (onImageCapture) {
         onImageCapture(alignedImageSrc);
       } else {
@@ -91,12 +91,12 @@ export function useCaptureLogic(
         onAnalysisComplete(calibrationResults, imageSrc);
       } else {
         // This should not happen in the new system as both modes return CalibrationResult[]
-        console.warn("Unexpected: analysisResults without calibrationResults");
+        console.warn('Unexpected: analysisResults without calibrationResults');
         onAnalysisComplete([], imageSrc);
       }
     } catch (err) {
       console.error(err);
-      setError("Failed to analyze image. Please try a different one.");
+      setError('Failed to analyze image. Please try a different one.');
     } finally {
       setIsAnalyzing(false);
     }

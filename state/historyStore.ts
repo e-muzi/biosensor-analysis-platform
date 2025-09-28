@@ -22,15 +22,18 @@ interface HistoryState {
 // This function stores the history of analysis results in the browser's local storage
 export const useHistoryStore = create<HistoryState>()(
   persist(
-    (set) => ({
+    set => ({
       records: [],
-      addRecord: (record) => set(state => ({ records: [record, ...state.records] })),
+      addRecord: record =>
+        set(state => ({ records: [record, ...state.records] })),
       clearHistory: () => set({ records: [] }),
-      deleteRecord: (id) => set(state => ({ records: state.records.filter(r => r.id !== id) })),
-      updateRecordName: (id, name) => set(state => ({
-        records: state.records.map(r => r.id === id ? { ...r, name } : r)
-      })),
-      setRecords: (records) => set({ records }),
+      deleteRecord: id =>
+        set(state => ({ records: state.records.filter(r => r.id !== id) })),
+      updateRecordName: (id, name) =>
+        set(state => ({
+          records: state.records.map(r => (r.id === id ? { ...r, name } : r)),
+        })),
+      setRecords: records => set({ records }),
     }),
     { name: 'history-store' }
   )

@@ -1,2 +1,2 @@
 export { HistoryScreen } from './HistoryScreen';
-export { HistoryItem } from './HistoryItem'; 
+export { HistoryItem } from './HistoryItem';

@@ -76,7 +76,6 @@ export const PREDEFINED_PESTICIDES: Pesticide[] = [
   },
 ];
 
-
 interface PesticideState {
   pesticides: Pesticide[];
   getCurveForPesticide: (name: string) => CalibrationPoint[];
@@ -84,8 +83,8 @@ interface PesticideState {
 
 export const usePesticideStore = create<PesticideState>(() => ({
   pesticides: PREDEFINED_PESTICIDES,
-  getCurveForPesticide: (name) => {
+  getCurveForPesticide: name => {
     const pesticide = PREDEFINED_PESTICIDES.find(p => p.name === name);
     return pesticide ? pesticide.curve : [];
-  }
+  },
 }));

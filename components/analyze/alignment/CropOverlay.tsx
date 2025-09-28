@@ -22,7 +22,7 @@ export const CropOverlay: React.FC<CropOverlayProps> = ({
   canvasHeight,
   primaryColor,
   surfaceColor,
-  borderColor
+  borderColor,
 }) => {
   const overlayStyle = {
     position: 'absolute' as const,
@@ -32,7 +32,7 @@ export const CropOverlay: React.FC<CropOverlayProps> = ({
     top: `${(cropBounds.y / canvasHeight) * 100}%`,
     width: `${(cropBounds.width / canvasWidth) * 100}%`,
     height: `${(cropBounds.height / canvasHeight) * 100}%`,
-    zIndex: 10
+    zIndex: 10,
   };
 
   const labelStyle = {
@@ -47,14 +47,12 @@ export const CropOverlay: React.FC<CropOverlayProps> = ({
     backgroundColor: surfaceColor,
     color: primaryColor,
     border: `1px solid ${borderColor}`,
-    opacity: 0.9
+    opacity: 0.9,
   };
 
   return (
     <Box sx={overlayStyle}>
-      <Typography sx={labelStyle}>
-        Crop Area
-      </Typography>
+      <Typography sx={labelStyle}>Crop Area</Typography>
     </Box>
   );
 };

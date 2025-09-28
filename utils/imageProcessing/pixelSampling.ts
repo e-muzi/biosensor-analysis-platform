@@ -1,6 +1,6 @@
 /**
  * Main pixel sampling module - refactored for better organization
- * 
+ *
  * This module provides a clean interface for pixel sampling operations
  * while delegating specific functionality to specialized modules.
  */
@@ -9,32 +9,30 @@
 export type { PixelData, SamplingResult, PixelWithPriority } from './types';
 
 // Re-export main sampling functions
-export { 
+export {
   samplePixelsAtClick,
-  samplePixelsAtCoordinates 
+  samplePixelsAtCoordinates,
 } from './samplingAlgorithms';
 
-
 // Re-export brightness calculation functions
-export { 
-  calculateLuminance, 
+export {
+  calculateLuminance,
   calculateMaxRGB,
   calculateAverageRGB,
   rgbToLuminance,
-  calculateBrightnessForRoi 
+  calculateBrightnessForRoi,
 } from './brightness';
 
 // Re-export validation functions
-export { 
-  isValidPixel, 
-  isValidPixelForManualClick, 
+export {
+  isValidPixel,
+  isValidPixelForManualClick,
   getPixelPriority,
-  validatePixelData 
+  validatePixelData,
 } from './pixelValidation';
 
 import { samplePixelsAtCoordinates } from './samplingAlgorithms';
 import type { SamplingResult } from './types';
-
 
 /**
  * NEW: Sample pesticides using specific pixel coordinates

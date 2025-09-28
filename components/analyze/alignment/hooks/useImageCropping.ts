@@ -1,6 +1,6 @@
-import { useCallback } from "react";
-import { cropToTestKit } from "../../../../utils/analysis";
-import { CropBounds } from "./useCanvasState";
+import { useCallback } from 'react';
+import { cropToTestKit } from '../../../../utils/analysis';
+import { CropBounds } from './useCanvasState';
 
 // Image Cropping
 export function useImageCropping(
@@ -12,19 +12,25 @@ export function useImageCropping(
     if (!cropBounds || !canvasRef.current) return null;
     try {
       const canvas = canvasRef.current;
-      const croppedCanvas = document.createElement("canvas");
-      const croppedCtx = croppedCanvas.getContext("2d");
+      const croppedCanvas = document.createElement('canvas');
+      const croppedCtx = croppedCanvas.getContext('2d');
       if (!croppedCtx) return null;
       croppedCanvas.width = cropBounds.width;
       croppedCanvas.height = cropBounds.height;
       croppedCtx.drawImage(
         canvas,
-        cropBounds.x, cropBounds.y, cropBounds.width, cropBounds.height,
-        0, 0, cropBounds.width, cropBounds.height
+        cropBounds.x,
+        cropBounds.y,
+        cropBounds.width,
+        cropBounds.height,
+        0,
+        0,
+        cropBounds.width,
+        cropBounds.height
       );
-      return croppedCanvas.toDataURL("image/jpeg", 0.9);
+      return croppedCanvas.toDataURL('image/jpeg', 0.9);
     } catch (error) {
-      console.error("Crop error:", error);
+      console.error('Crop error:', error);
       return null;
     }
   }, [cropBounds, canvasRef]);
@@ -33,20 +39,24 @@ export function useImageCropping(
     if (!imageRef.current || !canvasRef.current || !cropBounds) return null;
     try {
       const canvas = canvasRef.current;
-      const ctx = canvas.getContext("2d");
+      const ctx = canvas.getContext('2d');
       if (!ctx) return null;
-      
+
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const croppedDataUrl = await cropToTestKit(imageData, cropBounds, imageRef.current);
+      const croppedDataUrl = await cropToTestKit(
+        imageData,
+        cropBounds,
+        imageRef.current
+      );
       return croppedDataUrl;
     } catch (error) {
-      console.error("Auto-crop error:", error);
+      console.error('Auto-crop error:', error);
       return null;
     }
   }, [cropBounds, imageRef, canvasRef]);
 
   return {
     handleConfirmCrop,
-    handleAutoCrop
+    handleAutoCrop,
   };
 }

@@ -1,12 +1,6 @@
-import { useRef } from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  IconButton,
-  
-} from "@mui/material";
-import { Check as CheckIcon } from "@mui/icons-material";
+import { useRef } from 'react';
+import { Box, Typography, TextField, IconButton } from '@mui/material';
+import { Check as CheckIcon } from '@mui/icons-material';
 
 interface HistoryNameProps {
   name: string;
@@ -29,18 +23,18 @@ export function HistoryName({
 
   if (isEditing) {
     return (
-      <Box display="flex" alignItems="center" gap={1}>
+      <Box display='flex' alignItems='center' gap={1}>
         <TextField
           ref={inputRef}
           value={name}
           onChange={onNameChange}
           onKeyDown={onKeyDown}
-          variant="outlined"
-          size="small"
+          variant='outlined'
+          size='small'
           fullWidth
           autoFocus
         />
-        <IconButton onClick={onNameUpdate} size="small">
+        <IconButton onClick={onNameUpdate} size='small'>
           <CheckIcon />
         </IconButton>
       </Box>
@@ -48,11 +42,11 @@ export function HistoryName({
   }
 
   return (
-    <Box display="flex" alignItems="center" gap={1}>
-      <Typography 
-        variant="h6" 
+    <Box display='flex' alignItems='center' gap={1}>
+      <Typography
+        variant='h6'
         onDoubleClick={onDoubleClick}
-        sx={{ cursor: "pointer", flexGrow: 1 }}
+        sx={{ cursor: 'pointer', flexGrow: 1 }}
       >
         {name}
       </Typography>

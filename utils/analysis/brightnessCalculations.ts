@@ -1,24 +1,28 @@
-import { calculateCalibrationStripRGBs } from "./brightnessAnalysis";
-import { estimateConcentrationFromCalibration } from "./calibrationAnalysis";
-import { CALIBRATION_STRIPS, PESTICIDE_COORDINATES } from "../constants/roiConstants";
-import { samplePesticidesAtCoordinates } from "../imageProcessing/pixelSampling";
-import type { CalibrationResult } from "../../types";
-
+import { calculateCalibrationStripRGBs } from './brightnessAnalysis';
+import { estimateConcentrationFromCalibration } from './calibrationAnalysis';
+import {
+  CALIBRATION_STRIPS,
+  PESTICIDE_COORDINATES,
+} from '../constants/roiConstants';
+import { samplePesticidesAtCoordinates } from '../imageProcessing/pixelSampling';
+import type { CalibrationResult } from '../../types';
 
 // Analyze image with calibration strips using new 5-pixel sampling method
-export function analyzeWithCalibrationStrips(image: HTMLImageElement): Promise<CalibrationResult[]> {
+export function analyzeWithCalibrationStrips(
+  image: HTMLImageElement
+): Promise<CalibrationResult[]> {
   return new Promise((resolve, reject) => {
     try {
-      const canvas = document.createElement("canvas");
+      const canvas = document.createElement('canvas');
       canvas.width = image.naturalWidth;
       canvas.height = image.naturalHeight;
-      const ctx = canvas.getContext("2d", { 
+      const ctx = canvas.getContext('2d', {
         premultipliedAlpha: false,
-        willReadFrequently: true 
+        willReadFrequently: true,
       }) as CanvasRenderingContext2D;
 
       if (!ctx) {
-        return reject(new Error("Could not get canvas context"));
+        return reject(new Error('Could not get canvas context'));
       }
 
       ctx.drawImage(image, 0, 0);
@@ -28,39 +32,54 @@ export function analyzeWithCalibrationStrips(image: HTMLImageElement): Promise<C
       CALIBRATION_STRIPS.forEach((strip, index) => {
         // Calculate calibration strip RGB values
         const calibrationRGBs = calculateCalibrationStripRGBs(ctx, strip);
-        
+
         // NEW: Use coordinate-based sampling for test area RGB
         const coordinate = PESTICIDE_COORDINATES[index];
-        console.log(`Debug: ANALYSIS - Sampling ${strip.name} at coordinate (${coordinate.x}, ${coordinate.y}) canvas: ${canvas.width}x${canvas.height}`);
-        const samplingResults = samplePesticidesAtCoordinates(ctx, [coordinate]);
-        
+        console.log(
+          `Debug: ANALYSIS - Sampling ${strip.name} at coordinate (${coordinate.x}, ${coordinate.y}) canvas: ${canvas.width}x${canvas.height}`
+        );
+        const samplingResults = samplePesticidesAtCoordinates(ctx, [
+          coordinate,
+        ]);
+
         // Calculate average RGB from sampled pixels
         const pixels = samplingResults[0]?.pixels || [];
-        const averageR = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length : 0;
-        const averageG = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length : 0;
-        const averageB = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length : 0;
+        const averageR =
+          pixels.length > 0
+            ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length
+            : 0;
+        const averageG =
+          pixels.length > 0
+            ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length
+            : 0;
+        const averageB =
+          pixels.length > 0
+            ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length
+            : 0;
         const testRGB = averageR + averageG + averageB;
-        
-        console.log(`Debug: ANALYSIS - ${strip.name} testRGB: ${testRGB.toFixed(0)}`);
-        
-        // Estimate concentration
-        const { concentration, confidence } = estimateConcentrationFromCalibration(
-          testRGB, 
-          calibrationRGBs, 
-          strip.concentrations
+
+        console.log(
+          `Debug: ANALYSIS - ${strip.name} testRGB: ${testRGB.toFixed(0)}`
         );
-        
+
+        // Estimate concentration
+        const { concentration, confidence } =
+          estimateConcentrationFromCalibration(
+            testRGB,
+            calibrationRGBs,
+            strip.concentrations
+          );
+
         results.push({
           pesticide: strip.name,
           testRGB,
           calibrationRGBs,
           estimatedConcentration: concentration,
-          confidence
+          confidence,
         });
       });
-      
-      resolve(results);
 
+      resolve(results);
     } catch (error) {
       reject(error);
     }

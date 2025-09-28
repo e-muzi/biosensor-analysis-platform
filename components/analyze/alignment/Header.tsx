@@ -9,29 +9,26 @@ interface AlignmentHeaderProps {
 }
 
 // Alignment Header
-export const AlignmentHeader: React.FC<AlignmentHeaderProps> = ({ 
-  title, 
-  subtitle, 
-  textColor, 
-  subtitleColor 
+export const AlignmentHeader: React.FC<AlignmentHeaderProps> = ({
+  title,
+  subtitle,
+  textColor,
+  subtitleColor,
 }) => {
   return (
     <Box sx={{ textAlign: 'center', mb: 4 }}>
-      <Typography 
-        variant="h3" 
-        component="h2" 
+      <Typography
+        variant='h3'
+        component='h2'
         gutterBottom
-        sx={{ 
+        sx={{
           fontWeight: 'bold',
-          color: textColor
+          color: textColor,
         }}
       >
         {title}
       </Typography>
-      <Typography 
-        variant="body2"
-        sx={{ color: subtitleColor }}
-      >
+      <Typography variant='body2' sx={{ color: subtitleColor }}>
         {subtitle}
       </Typography>
     </Box>

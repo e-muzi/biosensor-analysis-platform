@@ -10,9 +10,9 @@ interface ModeState {
 
 export const useModeStore = create<ModeState>()(
   persist(
-    (set) => ({
+    set => ({
       detectionMode: 'preset', // Default mode
-      setDetectionMode: (mode) => set({ detectionMode: mode }),
+      setDetectionMode: mode => set({ detectionMode: mode }),
     }),
     {
       name: 'detection-mode-storage',

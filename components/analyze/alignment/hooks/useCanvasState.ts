@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
 
 export interface CropBounds {
   x: number;
@@ -16,7 +16,7 @@ export function useCanvasRefs() {
   return {
     canvasRef,
     imageRef,
-    containerRef
+    containerRef,
   };
 }
 
@@ -25,10 +25,17 @@ export function useCanvasState() {
   const [isPanning, setIsPanning] = useState(false);
   const [cropBounds, setCropBounds] = useState<CropBounds | null>(null);
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(null);
-  const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(null);
+  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
+    null
+  );
+  const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(
+    null
+  );
   const [isAutoDetecting, setIsAutoDetecting] = useState(false);
-  const [imageDisplaySize, setImageDisplaySize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
+  const [imageDisplaySize, setImageDisplaySize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 0, height: 0 });
 
   return {
     isDragging,
@@ -46,6 +53,6 @@ export function useCanvasState() {
     isAutoDetecting,
     setIsAutoDetecting,
     imageDisplaySize,
-    setImageDisplaySize
+    setImageDisplaySize,
   };
 }

@@ -1,17 +1,11 @@
 import React from 'react';
-import { 
-  Box, 
-  Button, 
-  Paper,
-  Grid,
-  Chip
-} from '@mui/material';
-import { 
+import { Box, Button, Paper, Grid, Chip } from '@mui/material';
+import {
   ZoomIn as ZoomInIcon,
   ZoomOut as ZoomOutIcon,
   RotateLeft as RotateLeftIcon,
   RotateRight as RotateRightIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
 } from '@mui/icons-material';
 
 interface AlignmentControlsProps {
@@ -40,118 +34,126 @@ export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
   onRotateRight,
   onReset,
   colors,
-  accentColor
+  accentColor,
 }) => {
   return (
-    <Paper 
-      sx={{ 
-        mt: 2, 
+    <Paper
+      sx={{
+        mt: 2,
         p: 2,
         backgroundColor: colors.background,
         border: 1,
-        borderColor: colors.border
+        borderColor: colors.border,
       }}
     >
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1, mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: 1,
+          mb: 2,
+        }}
+      >
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<ZoomInIcon />}
           onClick={onZoomIn}
-          size="small"
+          size='small'
           sx={{
             backgroundColor: colors.background,
             color: colors.text,
             borderColor: colors.border,
             '&:hover': {
               backgroundColor: colors.border,
-            }
+            },
           }}
         >
           Zoom In
         </Button>
-        
+
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<ZoomOutIcon />}
           onClick={onZoomOut}
-          size="small"
+          size='small'
           sx={{
             backgroundColor: colors.background,
             color: colors.text,
             borderColor: colors.border,
             '&:hover': {
               backgroundColor: colors.border,
-            }
+            },
           }}
         >
           Zoom Out
         </Button>
-        
+
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<RotateLeftIcon />}
           onClick={onRotateLeft}
-          size="small"
+          size='small'
           sx={{
             backgroundColor: colors.background,
             color: colors.text,
             borderColor: colors.border,
             '&:hover': {
               backgroundColor: colors.border,
-            }
+            },
           }}
         >
           Rotate Left
         </Button>
-        
+
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<RotateRightIcon />}
           onClick={onRotateRight}
-          size="small"
+          size='small'
           sx={{
             backgroundColor: colors.background,
             color: colors.text,
             borderColor: colors.border,
             '&:hover': {
               backgroundColor: colors.border,
-            }
+            },
           }}
         >
           Rotate Right
         </Button>
-        
+
         <Button
-          variant="outlined"
+          variant='outlined'
           startIcon={<RefreshIcon />}
           onClick={onReset}
-          size="small"
+          size='small'
           sx={{
             backgroundColor: colors.background,
             color: colors.text,
             borderColor: colors.border,
             '&:hover': {
               backgroundColor: colors.border,
-            }
+            },
           }}
         >
           Reset
         </Button>
       </Box>
-      
+
       <Box sx={{ textAlign: 'center' }}>
-        <Grid container spacing={2} justifyContent="center">
+        <Grid container spacing={2} justifyContent='center'>
           <Grid size={{ xs: 12 }}>
             <Chip
               label={`Scale: ${(scale * 100).toFixed(0)}%`}
-              size="small"
+              size='small'
               sx={{ backgroundColor: accentColor, color: 'black' }}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Chip
               label={`Rotation: ${rotation}°`}
-              size="small"
+              size='small'
               sx={{ backgroundColor: accentColor, color: 'black' }}
             />
           </Grid>

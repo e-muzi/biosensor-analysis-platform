@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Typography } from "@mui/material";
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 
 // Detection Overlay
 interface DetectionOverlayProps {
@@ -8,13 +8,13 @@ interface DetectionOverlayProps {
   videoHeight: number;
 }
 
-export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({ 
-  detectedBounds, 
-  videoWidth, 
-  videoHeight 
+export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
+  detectedBounds,
+  videoWidth,
+  videoHeight,
 }) => {
   const overlayStyle = {
-    position: "absolute" as const,
+    position: 'absolute' as const,
     left: `${(detectedBounds.x / videoWidth) * 100}%`,
     top: `${(detectedBounds.y / videoHeight) * 100}%`,
     width: `${(detectedBounds.width / videoWidth) * 100}%`,
@@ -28,23 +28,23 @@ export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
         sx={{
           ...overlayStyle,
           border: 2,
-          borderColor: "green.500",
-          backgroundColor: "rgba(34, 197, 94, 0.2)",
-          zIndex: 5
+          borderColor: 'green.500',
+          backgroundColor: 'rgba(34, 197, 94, 0.2)',
+          zIndex: 5,
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{
-            position: "absolute",
+            position: 'absolute',
             top: -24,
             left: 0,
-            color: "green.400",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: 'green.400',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             px: 1,
             py: 0.5,
             borderRadius: 0.5,
-            fontSize: "0.75rem"
+            fontSize: '0.75rem',
           }}
         >
           Calibration
@@ -56,24 +56,24 @@ export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
         sx={{
           ...overlayStyle,
           border: 2,
-          borderColor: "green.400",
-          borderStyle: "dashed",
-          backgroundColor: "rgba(34, 197, 94, 0.1)",
-          zIndex: 4
+          borderColor: 'green.400',
+          borderStyle: 'dashed',
+          backgroundColor: 'rgba(34, 197, 94, 0.1)',
+          zIndex: 4,
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{
-            position: "absolute",
+            position: 'absolute',
             top: -24,
             left: 0,
-            color: "green.400",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: 'green.400',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             px: 1,
             py: 0.5,
             borderRadius: 0.5,
-            fontSize: "0.75rem"
+            fontSize: '0.75rem',
           }}
         >
           Test Areas
@@ -85,24 +85,24 @@ export const DetectionOverlay: React.FC<DetectionOverlayProps> = ({
         sx={{
           ...overlayStyle,
           border: 2,
-          borderColor: "cyan.400",
-          borderStyle: "dashed",
-          backgroundColor: "rgba(6, 182, 212, 0.1)",
-          zIndex: 3
+          borderColor: 'cyan.400',
+          borderStyle: 'dashed',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          zIndex: 3,
         }}
       >
         <Typography
-          variant="caption"
+          variant='caption'
           sx={{
-            position: "absolute",
+            position: 'absolute',
             top: -24,
             left: 0,
-            color: "cyan.400",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            color: 'cyan.400',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
             px: 1,
             py: 0.5,
             borderRadius: 0.5,
-            fontSize: "0.75rem"
+            fontSize: '0.75rem',
           }}
         >
           Test Strips

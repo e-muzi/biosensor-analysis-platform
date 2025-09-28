@@ -1,8 +1,14 @@
-import React from "react";
-import { Box, Paper, Backdrop, CircularProgress, Typography } from "@mui/material";
-import { CanvasStage } from "../CanvasStage";
-import { CropOverlay } from "../CropOverlay";
-import { iGEMColors } from "../../../../state/themeStore";
+import React from 'react';
+import {
+  Box,
+  Paper,
+  Backdrop,
+  CircularProgress,
+  Typography,
+} from '@mui/material';
+import { CanvasStage } from '../CanvasStage';
+import { CropOverlay } from '../CropOverlay';
+import { iGEMColors } from '../../../../state/themeStore';
 
 interface AlignmentCanvasProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -30,39 +36,39 @@ export const AlignmentCanvas: React.FC<AlignmentCanvasProps> = ({
   onMouseDown,
   onMouseMove,
   onMouseUp,
-  onImageLoad
+  onImageLoad,
 }) => {
   return (
     <Paper
       sx={{
-        position: "relative",
+        position: 'relative',
         border: 2,
         borderRadius: 1,
-        overflow: "hidden",
-        backgroundColor: "background.paper",
-        borderColor: "divider"
+        overflow: 'hidden',
+        backgroundColor: 'background.paper',
+        borderColor: 'divider',
       }}
     >
-      <CanvasStage 
+      <CanvasStage
         canvasRef={canvasRef}
         imageDisplaySize={imageDisplaySize}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      
+
       {/* Hidden image for reference */}
       <Box
-        component="img"
+        component='img'
         ref={imageRef}
         onLoad={onImageLoad}
-        crossOrigin="anonymous"
-        sx={{ display: "none" }}
+        crossOrigin='anonymous'
+        sx={{ display: 'none' }}
       />
-      
+
       {/* Crop overlay */}
       {cropBounds && imageLoaded && canvasRef.current && (
-        <CropOverlay 
+        <CropOverlay
           cropBounds={cropBounds}
           canvasWidth={canvasRef.current.width}
           canvasHeight={canvasRef.current.height}
@@ -71,25 +77,25 @@ export const AlignmentCanvas: React.FC<AlignmentCanvasProps> = ({
           borderColor={colors.border}
         />
       )}
-      
+
       {/* Loading indicator */}
       <Backdrop
         open={isAutoDetecting}
-        sx={{ 
-          position: "absolute",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
-          zIndex: 1
+        sx={{
+          position: 'absolute',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 1,
         }}
       >
-        <Box sx={{ textAlign: "center" }}>
-          <CircularProgress 
+        <Box sx={{ textAlign: 'center' }}>
+          <CircularProgress
             size={32}
-            sx={{ 
+            sx={{
               color: iGEMColors.primary,
-              mb: 2
+              mb: 2,
             }}
           />
-          <Typography variant="body1" sx={{ color: "white" }}>
+          <Typography variant='body1' sx={{ color: 'white' }}>
             Detecting test kit...
           </Typography>
         </Box>

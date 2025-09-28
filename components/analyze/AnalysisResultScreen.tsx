@@ -1,16 +1,19 @@
-import { useRef } from "react";
+import { useRef } from 'react';
 import {
   Box,
   Container,
   Typography,
   Button,
   Grid,
-  CircularProgress
-} from "@mui/material";
-import { ArrowBack as ArrowBackIcon, Refresh as RefreshIcon } from "@mui/icons-material";
-import { ImageDisplay } from "./ImageDisplay";
-import { ResultCard } from "./ResultCard";
-import type { CalibrationResult } from "../../types";
+  CircularProgress,
+} from '@mui/material';
+import {
+  ArrowBack as ArrowBackIcon,
+  Refresh as RefreshIcon,
+} from '@mui/icons-material';
+import { ImageDisplay } from './ImageDisplay';
+import { ResultCard } from './ResultCard';
+import type { CalibrationResult } from '../../types';
 
 interface AnalysisResultScreenProps {
   results: CalibrationResult[];
@@ -31,33 +34,33 @@ export function AnalysisResultScreen({
 
   if (isAnalyzing) {
     return (
-      <Container maxWidth="md" sx={{ py: 3, pb: 12 }}>
-        <Box sx={{ textAlign: "center" }}>
+      <Container maxWidth='md' sx={{ py: 3, pb: 12 }}>
+        <Box sx={{ textAlign: 'center' }}>
           <CircularProgress size={60} sx={{ mb: 2 }} />
-          <Typography variant="h6">Analyzing image...</Typography>
+          <Typography variant='h6'>Analyzing image...</Typography>
         </Box>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 3, pb: 12 }}>
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 2 }}>
+    <Container maxWidth='lg' sx={{ py: 3, pb: 12 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3, gap: 2 }}>
         <Button
           startIcon={<ArrowBackIcon />}
           onClick={onBack}
-          variant="outlined"
+          variant='outlined'
         >
           Back
         </Button>
-        <Typography variant="h4" sx={{ flexGrow: 1 }}>
+        <Typography variant='h4' sx={{ flexGrow: 1 }}>
           Analysis Results
         </Typography>
         <Button
           startIcon={<RefreshIcon />}
           onClick={onNewAnalysis}
-          variant="contained"
-          color="primary"
+          variant='contained'
+          color='primary'
         >
           New Analysis
         </Button>
@@ -68,8 +71,8 @@ export function AnalysisResultScreen({
           <ImageDisplay ref={imageRef} imageSrc={imageSrc} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            <Typography variant="h6">Detection Results</Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography variant='h6'>Detection Results</Typography>
             {results.map((result, index) => (
               <ResultCard key={index} result={result} />
             ))}

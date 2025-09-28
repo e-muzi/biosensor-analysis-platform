@@ -9,7 +9,7 @@ interface AppButtonProps extends Omit<ButtonProps, 'variant'> {
 
 // Custom styled button variants
 const StyledButton = styled(Button, {
-  shouldForwardProp: (prop) => prop !== 'appVariant',
+  shouldForwardProp: prop => prop !== 'appVariant',
 })<{ appVariant?: string }>(({ theme, appVariant }) => {
   const baseStyles = {
     textTransform: 'none' as const,
@@ -78,16 +78,13 @@ const StyledButton = styled(Button, {
   }
 });
 
-export const AppButton: React.FC<AppButtonProps> = ({ 
-  children, 
-  variant = 'primary', 
-  ...props 
+export const AppButton: React.FC<AppButtonProps> = ({
+  children,
+  variant = 'primary',
+  ...props
 }) => {
   return (
-    <StyledButton 
-      appVariant={variant}
-      {...props}
-    >
+    <StyledButton appVariant={variant} {...props}>
       {children}
     </StyledButton>
   );

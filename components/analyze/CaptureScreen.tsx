@@ -1,12 +1,12 @@
-import React from "react";
-import { Alert, Box } from "@mui/material";
-import { CameraCapture, ImageAlignment } from "./";
-import { CaptureHeader } from "./capture/components/CaptureHeader";
-import { ImagePreview } from "./capture/components/ImagePreview";
-import { CaptureActions } from "./capture/components/CaptureActions";
-import { ImageActions } from "./capture/components/ImageActions";
-import { useCaptureLogic } from "./capture/hooks/useCaptureLogic";
-import type { CalibrationResult } from "../../types";
+import React from 'react';
+import { Alert, Box } from '@mui/material';
+import { CameraCapture, ImageAlignment } from './';
+import { CaptureHeader } from './capture/components/CaptureHeader';
+import { ImagePreview } from './capture/components/ImagePreview';
+import { CaptureActions } from './capture/components/CaptureActions';
+import { ImageActions } from './capture/components/ImageActions';
+import { useCaptureLogic } from './capture/hooks/useCaptureLogic';
+import type { CalibrationResult } from '../../types';
 
 interface CaptureScreenProps {
   onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void;
@@ -88,7 +88,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
           )}
 
           {error && (
-            <Alert severity="error" sx={{ maxWidth: "md", mx: "auto", mt: 2 }}>
+            <Alert severity='error' sx={{ maxWidth: 'md', mx: 'auto', mt: 2 }}>
               ❌ {error}
             </Alert>
           )}

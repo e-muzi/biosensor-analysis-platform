@@ -41,7 +41,12 @@ export interface HistoryRecord {
   results: AnalysisResult[];
 }
 
-export type Screen = 'capture' | 'history' | 'settings' | 'analysis' | 'alignment';
+export type Screen =
+  | 'capture'
+  | 'history'
+  | 'settings'
+  | 'analysis'
+  | 'alignment';
 export interface PesticideROI {
   name: string;
   roi: {
@@ -53,7 +58,7 @@ export interface PesticideROI {
 }
 
 // Detection mode types
-export type DetectionMode = "calibration" | "normalization";
+export type DetectionMode = 'calibration' | 'normalization';
 
 export interface ROI {
   x: number;

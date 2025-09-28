@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import { Dialog, DialogContent } from "@mui/material";
-import { CameraHeader } from "./camera/components/CameraHeader";
-import { CameraView } from "./camera/components/CameraView";
-import { CameraControls } from "./camera/components/CameraControls";
-import { useCameraCapture } from "./camera/hooks/useCameraCapture";
+import React, { useEffect } from 'react';
+import { Dialog, DialogContent } from '@mui/material';
+import { CameraHeader } from './camera/components/CameraHeader';
+import { CameraView } from './camera/components/CameraView';
+import { CameraControls } from './camera/components/CameraControls';
+import { useCameraCapture } from './camera/hooks/useCameraCapture';
 
 interface CameraCaptureProps {
   onCapture: (imageSrc: string, originalImageSrc?: string) => void;
@@ -11,10 +11,10 @@ interface CameraCaptureProps {
   onError: (error: string) => void;
 }
 
-export const CameraCapture: React.FC<CameraCaptureProps> = ({ 
-  onCapture, 
-  onClose, 
-  onError 
+export const CameraCapture: React.FC<CameraCaptureProps> = ({
+  onCapture,
+  onClose,
+  onError,
 }) => {
   const {
     videoRef,
@@ -23,13 +23,13 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
     toggleFlash,
     handleCapturePhoto,
     openCamera,
-    closeCamera
+    closeCamera,
   } = useCameraCapture(onCapture, onError);
 
   // Automatically start camera when component mounts
   useEffect(() => {
     openCamera();
-    
+
     // Cleanup: stop camera when component unmounts
     return () => {
       closeCamera();
@@ -37,27 +37,25 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
   }, [openCamera, closeCamera]);
 
   return (
-    <Dialog 
-      open={true} 
+    <Dialog
+      open={true}
       onClose={onClose}
       maxWidth={false}
       fullScreen
       PaperProps={{
         sx: {
-          backgroundColor: "black",
+          backgroundColor: 'black',
           margin: 0,
-          maxHeight: "100vh",
-          height: "100vh"
-        }
+          maxHeight: '100vh',
+          height: '100vh',
+        },
       }}
     >
-      <DialogContent sx={{ p: 0, height: "100%", position: "relative" }}>
+      <DialogContent sx={{ p: 0, height: '100%', position: 'relative' }}>
         <CameraHeader />
-        
-        <CameraView 
-          videoRef={videoRef}
-        />
-        
+
+        <CameraView videoRef={videoRef} />
+
         <CameraControls
           flashEnabled={flashEnabled}
           isCapturing={isCapturing}

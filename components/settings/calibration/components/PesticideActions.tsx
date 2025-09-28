@@ -1,6 +1,9 @@
-import React from "react";
-import { Box, Button } from "@mui/material";
-import { Edit as EditIcon, RestartAlt as RestartAltIcon } from "@mui/icons-material";
+import React from 'react';
+import { Box, Button } from '@mui/material';
+import {
+  Edit as EditIcon,
+  RestartAlt as RestartAltIcon,
+} from '@mui/icons-material';
 
 interface PesticideActionsProps {
   pesticide: string;
@@ -13,25 +16,25 @@ export const PesticideActions: React.FC<PesticideActionsProps> = ({
   pesticide,
   editing,
   onEdit,
-  onReset
+  onReset,
 }) => {
   return (
-    <Box sx={{ display: "flex", gap: 1 }}>
+    <Box sx={{ display: 'flex', gap: 1 }}>
       <Button
-        variant="outlined"
+        variant='outlined'
         startIcon={<EditIcon />}
         onClick={() => onEdit(pesticide)}
         disabled={editing === pesticide}
-        size="small"
+        size='small'
       >
         Edit
       </Button>
       <Button
-        variant="outlined"
-        color="error"
+        variant='outlined'
+        color='error'
         startIcon={<RestartAltIcon />}
         onClick={() => onReset(pesticide)}
-        size="small"
+        size='small'
       >
         Reset
       </Button>

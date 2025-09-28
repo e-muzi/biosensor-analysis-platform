@@ -1,2 +1,2 @@
 export { SettingsScreen } from './SettingsScreen';
-export { SettingsSection } from './SettingsSection'; 
+export { SettingsSection } from './SettingsSection';

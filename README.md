@@ -10,7 +10,7 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 
 - **Multi-Pesticide Detection**: Supports analysis of four common pesticides:
   - Acephate (0-100 µM range)
-  - Glyphosate (0-200 µM range) 
+  - Glyphosate (0-200 µM range)
   - Mancozeb (0-120 µM range)
   - Cypermethrin (0-180 µM range)
 
@@ -42,12 +42,14 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 ### Setup Instructions
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/e-muzi/biosensor-apptesting.git
    cd biosensor-apptesting
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    # or
@@ -55,6 +57,7 @@ This application is a React-based web tool that analyzes biosensor test kits to 
    ```
 
 3. **Start development server**
+
    ```bash
    npm run dev
    # or
@@ -167,4 +170,4 @@ The application is available online at: https://hkjs-biosensorapp.netlify.app/
 
 ---
 
-*This project was developed for the iGEM 2025 competition, focusing on innovative solutions for environmental monitoring and pesticide detection using synthetic biology approaches.*
+_This project was developed for the iGEM 2025 competition, focusing on innovative solutions for environmental monitoring and pesticide detection using synthetic biology approaches._

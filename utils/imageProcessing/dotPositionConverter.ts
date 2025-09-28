@@ -12,7 +12,7 @@ export function convertDotPositionsToCoordinates(
   return dots.map(dot => ({
     name: dot.name,
     x: Math.round(dot.position.x * imageWidth),
-    y: Math.round(dot.position.y * imageHeight)
+    y: Math.round(dot.position.y * imageHeight),
   }));
 }
 
@@ -29,7 +29,7 @@ export function convertCoordinatesToDotPositions(
     name: coord.name,
     position: {
       x: coord.x / imageWidth,
-      y: coord.y / imageHeight
-    }
+      y: coord.y / imageHeight,
+    },
   }));
 }

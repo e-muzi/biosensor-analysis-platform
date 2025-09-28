@@ -7,7 +7,7 @@ export const iGEMColors = {
   primaryDark: '#007A3A',
   accent: '#FFD700', // Gold
   accentDark: '#FFC107',
-  
+
   // Light theme
   light: {
     background: '#F8F9FA',
@@ -17,7 +17,7 @@ export const iGEMColors = {
     border: '#E5E7EB',
     shadow: 'rgba(0, 0, 0, 0.1)',
   },
-  
+
   // Dark theme
   dark: {
     background: '#111827',
@@ -26,7 +26,7 @@ export const iGEMColors = {
     textSecondary: '#9CA3AF',
     border: '#374151',
     shadow: 'rgba(0, 0, 0, 0.3)',
-  }
+  },
 };
 
 interface ThemeState {
@@ -40,8 +40,9 @@ export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
       theme: 'dark',
-      setTheme: (theme) => set({ theme }),
-      toggleTheme: () => set(state => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
+      setTheme: theme => set({ theme }),
+      toggleTheme: () =>
+        set(state => ({ theme: state.theme === 'dark' ? 'light' : 'dark' })),
       getColors: () => {
         const state = get();
         return state.theme === 'light' ? iGEMColors.light : iGEMColors.dark;

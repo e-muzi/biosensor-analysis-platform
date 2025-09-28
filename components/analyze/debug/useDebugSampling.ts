@@ -1,12 +1,16 @@
 import { useState, useCallback } from 'react';
-import { samplePixelsAtClick, samplePesticidesAtCoordinates } from '../../../utils/imageProcessing/pixelSampling';
+import {
+  samplePixelsAtClick,
+  samplePesticidesAtCoordinates,
+} from '../../../utils/imageProcessing/pixelSampling';
 import { PESTICIDE_COORDINATES } from '../../../utils/constants/roiConstants';
 import type { SamplingResult } from '../../../utils/imageProcessing/pixelSampling';
 
 export function useDebugSampling() {
   const [showDebug, setShowDebug] = useState(false);
   const [samplingResults, setSamplingResults] = useState<SamplingResult[]>([]);
-  const [manualClickResult, setManualClickResult] = useState<SamplingResult | null>(null);
+  const [manualClickResult, setManualClickResult] =
+    useState<SamplingResult | null>(null);
   const [isPixelPickerMode, setIsPixelPickerMode] = useState(false);
 
   const toggleDebug = useCallback((show: boolean) => {
@@ -15,7 +19,12 @@ export function useDebugSampling() {
 
   const performSampling = useCallback((ctx: CanvasRenderingContext2D) => {
     try {
-      console.log('Debug: DEBUG SAMPLING - Canvas dimensions:', ctx.canvas.width, 'x', ctx.canvas.height);
+      console.log(
+        'Debug: DEBUG SAMPLING - Canvas dimensions:',
+        ctx.canvas.width,
+        'x',
+        ctx.canvas.height
+      );
       // NEW: Use coordinate-based sampling instead of ROI-based
       const results = samplePesticidesAtCoordinates(ctx, PESTICIDE_COORDINATES);
       setSamplingResults(results);
@@ -39,22 +48,31 @@ export function useDebugSampling() {
     }
   }, []);
 
-  const handleImageClick = useCallback((
-    ctx: CanvasRenderingContext2D,
-    clickX: number,
-    clickY: number,
-    canvasWidth: number,
-    canvasHeight: number
-  ) => {
-    if (!isPixelPickerMode) return;
-    
-    try {
-      const result = samplePixelsAtClick(ctx, clickX, clickY, canvasWidth, canvasHeight);
-      setManualClickResult(result);
-    } catch (error) {
-      console.error('Error in manual pixel sampling:', error);
-    }
-  }, [isPixelPickerMode]);
+  const handleImageClick = useCallback(
+    (
+      ctx: CanvasRenderingContext2D,
+      clickX: number,
+      clickY: number,
+      canvasWidth: number,
+      canvasHeight: number
+    ) => {
+      if (!isPixelPickerMode) return;
+
+      try {
+        const result = samplePixelsAtClick(
+          ctx,
+          clickX,
+          clickY,
+          canvasWidth,
+          canvasHeight
+        );
+        setManualClickResult(result);
+      } catch (error) {
+        console.error('Error in manual pixel sampling:', error);
+      }
+    },
+    [isPixelPickerMode]
+  );
 
   return {
     showDebug,
@@ -65,6 +83,6 @@ export function useDebugSampling() {
     togglePixelPickerMode,
     performSampling,
     handleImageClick,
-    clearSamplingResults
+    clearSamplingResults,
   };
 }

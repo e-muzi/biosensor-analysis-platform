@@ -1,9 +1,9 @@
-import React from "react";
-import { Card, CardContent, Box } from "@mui/material";
-import { PesticideName } from "./PesticideName";
-import { PesticideActions } from "./PesticideActions";
-import { CalibrationInputs } from "./CalibrationInputs";
-import { CalibrationEditActions } from "./CalibrationEditActions";
+import React from 'react';
+import { Card, CardContent, Box } from '@mui/material';
+import { PesticideName } from './PesticideName';
+import { PesticideActions } from './PesticideActions';
+import { CalibrationInputs } from './CalibrationInputs';
+import { CalibrationEditActions } from './CalibrationEditActions';
 
 interface PesticideCardProps {
   pesticide: string;
@@ -19,7 +19,10 @@ interface PesticideCardProps {
   onNameDoubleClick: (pesticide: string) => void;
   onNameChange: (pesticide: string, value: string) => void;
   onNameBlur: (pesticide: string) => void;
-  onNameKeyDown: (e: React.KeyboardEvent<HTMLDivElement>, pesticide: string) => void;
+  onNameKeyDown: (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    pesticide: string
+  ) => void;
 }
 
 export const PesticideCard: React.FC<PesticideCardProps> = ({
@@ -36,12 +39,19 @@ export const PesticideCard: React.FC<PesticideCardProps> = ({
   onNameDoubleClick,
   onNameChange,
   onNameBlur,
-  onNameKeyDown
+  onNameKeyDown,
 }) => {
   return (
     <Card>
       <CardContent>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 2,
+          }}
+        >
           <PesticideName
             name={pesticide}
             editingName={editingName}
@@ -58,14 +68,14 @@ export const PesticideCard: React.FC<PesticideCardProps> = ({
             onReset={onReset}
           />
         </Box>
-        
+
         <CalibrationInputs
           pesticide={pesticide}
           values={values}
           editing={editing}
           onInputChange={onInputChange}
         />
-        
+
         <CalibrationEditActions
           onSave={() => onSave(pesticide)}
           onCancel={onCancel}

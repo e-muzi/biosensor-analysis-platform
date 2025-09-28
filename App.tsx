@@ -1,24 +1,24 @@
-import { useState, useCallback } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import { CssBaseline } from "@mui/material";
-import { Layout } from "./components/shared/Layout";
-import { CaptureScreen } from "./components/analyze/CaptureScreen";
-import { ImageAlignment } from "./components/analyze/ImageAlignment";
-import { AnalysisResultScreen } from "./components/analyze/AnalysisResultScreen";
-import { HistoryScreen } from "./components/history/HistoryScreen";
-import { SettingsScreen } from "./components/settings/SettingsScreen";
-import { useThemeStore } from "./state/themeStore";
-import { useHistoryStore } from "./state/historyStore";
-import { lightTheme, darkTheme } from "./state/muiTheme";
-import type { CalibrationResult } from "./types";
+import { useState, useCallback } from 'react';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline } from '@mui/material';
+import { Layout } from './components/shared/Layout';
+import { CaptureScreen } from './components/analyze/CaptureScreen';
+import { ImageAlignment } from './components/analyze/ImageAlignment';
+import { AnalysisResultScreen } from './components/analyze/AnalysisResultScreen';
+import { HistoryScreen } from './components/history/HistoryScreen';
+import { SettingsScreen } from './components/settings/SettingsScreen';
+import { useThemeStore } from './state/themeStore';
+import { useHistoryStore } from './state/historyStore';
+import { lightTheme, darkTheme } from './state/muiTheme';
+import type { CalibrationResult } from './types';
 
 function App() {
   const { theme } = useThemeStore();
   const { addRecord } = useHistoryStore();
 
   const [currentScreen, setCurrentScreen] = useState<
-    "analyze" | "history" | "settings"
-  >("analyze");
+    'analyze' | 'history' | 'settings'
+  >('analyze');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [pendingImage, setPendingImage] = useState<string | null>(null); // Image captured but not yet analyzed
   const [analysisResults, setAnalysisResults] = useState<CalibrationResult[]>(
@@ -49,7 +49,7 @@ function App() {
         name: `Analysis ${new Date().toLocaleString()}`,
         timestamp: new Date().toISOString(),
         imageSrc,
-        results: results.map((r) => ({
+        results: results.map(r => ({
           pesticide: r.pesticide,
           rgb: r.testRGB,
           concentration: r.estimatedConcentration,
@@ -75,7 +75,7 @@ function App() {
     setPendingImage(null);
     setAnalysisResults([]);
     setShowAlignment(false);
-    setCurrentScreen("analyze");
+    setCurrentScreen('analyze');
   }, []);
 
   const handleBack = useCallback(() => {
@@ -83,11 +83,11 @@ function App() {
     setPendingImage(null);
     setAnalysisResults([]);
     setShowAlignment(false);
-    setCurrentScreen("analyze");
+    setCurrentScreen('analyze');
   }, []);
 
   const handleTabChange = useCallback(
-    (tab: "analyze" | "history" | "settings") => {
+    (tab: 'analyze' | 'history' | 'settings') => {
       setCurrentScreen(tab);
     },
     []
@@ -95,7 +95,7 @@ function App() {
 
   const renderCurrentScreen = () => {
     switch (currentScreen) {
-      case "analyze":
+      case 'analyze':
         // Show alignment if in alignment mode
         if (showAlignment && capturedImage) {
           return (
@@ -129,9 +129,9 @@ function App() {
           />
         );
 
-      case "history":
+      case 'history':
         return <HistoryScreen />;
-      case "settings":
+      case 'settings':
         return <SettingsScreen />;
       default:
         return null;
@@ -139,7 +139,7 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme === "dark" ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme === 'dark' ? darkTheme : lightTheme}>
       <CssBaseline />
       <Layout currentTab={currentScreen} onTabChange={handleTabChange}>
         {renderCurrentScreen()}

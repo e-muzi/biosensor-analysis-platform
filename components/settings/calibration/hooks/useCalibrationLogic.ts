@@ -1,17 +1,21 @@
-import { useState } from "react";
-import { useCalibrationStore } from "../../../../state/calibrationStore";
-import { PREDEFINED_PESTICIDES } from "../../../../state/pesticideStore";
+import { useState } from 'react';
+import { useCalibrationStore } from '../../../../state/calibrationStore';
+import { PREDEFINED_PESTICIDES } from '../../../../state/pesticideStore';
 
 export function useCalibrationLogic() {
-  const { userCalibrations, setCalibration, resetCalibration, resetAll } = useCalibrationStore();
-  
+  const { userCalibrations, setCalibration, resetCalibration, resetAll } =
+    useCalibrationStore();
+
   const [localCal, setLocalCal] = useState(() => {
     // Deep copy to avoid direct mutation
     return Object.fromEntries(
-      PREDEFINED_PESTICIDES.map(p => [p.name, [...(userCalibrations[p.name] || p.curve.map(pt => pt.concentration))]])
+      PREDEFINED_PESTICIDES.map(p => [
+        p.name,
+        [...(userCalibrations[p.name] || p.curve.map(pt => pt.concentration))],
+      ])
     );
   });
-  
+
   const [editing, setEditing] = useState<string | null>(null);
   const [editingName, setEditingName] = useState<string | null>(null);
   const [nameEdits, setNameEdits] = useState(() => {
@@ -23,7 +27,9 @@ export function useCalibrationLogic() {
   const handleInputChange = (pesticide: string, idx: number, value: string) => {
     setLocalCal(prev => ({
       ...prev,
-      [pesticide]: prev[pesticide].map((v: number, i: number) => i === idx ? Number(value) : v)
+      [pesticide]: prev[pesticide].map((v: number, i: number) =>
+        i === idx ? Number(value) : v
+      ),
     }));
   };
 
@@ -36,16 +42,24 @@ export function useCalibrationLogic() {
     resetCalibration(pesticide);
     setLocalCal(prev => ({
       ...prev,
-      [pesticide]: PREDEFINED_PESTICIDES.find(p => p.name === pesticide)?.curve.map(pt => pt.concentration) || []
+      [pesticide]:
+        PREDEFINED_PESTICIDES.find(p => p.name === pesticide)?.curve.map(
+          pt => pt.concentration
+        ) || [],
     }));
     setEditing(null);
   };
 
   const handleResetAll = () => {
     resetAll();
-    setLocalCal(Object.fromEntries(
-      PREDEFINED_PESTICIDES.map(p => [p.name, p.curve.map(pt => pt.concentration)])
-    ));
+    setLocalCal(
+      Object.fromEntries(
+        PREDEFINED_PESTICIDES.map(p => [
+          p.name,
+          p.curve.map(pt => pt.concentration),
+        ])
+      )
+    );
     setEditing(null);
     setShowResetDialog(false);
   };
@@ -59,13 +73,16 @@ export function useCalibrationLogic() {
   const handleNameChange = (pesticide: string, value: string) => {
     setNameEdits(prev => ({ ...prev, [pesticide]: value }));
   };
-  
+
   const handleNameBlur = (pesticide: string) => {
     setEditingName(null);
   };
-  
-  const handleNameKeyDown = (e: React.KeyboardEvent<HTMLDivElement>, pesticide: string) => {
-    if (e.key === "Enter") {
+
+  const handleNameKeyDown = (
+    e: React.KeyboardEvent<HTMLDivElement>,
+    pesticide: string
+  ) => {
+    if (e.key === 'Enter') {
       setEditingName(null);
     }
   };
@@ -85,6 +102,6 @@ export function useCalibrationLogic() {
     handleNameChange,
     handleNameBlur,
     handleNameKeyDown,
-    setEditing
+    setEditing,
   };
 }

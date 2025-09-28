@@ -1,30 +1,20 @@
-import { useCallback } from "react";
-import { useCameraStream } from "./useCameraStream";
-import { useImageCapture } from "./useImageCapture";
+import { useCallback } from 'react';
+import { useCameraStream } from './useCameraStream';
+import { useImageCapture } from './useImageCapture';
 
 // Camera Capture
 export function useCameraCapture(
   onCapture: (imageSrc: string, originalImageSrc?: string) => void,
   onError: (error: string) => void
 ) {
-  const {
-    videoRef,
-    isCapturing,
-    setIsCapturing,
-    startCamera,
-    stopCamera
-  } = useCameraStream();
+  const { videoRef, isCapturing, setIsCapturing, startCamera, stopCamera } =
+    useCameraStream();
 
-  const {
-    flashEnabled,
-    toggleFlash,
-    captureImage
-  } = useImageCapture();
-
+  const { flashEnabled, toggleFlash, captureImage } = useImageCapture();
 
   const handleCapturePhoto = useCallback(async () => {
     if (!videoRef.current) return;
-    
+
     try {
       await captureImage(
         videoRef.current,
@@ -34,8 +24,8 @@ export function useCameraCapture(
         setIsCapturing
       );
     } catch (error) {
-      console.error("Capture failed:", error);
-      onError("Failed to capture image");
+      console.error('Capture failed:', error);
+      onError('Failed to capture image');
     }
   }, [videoRef, captureImage, onCapture, onError, setIsCapturing]);
 
@@ -51,6 +41,6 @@ export function useCameraCapture(
     handleCapturePhoto,
     handleCapture,
     openCamera: () => startCamera(onError, () => {}),
-    closeCamera: stopCamera
+    closeCamera: stopCamera,
   };
 }

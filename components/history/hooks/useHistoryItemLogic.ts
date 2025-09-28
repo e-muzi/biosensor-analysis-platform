@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 export function useHistoryItemLogic(
-  initialName: string, 
+  initialName: string,
   onNameUpdate?: (newName: string) => void
 ) {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -13,17 +13,17 @@ export function useHistoryItemLogic(
   };
 
   const handleNameUpdate = () => {
-    if (name.trim() !== "") {
+    if (name.trim() !== '') {
       onNameUpdate?.(name.trim());
       setIsEditing(false);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       handleNameUpdate();
     }
-    if (e.key === "Escape") {
+    if (e.key === 'Escape') {
       setName(initialName);
       setIsEditing(false);
     }
@@ -50,6 +50,6 @@ export function useHistoryItemLogic(
     handleKeyDown,
     handleToggleExpanded,
     handleStartEditing,
-    handleDoubleClick
+    handleDoubleClick,
   };
 }
