@@ -10,9 +10,17 @@ import type { CalibrationResult } from "../../types";
 
 interface CaptureScreenProps {
   onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void;
+  onImageCapture?: (imageSrc: string) => void;
+  onImageClear?: () => void;
+  pendingImage?: string | null;
 }
 
-export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete }) => {
+export const CaptureScreen: React.FC<CaptureScreenProps> = ({
+  onAnalysisComplete,
+  onImageCapture,
+  onImageClear,
+  pendingImage,
+}) => {
   const {
     imageSrc,
     originalImageSrc,
@@ -30,16 +38,20 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
     handleCloseCamera,
     handleCameraError,
     handleCameraCapture,
-    setShowAlignment
-  } = useCaptureLogic(onAnalysisComplete);
+    setShowAlignment,
+  } = useCaptureLogic(
+    onAnalysisComplete,
+    onImageCapture,
+    onImageClear,
+    pendingImage
+  );
 
   // Show alignment screen if image is selected and alignment is enabled
   if (showAlignment && imageSrc) {
     return (
-      <ImageAlignment 
+      <ImageAlignment
         imageSrc={originalImageSrc || imageSrc}
         onConfirm={handleAlignmentConfirm}
-        
       />
     );
   }
@@ -47,27 +59,24 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
   return (
     <Box sx={{ pb: 12 }}>
       <CaptureHeader />
-      
+
       {isCameraOpen ? (
-        <CameraCapture 
+        <CameraCapture
           onCapture={handleCameraCapture}
           onClose={handleCloseCamera}
           onError={handleCameraError}
         />
       ) : (
         <>
-          <ImagePreview 
-            imageSrc={imageSrc} 
-            isUploadedImage={isUploadedImage} 
-          />
-          
+          <ImagePreview imageSrc={imageSrc} isUploadedImage={isUploadedImage} />
+
           {!imageSrc && (
-            <CaptureActions 
+            <CaptureActions
               onOpenCamera={handleOpenCamera}
               onImageSelect={handleImageSelect}
             />
           )}
-          
+
           {imageSrc && !showAlignment && (
             <ImageActions
               isUploadedImage={isUploadedImage}
@@ -77,12 +86,9 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
               onShowAlignment={() => setShowAlignment(true)}
             />
           )}
-          
+
           {error && (
-            <Alert 
-              severity="error" 
-              sx={{ maxWidth: "md", mx: "auto", mt: 2 }}
-            >
+            <Alert severity="error" sx={{ maxWidth: "md", mx: "auto", mt: 2 }}>
               ❌ {error}
             </Alert>
           )}
@@ -90,4 +96,4 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({ onAnalysisComplete
       )}
     </Box>
   );
-}
+};

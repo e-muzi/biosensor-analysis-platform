@@ -4,33 +4,56 @@ import { useModeStore } from "../../../../state/modeStore";
 import type { CalibrationResult } from "../../../../types";
 
 export function useCaptureLogic(
-  onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void
+  onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void,
+  onImageCapture?: (imageSrc: string) => void,
+  onImageClear?: () => void,
+  pendingImage?: string | null
 ) {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  // Use pendingImage from props instead of internal state when available
+  const [internalImageSrc, setInternalImageSrc] = useState<string | null>(null);
+  const imageSrc = pendingImage || internalImageSrc;
+
   const [originalImageSrc, setOriginalImageSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isCameraOpen, setIsCameraOpen] = useState(false);
   const [showAlignment, setShowAlignment] = useState(false);
   const [isUploadedImage, setIsUploadedImage] = useState(false);
-  
+
   const { detectionMode } = useModeStore();
 
-  const handleImageSelect = useCallback((src: string) => {
-    setImageSrc(src);
-    setOriginalImageSrc(src);
-    setError(null);
-    setIsUploadedImage(true);
-    setShowAlignment(false); // Don't automatically show alignment, let user choose
-  }, []);
+  const handleImageSelect = useCallback(
+    (src: string) => {
+      if (onImageCapture) {
+        onImageCapture(src);
+      } else {
+        setInternalImageSrc(src);
+      }
+      setOriginalImageSrc(src);
+      setError(null);
+      setIsUploadedImage(true);
+      setShowAlignment(false); // Don't automatically show alignment, let user choose
+    },
+    [onImageCapture]
+  );
 
-  const handleAlignmentConfirm = useCallback((alignedImageSrc: string) => {
-    console.log('Debug: CAPTURE LOGIC - handleAlignmentConfirm called');
-    console.log('Debug: CAPTURE LOGIC - alignedImageSrc length:', alignedImageSrc.length);
-    console.log('Debug: CAPTURE LOGIC - Setting imageSrc to aligned image');
-    setImageSrc(alignedImageSrc);
-    setShowAlignment(false);
-  }, []);
+  const handleAlignmentConfirm = useCallback(
+    (alignedImageSrc: string) => {
+      console.log("Debug: CAPTURE LOGIC - handleAlignmentConfirm called");
+      console.log(
+        "Debug: CAPTURE LOGIC - alignedImageSrc length:",
+        alignedImageSrc.length
+      );
+      console.log("Debug: CAPTURE LOGIC - Setting imageSrc to aligned image");
+      if (onImageCapture) {
+        onImageCapture(alignedImageSrc);
+      } else {
+        setInternalImageSrc(alignedImageSrc);
+      }
+      setShowAlignment(false);
+    },
+    [onImageCapture]
+  );
 
   const handleAlignmentBack = useCallback(() => {
     setShowAlignment(false);
@@ -38,10 +61,14 @@ export function useCaptureLogic(
 
   const handleAnalyze = useCallback(async () => {
     if (!imageSrc) return;
-    
-    console.log(`Debug: CAPTURE LOGIC - Starting analysis with mode: ${detectionMode}`);
+
+    console.log(
+      `Debug: CAPTURE LOGIC - Starting analysis with mode: ${detectionMode}`
+    );
     console.log(`Debug: CAPTURE LOGIC - imageSrc length: ${imageSrc.length}`);
-    console.log(`Debug: CAPTURE LOGIC - imageSrc preview: ${imageSrc.substring(0, 50)}...`);
+    console.log(
+      `Debug: CAPTURE LOGIC - imageSrc preview: ${imageSrc.substring(0, 50)}...`
+    );
     setIsAnalyzing(true);
     setError(null);
 
@@ -52,10 +79,12 @@ export function useCaptureLogic(
         img.onload = resolve;
         img.onerror = reject;
       });
-      
-      console.log(`Debug: CAPTURE LOGIC - Image loaded: ${img.naturalWidth}x${img.naturalHeight}`);
+
+      console.log(
+        `Debug: CAPTURE LOGIC - Image loaded: ${img.naturalWidth}x${img.naturalHeight}`
+      );
       const { calibrationResults } = await analyzeImage(img, detectionMode);
-      
+
       // For backward compatibility, we still pass CalibrationResult[] to onAnalysisComplete
       // Both preset and strip modes return CalibrationResult objects
       if (calibrationResults) {
@@ -72,14 +101,18 @@ export function useCaptureLogic(
       setIsAnalyzing(false);
     }
   }, [imageSrc, detectionMode, onAnalysisComplete]);
-  
+
   const handleClearImage = useCallback(() => {
-    setImageSrc(null);
+    if (onImageClear) {
+      onImageClear();
+    } else {
+      setInternalImageSrc(null);
+    }
     setOriginalImageSrc(null);
     setError(null);
     setShowAlignment(false);
     setIsUploadedImage(false);
-  }, []);
+  }, [onImageClear]);
 
   const handleOpenCamera = useCallback(() => {
     setError(null);
@@ -94,14 +127,21 @@ export function useCaptureLogic(
     setError(errorMessage);
   }, []);
 
-  const handleCameraCapture = useCallback((capturedImageSrc: string, originalImageSrc?: string) => {
-    setImageSrc(capturedImageSrc);
-    setOriginalImageSrc(originalImageSrc || capturedImageSrc);
-    setIsCameraOpen(false);
-    setError(null);
-    setIsUploadedImage(false);
-    setShowAlignment(false);
-  }, []);
+  const handleCameraCapture = useCallback(
+    (capturedImageSrc: string, originalImageSrc?: string) => {
+      if (onImageCapture) {
+        onImageCapture(capturedImageSrc);
+      } else {
+        setInternalImageSrc(capturedImageSrc);
+      }
+      setOriginalImageSrc(originalImageSrc || capturedImageSrc);
+      setIsCameraOpen(false);
+      setError(null);
+      setIsUploadedImage(false);
+      setShowAlignment(false);
+    },
+    [onImageCapture]
+  );
 
   return {
     imageSrc,
@@ -121,6 +161,6 @@ export function useCaptureLogic(
     handleCloseCamera,
     handleCameraError,
     handleCameraCapture,
-    setShowAlignment
+    setShowAlignment,
   };
 }
