@@ -44,7 +44,7 @@ function App() {
       imageSrc,
       results: results.map(r => ({
         pesticide: r.pesticide,
-        brightness: r.testBrightness,
+        rgb: r.testRGB,
         concentration: r.estimatedConcentration,
         confidence: r.confidence
       })),

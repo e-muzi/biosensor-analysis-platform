@@ -115,7 +115,7 @@ export function CalibrationSettings() {
                         borderRadius: 1,
                         fontSize: "0.875rem"
                       }}>
-                        {point.concentration} µM → RGB({point.rgb.r}, {point.rgb.g}, {point.rgb.b})
+                        {point.concentration} µM → RGB({point.rgb})
                       </Box>
                     ))}
                   </Box>

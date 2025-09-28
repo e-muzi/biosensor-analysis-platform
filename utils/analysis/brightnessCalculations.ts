@@ -1,4 +1,4 @@
-import { calculateCalibrationStripBrightnesses } from "./brightnessAnalysis";
+import { calculateCalibrationStripRGBs } from "./brightnessAnalysis";
 import { estimateConcentrationFromCalibration } from "./calibrationAnalysis";
 import { CALIBRATION_STRIPS, PESTICIDE_COORDINATES } from "../constants/roiConstants";
 import { samplePesticidesAtCoordinates } from "../imageProcessing/pixelSampling";
@@ -26,27 +26,34 @@ export function analyzeWithCalibrationStrips(image: HTMLImageElement): Promise<C
       const results: CalibrationResult[] = [];
 
       CALIBRATION_STRIPS.forEach((strip, index) => {
-        // Calculate calibration strip brightnesses
-        const calibrationBrightnesses = calculateCalibrationStripBrightnesses(ctx, strip);
+        // Calculate calibration strip RGB values
+        const calibrationRGBs = calculateCalibrationStripRGBs(ctx, strip);
         
-        // NEW: Use coordinate-based sampling for test area brightness
+        // NEW: Use coordinate-based sampling for test area RGB
         const coordinate = PESTICIDE_COORDINATES[index];
         console.log(`Debug: ANALYSIS - Sampling ${strip.name} at coordinate (${coordinate.x}, ${coordinate.y}) canvas: ${canvas.width}x${canvas.height}`);
         const samplingResults = samplePesticidesAtCoordinates(ctx, [coordinate]);
-        const testBrightness = samplingResults[0]?.averageBrightness || 0;
-        console.log(`Debug: ANALYSIS - ${strip.name} testBrightness: ${testBrightness.toFixed(2)}`);
+        
+        // Calculate average RGB from sampled pixels
+        const pixels = samplingResults[0]?.pixels || [];
+        const averageR = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length : 0;
+        const averageG = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length : 0;
+        const averageB = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length : 0;
+        const testRGB = averageR + averageG + averageB;
+        
+        console.log(`Debug: ANALYSIS - ${strip.name} testRGB: ${testRGB.toFixed(0)}`);
         
         // Estimate concentration
         const { concentration, confidence } = estimateConcentrationFromCalibration(
-          testBrightness, 
-          calibrationBrightnesses, 
+          testRGB, 
+          calibrationRGBs, 
           strip.concentrations
         );
         
         results.push({
           pesticide: strip.name,
-          testBrightness,
-          calibrationBrightnesses,
+          testRGB,
+          calibrationRGBs,
           estimatedConcentration: concentration,
           confidence
         });

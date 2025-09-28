@@ -41,17 +41,17 @@ export const CALIBRATION_STRIPS: CalibrationStrip[] = [
     concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
-    name: PREDEFINED_PESTICIDES[2].name, // Mancozeb
+    name: PREDEFINED_PESTICIDES[2].name, // Malathion
     roi: { x: 0.78, y: 0.15, width: 0.06, height: 0.7 },
     concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
-    name: PREDEFINED_PESTICIDES[3].name, // Cypermethrin
+    name: PREDEFINED_PESTICIDES[3].name, // Chlorpyrifos
     roi: { x: 0.86, y: 0.15, width: 0.06, height: 0.7 },
     concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   },
   {
-    name: PREDEFINED_PESTICIDES[4].name, // Atrazine
+    name: PREDEFINED_PESTICIDES[4].name, // Acetamiprid
     roi: { x: 0.94, y: 0.15, width: 0.06, height: 0.7 },
     concentrations: [0, 0.3, 1, 3, 10] // µM concentrations (top to bottom)
   }
@@ -62,25 +62,25 @@ export const CALIBRATION_STRIPS: CalibrationStrip[] = [
 export const PESTICIDE_ROIS: PesticideROI[] = [
   { name: PREDEFINED_PESTICIDES[0].name, roi: { x: 0.21, y: 0.34, width: 0.08, height: 0.10 } }, // Acephate test area
   { name: PREDEFINED_PESTICIDES[1].name, roi: { x: 0.34, y: 0.34, width: 0.08, height: 0.10 } }, // Glyphosate test area
-  { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.46, y: 0.34, width: 0.08, height: 0.10 } }, // Mancozeb test area
-  { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.59, y: 0.34, width: 0.08, height: 0.10 } }, // Cypermethrin test area
-  { name: PREDEFINED_PESTICIDES[4].name, roi: { x: 0.72, y: 0.34, width: 0.08, height: 0.10 } }, // Atrazine test area
+  { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.46, y: 0.34, width: 0.08, height: 0.10 } }, // Malathion test area
+  { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.59, y: 0.34, width: 0.08, height: 0.10 } }, // Chlorpyrifos test area
+  { name: PREDEFINED_PESTICIDES[4].name, roi: { x: 0.72, y: 0.34, width: 0.08, height: 0.10 } }, // Acetamiprid test area
 ];
 
 // Center points for 5-pixel sampling (center of each green box)
 export const PESTICIDE_CENTER_POINTS: PesticideROI[] = [
   { name: PREDEFINED_PESTICIDES[0].name, roi: { x: 0.25, y: 0.39, width: 0, height: 0 } }, // Acephate center
   { name: PREDEFINED_PESTICIDES[1].name, roi: { x: 0.38, y: 0.39, width: 0, height: 0 } }, // Glyphosate center
-  { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.50, y: 0.39, width: 0, height: 0 } }, // Mancozeb center
-  { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.63, y: 0.39, width: 0, height: 0 } }, // Cypermethrin center
-  { name: PREDEFINED_PESTICIDES[4].name, roi: { x: 0.76, y: 0.39, width: 0, height: 0 } }, // Atrazine center
+  { name: PREDEFINED_PESTICIDES[2].name, roi: { x: 0.50, y: 0.39, width: 0, height: 0 } }, // Malathion center
+  { name: PREDEFINED_PESTICIDES[3].name, roi: { x: 0.63, y: 0.39, width: 0, height: 0 } }, // Chlorpyrifos center
+  { name: PREDEFINED_PESTICIDES[4].name, roi: { x: 0.76, y: 0.39, width: 0, height: 0 } }, // Acetamiprid center
 ];
 
 // NEW: Specific pixel coordinates for direct sampling
 export const PESTICIDE_COORDINATES = [
-  { name: PREDEFINED_PESTICIDES[0].name, x: 208, y: 621 }, // Acephate
-  { name: PREDEFINED_PESTICIDES[1].name, x: 406, y: 621 }, // Glyphosate
-  { name: PREDEFINED_PESTICIDES[2].name, x: 602, y: 621 }, // Mancozeb
-  { name: PREDEFINED_PESTICIDES[3].name, x: 803, y: 627 }, // Cypermethrin
-  { name: PREDEFINED_PESTICIDES[4].name, x: 1008, y: 621 }, // Atrazine
+  { name: PREDEFINED_PESTICIDES[0].name, x: 81, y: 255 }, // Acephate - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[1].name, x: 167, y: 258 }, // Glyphosate - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[2].name, x: 249, y: 258 }, // Malathion - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[3].name, x: 333, y: 258 }, // Chlorpyrifos - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[4].name, x: 421, y: 258 }, // Acetamiprid - Updated to brighter green area
 ];

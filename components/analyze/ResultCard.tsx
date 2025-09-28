@@ -18,19 +18,6 @@ const getConcentrationColor = (concentration: number): "success" | "warning" | "
   return "error";
 };
 
-const getBrightnessLabel = (brightness: number): string => {
-  if (brightness < 50) return "Very Dark";
-  if (brightness < 100) return "Dark";
-  if (brightness < 150) return "Medium";
-  if (brightness < 200) return "Bright";
-  return "Very Bright";
-};
-
-const getBrightnessColor = (brightness: number): "success" | "warning" | "error" => {
-  if (brightness < 100) return "success";
-  if (brightness < 180) return "warning";
-  return "error";
-};
 
 export function ResultCard({ result }: ResultCardProps) {
   const { detectionMode } = useModeStore();
@@ -60,7 +47,7 @@ export function ResultCard({ result }: ResultCardProps) {
         </Typography>
         
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-          Brightness: {result.testBrightness.toFixed(2)}
+          RGB Value: {result.testRGB.toFixed(0)}
         </Typography>
         
         <Typography variant="body2" color="text.secondary">

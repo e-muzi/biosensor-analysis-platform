@@ -1,4 +1,3 @@
-import { rgbToLuminance } from "../imageProcessing/colorUtils";
 import { estimateConcentrationFromRGB } from "./calibrationAnalysis";
 import { PESTICIDE_COORDINATES } from "../constants/roiConstants";
 import { PREDEFINED_PESTICIDES } from "../../state/pesticideStore";
@@ -33,20 +32,19 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
           return;
         }
 
-        // Get RGB and brightness from coordinate sampling
+        // Get RGB values from coordinate sampling
         const samplingResult = samplingResults[index];
-        const testBrightness = samplingResult?.averageBrightness || 0;
         
         // Calculate average RGB from all sampled pixels (5-pixel sampling)
         const pixels = samplingResult?.pixels || [];
         const averageR = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.r, 0) / pixels.length : 0;
         const averageG = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.g, 0) / pixels.length : 0;
         const averageB = pixels.length > 0 ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length : 0;
-        const testRGB = { r: averageR, g: averageG, b: averageB };
+        const testRGB = averageR + averageG + averageB; // Total RGB value
         
         // Debug logging
         console.log(`Debug: ${coordinate.name} - Coordinate: (${coordinate.x}, ${coordinate.y})`);
-        console.log(`Debug: ${coordinate.name} - Test RGB: (${testRGB.r}, ${testRGB.g}, ${testRGB.b}), Brightness: ${testBrightness.toFixed(1)}`);
+        console.log(`Debug: ${coordinate.name} - Test RGB: ${testRGB.toFixed(1)}`);
         
         // Use RGB comparison for concentration estimation
         const { concentration, confidence } = estimateConcentrationFromRGB(
@@ -58,10 +56,8 @@ export function analyzeWithPresetCurves(image: HTMLImageElement): Promise<Calibr
         
         results.push({
           pesticide: coordinate.name,
-          testBrightness,
-          calibrationBrightnesses: pesticide.curve.map(point => 
-            point.brightness || rgbToLuminance(point.rgb.r, point.rgb.g, point.rgb.b)
-          ),
+          testRGB,
+          calibrationRGBs: pesticide.curve.map(point => point.rgb),
           estimatedConcentration: concentration,
           confidence
         });

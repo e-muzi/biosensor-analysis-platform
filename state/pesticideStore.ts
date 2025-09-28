@@ -13,63 +13,43 @@ export interface Pesticide {
 // These curves represent realistic biosensor responses where higher concentrations
 // result in darker colors (lower RGB values)
 const ACEPHATE_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
-  { concentration: 0.3, rgb: { r: 65, g: 180, b: 8 } }, 
-  { concentration: 1, rgb: { r: 58, g: 160, b: 12 } }, 
-  { concentration: 3, rgb: { r: 45, g: 140, b: 15 } },  
-  { concentration: 10, rgb: { r: 35, g: 120, b: 18 } }, 
-  { concentration: 30, rgb: { r: 28, g: 100, b: 20 } }, 
-  { concentration: 100, rgb: { r: 22, g: 80, b: 22 } },
-  { concentration: 300, rgb: { r: 18, g: 60, b: 25 } }, 
-  { concentration: 1000, rgb: { r: 15, g: 40, b: 28 } }, 
+  { concentration: 0, rgb: 306 },
+  { concentration: 0.3, rgb: 305 },
+  { concentration: 1, rgb: 295 },
+  { concentration: 3, rgb: 257 },
+  { concentration: 10, rgb: 191 },
 ];
 
 const GLYPHOSATE_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
-  { concentration: 0.3, rgb: { r: 47, g: 176, b: 4 } },
-  { concentration: 1, rgb: { r: 58, g: 151, b: 3 } },
-  { concentration: 3, rgb: { r: 70, g: 132, b: 0 } },
-  { concentration: 10, rgb: { r: 25, g: 133, b: 5 } },
-  { concentration: 30, rgb: { r: 27, g: 113, b: 2 } },
-  { concentration: 100, rgb: { r: 44, g: 136, b: 1 } },
-  { concentration: 300, rgb: { r: 28, g: 88, b: 2 } },
-  { concentration: 1000, rgb: { r: 15, g: 33, b: 6 } },
+  { concentration: 0, rgb: 145 },
+  { concentration: 0.3, rgb: 132 },
+  { concentration: 1, rgb: 128 },
+  { concentration: 3, rgb: 112 },
+  { concentration: 10, rgb: 89 },
 ];
 
-const MANCOZEB_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
-  { concentration: 0.3, rgb: { r: 47, g: 176, b: 4 } },
-  { concentration: 1, rgb: { r: 58, g: 151, b: 3 } },
-  { concentration: 3, rgb: { r: 70, g: 132, b: 0 } },
-  { concentration: 10, rgb: { r: 25, g: 133, b: 5 } },
-  { concentration: 30, rgb: { r: 27, g: 113, b: 2 } },
-  { concentration: 100, rgb: { r: 44, g: 136, b: 1 } },
-  { concentration: 300, rgb: { r: 28, g: 88, b: 2 } },
-  { concentration: 1000, rgb: { r: 15, g: 33, b: 6 } },
+const MALATHION_CURVE = [
+  { concentration: 0, rgb: 233 },
+  { concentration: 0.3, rgb: 223 },
+  { concentration: 1, rgb: 218 },
+  { concentration: 3, rgb: 208 },
+  { concentration: 10, rgb: 196 },
 ];
 
-const CYPERMETHRIN_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
-  { concentration: 0.3, rgb: { r: 47, g: 176, b: 4 } },
-  { concentration: 1, rgb: { r: 58, g: 151, b: 3 } },
-  { concentration: 3, rgb: { r: 70, g: 132, b: 0 } },
-  { concentration: 10, rgb: { r: 25, g: 133, b: 5 } },
-  { concentration: 30, rgb: { r: 27, g: 113, b: 2 } },
-  { concentration: 100, rgb: { r: 44, g: 136, b: 1 } },
-  { concentration: 300, rgb: { r: 28, g: 88, b: 2 } },
-  { concentration: 1000, rgb: { r: 15, g: 33, b: 6 } },
+const CHLORPYRIFOS_CURVE = [
+  { concentration: 0, rgb: 172 },
+  { concentration: 0.3, rgb: 165 },
+  { concentration: 1, rgb: 147 },
+  { concentration: 3, rgb: 143 },
+  { concentration: 10, rgb: 110 },
 ];
 
-const ATRAZINE_CURVE = [
-  { concentration: 0, rgb: { r: 74, g: 198, b: 6 } },
-  { concentration: 0.3, rgb: { r: 47, g: 176, b: 4 } },
-  { concentration: 1, rgb: { r: 58, g: 151, b: 3 } },
-  { concentration: 3, rgb: { r: 70, g: 132, b: 0 } },
-  { concentration: 10, rgb: { r: 25, g: 133, b: 5 } },
-  { concentration: 30, rgb: { r: 27, g: 113, b: 2 } },
-  { concentration: 100, rgb: { r: 44, g: 136, b: 1 } },
-  { concentration: 300, rgb: { r: 28, g: 88, b: 2 } },
-  { concentration: 1000, rgb: { r: 15, g: 33, b: 6 } },
+const ACETAMIPRID_CURVE = [
+  { concentration: 0, rgb: 306 },
+  { concentration: 0.3, rgb: 305 },
+  { concentration: 1, rgb: 295 },
+  { concentration: 3, rgb: 257 },
+  { concentration: 10, rgb: 191 },
 ];
 
 // List of predefined pesticides that are used in the app
@@ -83,16 +63,16 @@ export const PREDEFINED_PESTICIDES: Pesticide[] = [
     curve: GLYPHOSATE_CURVE,
   },
   {
-    name: 'Mancozeb',
-    curve: MANCOZEB_CURVE,
+    name: 'Malathion',
+    curve: MALATHION_CURVE,
   },
   {
-    name: 'Cypermethrin',
-    curve: CYPERMETHRIN_CURVE,
+    name: 'Chlorpyrifos',
+    curve: CHLORPYRIFOS_CURVE,
   },
   {
-    name: 'Atrazine',
-    curve: ATRAZINE_CURVE,
+    name: 'Acetamiprid',
+    curve: ACETAMIPRID_CURVE,
   },
 ];
 

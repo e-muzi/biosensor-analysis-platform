@@ -1,74 +1,74 @@
-// Estimate concentration by comparing test brightness with calibration strip
+// Estimate concentration by comparing test RGB with calibration RGB values
 export function estimateConcentrationFromCalibration(
-  testBrightness: number, 
-  calibrationBrightnesses: number[], 
+  testRGB: number, 
+  calibrationRGBs: number[], 
   concentrations: number[]
 ): { concentration: number; confidence: "high" | "medium" | "low" } {
   
-  // For biosensors, higher concentrations typically result in darker colors (lower brightness)
-  // So we need to handle the inverse relationship between brightness and concentration
+  // For biosensors, higher concentrations typically result in darker colors (lower RGB values)
+  // So we need to handle the inverse relationship between RGB and concentration
   
-  // Find the two calibration points that bracket the test brightness
+  // Find the two calibration points that bracket the test RGB
   let lowerIndex = 0;
-  let upperIndex = calibrationBrightnesses.length - 1;
+  let upperIndex = calibrationRGBs.length - 1;
   
-  // Check if brightness values are in ascending or descending order
-  const isAscending = calibrationBrightnesses[0] < calibrationBrightnesses[calibrationBrightnesses.length - 1];
+  // Check if RGB values are in ascending or descending order
+  const isAscending = calibrationRGBs[0] < calibrationRGBs[calibrationRGBs.length - 1];
   
   if (isAscending) {
-    // Brightness increases with concentration (normal case)
-    for (let i = 0; i < calibrationBrightnesses.length - 1; i++) {
-      if (testBrightness >= calibrationBrightnesses[i] && testBrightness <= calibrationBrightnesses[i + 1]) {
+    // RGB increases with concentration (normal case)
+    for (let i = 0; i < calibrationRGBs.length - 1; i++) {
+      if (testRGB >= calibrationRGBs[i] && testRGB <= calibrationRGBs[i + 1]) {
         lowerIndex = i;
         upperIndex = i + 1;
         break;
       }
     }
     
-    // If test brightness is outside the calibration range
-    if (testBrightness < calibrationBrightnesses[0]) {
+    // If test RGB is outside the calibration range
+    if (testRGB < calibrationRGBs[0]) {
       return { concentration: concentrations[0], confidence: "low" };
     }
-    if (testBrightness > calibrationBrightnesses[calibrationBrightnesses.length - 1]) {
+    if (testRGB > calibrationRGBs[calibrationRGBs.length - 1]) {
       return { concentration: concentrations[concentrations.length - 1], confidence: "low" };
     }
   } else {
-    // Brightness decreases with concentration (biosensor case)
-    for (let i = 0; i < calibrationBrightnesses.length - 1; i++) {
-      if (testBrightness <= calibrationBrightnesses[i] && testBrightness >= calibrationBrightnesses[i + 1]) {
+    // RGB decreases with concentration (biosensor case)
+    for (let i = 0; i < calibrationRGBs.length - 1; i++) {
+      if (testRGB <= calibrationRGBs[i] && testRGB >= calibrationRGBs[i + 1]) {
         lowerIndex = i;
         upperIndex = i + 1;
         break;
       }
     }
     
-    // If test brightness is outside the calibration range
-    if (testBrightness > calibrationBrightnesses[0]) {
+    // If test RGB is outside the calibration range
+    if (testRGB > calibrationRGBs[0]) {
       return { concentration: concentrations[0], confidence: "low" };
     }
-    if (testBrightness < calibrationBrightnesses[calibrationBrightnesses.length - 1]) {
+    if (testRGB < calibrationRGBs[calibrationRGBs.length - 1]) {
       return { concentration: concentrations[concentrations.length - 1], confidence: "low" };
     }
   }
   
   // Linear interpolation
-  const lowerBrightness = calibrationBrightnesses[lowerIndex];
-  const upperBrightness = calibrationBrightnesses[upperIndex];
+  const lowerRGB = calibrationRGBs[lowerIndex];
+  const upperRGB = calibrationRGBs[upperIndex];
   const lowerConcentration = concentrations[lowerIndex];
   const upperConcentration = concentrations[upperIndex];
   
-  if (upperBrightness === lowerBrightness) {
+  if (upperRGB === lowerRGB) {
     return { concentration: lowerConcentration, confidence: "medium" };
   }
   
   const concentration = lowerConcentration + 
-    ((testBrightness - lowerBrightness) * (upperConcentration - lowerConcentration)) / 
-    (upperBrightness - lowerBrightness);
+    ((testRGB - lowerRGB) * (upperConcentration - lowerConcentration)) / 
+    (upperRGB - lowerRGB);
   
   // Determine confidence based on how close we are to calibration points
-  const brightnessRange = Math.abs(upperBrightness - lowerBrightness);
-  const brightnessDiff = Math.abs(testBrightness - lowerBrightness);
-  const ratio = brightnessDiff / brightnessRange;
+  const rgbRange = Math.abs(upperRGB - lowerRGB);
+  const rgbDiff = Math.abs(testRGB - lowerRGB);
+  const ratio = rgbDiff / rgbRange;
   
   let confidence: "high" | "medium" | "low" = "medium";
   if (ratio < 0.3 || ratio > 0.7) {
@@ -82,20 +82,14 @@ export function estimateConcentrationFromCalibration(
 
 // Estimate concentration by comparing test RGB with calibration RGB values
 export function estimateConcentrationFromRGB(
-  testRGB: { r: number; g: number; b: number },
-  calibrationCurve: Array<{ concentration: number; rgb: { r: number; g: number; b: number } }>
+  testRGB: number, // Total RGB value (R + G + B)
+  calibrationCurve: Array<{ concentration: number; rgb: number }>
 ): { concentration: number; confidence: "high" | "medium" | "low" } {
   
-  // Calculate brightness for the test RGB
-  const testBrightness = (0.299 * testRGB.r) + (0.587 * testRGB.g) + (0.114 * testRGB.b);
-  
-  // Calculate brightness for each calibration point
-  const calibrationBrightnesses = calibrationCurve.map(point => 
-    (0.299 * point.rgb.r) + (0.587 * point.rgb.g) + (0.114 * point.rgb.b)
-  );
-  
+  // Use RGB values directly for comparison
+  const calibrationRGBs = calibrationCurve.map(point => point.rgb);
   const concentrations = calibrationCurve.map(point => point.concentration);
   
-  // Use brightness-based interpolation instead of RGB distance
-  return estimateConcentrationFromCalibration(testBrightness, calibrationBrightnesses, concentrations);
+  // Use RGB-based interpolation
+  return estimateConcentrationFromCalibration(testRGB, calibrationRGBs, concentrations);
 }

@@ -1,10 +1,10 @@
-import { calculateBrightnessForRoi } from "../imageProcessing/colorUtils";
+import { calculateAverageRGBForRoi } from "../imageProcessing/colorUtils";
 import type { CalibrationStrip } from "../../types";
 
 
-// Calculate brightness for each segment of a vertical calibration strip
+// Calculate RGB values for each segment of a vertical calibration strip
 // strip mode only
-export function calculateCalibrationStripBrightnesses(
+export function calculateCalibrationStripRGBs(
   ctx: CanvasRenderingContext2D, 
   strip: CalibrationStrip
 ): number[] {
@@ -16,7 +16,7 @@ export function calculateCalibrationStripBrightnesses(
   if (stripWidth <= 0 || stripHeight <= 0) return [0, 0, 0, 0, 0];
 
   const segmentHeight = stripHeight / 5; // 5 vertical segments
-  const brightnesses: number[] = [];
+  const rgbValues: number[] = [];
 
   for (let i = 0; i < 5; i++) {
     const segmentY = stripY + (i * segmentHeight);
@@ -26,8 +26,9 @@ export function calculateCalibrationStripBrightnesses(
       width: strip.roi.width,
       height: segmentHeight / canvas.height
     };
-    brightnesses.push(calculateBrightnessForRoi(ctx, segmentROI));
+    const { r, g, b } = calculateAverageRGBForRoi(ctx, segmentROI);
+    rgbValues.push(r + g + b); // Total RGB value
   }
 
-  return brightnesses;
+  return rgbValues;
 }
