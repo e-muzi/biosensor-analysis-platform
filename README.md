@@ -2,21 +2,28 @@
 
 A sophisticated biosensor analysis application designed for the iGEM 2025 competition. This tool enables quantitative pesticide concentration analysis through image processing of biosensor test kits, featuring built-in calibration strips for accurate measurements without external normalization.
 
+**Current Version**: 0.0.0-beta.1  
+**Status**: Active Development  
+**Live Demo**: [https://hkjs-biosensorapp.netlify.app/](https://hkjs-biosensorapp.netlify.app/)
+
 ## Description
 
 This application is a React-based web tool that analyzes biosensor test kits to detect and quantify pesticide concentrations in samples. The tool uses computer vision techniques to analyze the brightness of test areas and compares them against calibration strips with known concentrations.
 
 ### Key Features
 
-- **Multi-Pesticide Detection**: Supports analysis of four common pesticides:
-  - Acephate (0-100 µM range)
-  - Glyphosate (0-200 µM range)
-  - Mancozeb (0-120 µM range)
-  - Cypermethrin (0-180 µM range)
+- **Multi-Pesticide Detection**: Supports analysis of five common pesticides:
+  - Acephate (0-10 µM range)
+  - Glyphosate (0-10 µM range)
+  - Malathion (0-10 µM range)
+  - Chlorpyrifos (0-10 µM range)
+  - Acetamiprid (0-10 µM range)
 
 - **Built-in Calibration**: Each test kit includes vertical calibration strips with 5 known concentration points, eliminating the need for external calibration
 
 - **Image Processing**: Advanced image analysis using RGB luminance calculations for accurate brightness measurements
+- **Enhanced ROI Detection**: Precise region-of-interest detection with pixel-level coordinate sampling
+- **Interactive Alignment**: Canvas-based image alignment tools for optimal analysis positioning
 
 - **Real-time Analysis**: Instant results with confidence levels (high/medium/low) based on calibration strip matching
 
@@ -24,13 +31,22 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 
 - **Cross-platform**: Web-based application accessible on any device with a camera
 
+### Recent Updates
+
+- **Enhanced Pesticide Support**: Expanded from 4 to 5 pesticides with updated calibration curves
+- **Improved Image Alignment**: Interactive canvas-based alignment tools for precise ROI positioning
+- **Advanced Pixel Sampling**: Direct coordinate-based sampling for more accurate brightness measurements
+- **Updated Calibration System**: Standardized concentration ranges (0, 0.3, 1, 3, 10 µM) across all pesticides
+- **Material-UI Integration**: Modern UI framework with custom theming and responsive design
+
 ### Technical Architecture
 
 - **Frontend**: React 19 with TypeScript for type safety
 - **Build Tool**: Vite for fast development and optimized builds
 - **State Management**: Zustand for lightweight, efficient state handling
 - **Image Processing**: Custom algorithms for ROI detection and brightness analysis
-- **UI Components**: Modular component architecture with responsive design
+- **UI Framework**: Material-UI (MUI) with custom theming and responsive design
+- **Canvas Integration**: HTML5 Canvas API for interactive image manipulation and analysis
 
 ## Installation
 
@@ -44,8 +60,8 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/e-muzi/biosensor-apptesting.git
-   cd biosensor-apptesting
+   git clone https://github.com/e-muzi/biosensor-apptesting-2.git
+   cd biosensor-apptesting-2
    ```
 
 2. **Install dependencies**
@@ -85,9 +101,9 @@ The built files will be in the `dist/` directory, ready for deployment.
 ### Test Kit Preparation
 
 1. Ensure your biosensor test kit has the correct layout:
-   - Four pesticide test areas arranged horizontally
-   - Each test area has a vertical calibration strip on the left
-   - Calibration strips contain 5 segments with known concentrations (top to bottom: lowest to highest)
+   - Five pesticide test areas arranged horizontally
+   - Two calibration strips on the left side and three on the right side
+   - Calibration strips contain 5 segments with known concentrations (0, 0.3, 1, 3, 10 µM from top to bottom)
 
 ### Analysis Process
 
@@ -99,8 +115,10 @@ The built files will be in the `dist/` directory, ready for deployment.
 
 2. **Image Alignment** (if needed)
    - Adjust the image alignment to ensure proper ROI detection
+   - Interactive canvas-based alignment tools for precise positioning
    - Green boxes indicate calibration strip segments
    - Cyan boxes indicate test areas
+   - Manual adjustment controls for fine-tuning detection regions
 
 3. **Analysis**
    - The app automatically analyzes both calibration strips and test areas
@@ -152,11 +170,13 @@ We welcome contributions to improve the biosensor analysis tool! Please follow t
 
 ### Technologies Used
 
-- **React** - Frontend framework
+- **React 19** - Frontend framework with latest features
 - **TypeScript** - Type safety and development experience
 - **Vite** - Build tool and development server
 - **Zustand** - State management
+- **Material-UI (MUI)** - UI component library with theming
 - **Canvas API** - Image processing and analysis
+- **React Easy Crop** - Image cropping functionality
 
 ### Acknowledgments
 
