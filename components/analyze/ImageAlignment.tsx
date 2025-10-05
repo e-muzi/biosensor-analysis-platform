@@ -55,8 +55,8 @@ export function ImageAlignment({ imageSrc, onConfirm }: ImageAlignmentProps) {
         }}
       >
         <CanvasStage
-          canvasRef={canvasRef}
-          imageRef={imageRef}
+          canvasRef={canvasRef as React.RefObject<HTMLCanvasElement>}
+          imageRef={imageRef as React.RefObject<HTMLImageElement>}
           imageSrc={imageSrc}
           scale={scale}
           rotation={rotation}

@@ -54,7 +54,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
       <DialogContent sx={{ p: 0, height: '100%', position: 'relative' }}>
         <CameraHeader />
 
-        <CameraView videoRef={videoRef} />
+        <CameraView videoRef={videoRef as React.RefObject<HTMLVideoElement>} />
 
         <CameraControls
           flashEnabled={flashEnabled}

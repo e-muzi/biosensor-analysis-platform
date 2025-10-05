@@ -109,8 +109,8 @@ export const PESTICIDE_CENTER_POINTS: PesticideROI[] = [
 // NEW: Specific pixel coordinates for direct sampling
 export const PESTICIDE_COORDINATES = [
   { name: PREDEFINED_PESTICIDES[0].name, x: 81, y: 255 }, // Acephate - Updated to brighter green area
-  { name: PREDEFINED_PESTICIDES[1].name, x: 167, y: 258 }, // Glyphosate - Updated to brighter green area
-  { name: PREDEFINED_PESTICIDES[2].name, x: 249, y: 258 }, // Malathion - Updated to brighter green area
-  { name: PREDEFINED_PESTICIDES[3].name, x: 333, y: 258 }, // Chlorpyrifos - Updated to brighter green area
-  { name: PREDEFINED_PESTICIDES[4].name, x: 421, y: 258 }, // Acetamiprid - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[1].name, x: 163, y: 250 }, // Glyphosate - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[2].name, x: 248, y: 251 }, // Malathion - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[3].name, x: 333, y: 253 }, // Chlorpyrifos - Updated to brighter green area
+  { name: PREDEFINED_PESTICIDES[4].name, x: 420, y: 252 }, // Acetamiprid - Updated to brighter green area
 ];
