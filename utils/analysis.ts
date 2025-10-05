@@ -6,7 +6,7 @@ export * from './analysis/calibrationAnalysis';
 export * from './analysis/brightnessCalculations';
 
 // Image processing functions
-// export * from "../imageProcessing/imageCropping"; // Removed: module not found
+export * from './imageProcessing/imageCropping';
 
 // Constants
 export * from './constants/roiConstants';

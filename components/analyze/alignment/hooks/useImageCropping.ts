@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { cropToTestKit } from '../../../../utils/analysis';
+import { cropToTestKit } from '../../../../utils/imageProcessing/imageCropping';
 import { CropBounds } from './useCanvasState';
 
 // Image Cropping
@@ -45,8 +45,7 @@ export function useImageCropping(
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const croppedDataUrl = await cropToTestKit(
         imageData,
-        cropBounds,
-        imageRef.current
+        cropBounds
       );
       return croppedDataUrl;
     } catch (error) {

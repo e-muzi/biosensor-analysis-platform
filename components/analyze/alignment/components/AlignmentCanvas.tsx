@@ -6,7 +6,6 @@ import {
   CircularProgress,
   Typography,
 } from '@mui/material';
-import { CanvasStage } from '../CanvasStage';
 import { CropOverlay } from '../CropOverlay';
 import { iGEMColors } from '../../../../state/themeStore';
 
@@ -49,12 +48,22 @@ export const AlignmentCanvas: React.FC<AlignmentCanvasProps> = ({
         borderColor: 'divider',
       }}
     >
-      <CanvasStage
-        canvasRef={canvasRef}
-        imageDisplaySize={imageDisplaySize}
+      <canvas
+        ref={canvasRef}
+        width={imageDisplaySize.width}
+        height={imageDisplaySize.height}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'contain',
+          cursor: 'grab',
+          position: 'relative',
+          zIndex: 0,
+          pointerEvents: 'auto',
+        }}
       />
 
       {/* Hidden image for reference */}
