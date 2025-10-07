@@ -2,30 +2,32 @@
 
 A sophisticated biosensor analysis application designed for the iGEM 2025 competition. This tool enables quantitative pesticide concentration analysis through image processing of biosensor test kits, featuring built-in calibration strips for accurate measurements without external normalization.
 
-**Current Version**: 0.0.0-beta.1  
+**Current Version**: 0.0.1
 **Status**: Active Development  
 **Live Demo**: [https://hkjs-biosensorapp.netlify.app/](https://hkjs-biosensorapp.netlify.app/)
 
 ## Description
 
-This application is a React-based web tool that analyzes biosensor test kits to detect and quantify pesticide concentrations in samples. The tool uses computer vision techniques to analyze the brightness of test areas and compares them against calibration strips with known concentrations.
+This application is a React-based web app that analyzes biosensor test kits to detect and quantify pesticide concentrations in samples. The tool uses Computer Vision techniques to analyze the brightness of test areas and compares them against calibration strips with known concentrations.
 
 ### Key Features
 
 - **Multi-Pesticide Detection**: Supports analysis of five common pesticides:
-  - Acephate (0-10 µM range)
-  - Glyphosate (0-10 µM range)
-  - Malathion (0-10 µM range)
-  - Chlorpyrifos (0-10 µM range)
-  - Acetamiprid (0-10 µM range)
+  - Acephate (0-1 µM range)
+  - Glyphosate (0-1 µM range)
+  - Malathion (0-1 µM range)
+  - Chlorpyrifos (0-1 µM range)
+  - Acetamiprid (0-1 µM range)
 
-- **Built-in Calibration**: Each test kit includes vertical calibration strips with 5 known concentration points, eliminating the need for external calibration
+- **Dual Detection Modes**: 
+  - **Preset Standard Curve Mode** (Default): Uses predefined calibration curves for rapid analysis with standardized concentration ranges
+  - **Strip Mode**: Analyzes built-in calibration strips for flexible, kit-specific measurements
 
-- **Image Processing**: Advanced image analysis using RGB luminance calculations for accurate brightness measurements
-- **Enhanced ROI Detection**: Precise region-of-interest detection with pixel-level coordinate sampling
+- **Image Processing**: Image analysis using RGB calculations for accurate measurements
+- **Enhanced ROI Detection**: Precise region-of-interest (ROI) detection with pixel-level coordinate sampling
 - **Interactive Alignment**: Canvas-based image alignment tools for optimal analysis positioning
 
-- **Real-time Analysis**: Instant results with confidence levels (high/medium/low) based on calibration strip matching
+- **Real-time Analysis**: Instant results with confidence levels (high/medium/low) based on standard curve matching
 
 - **Data Management**: Comprehensive history tracking and data export capabilities
 
@@ -33,6 +35,7 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 
 ### Recent Updates
 
+- **Dual Detection Modes**: Introduced preset standard curve mode (default) and strip mode for flexible analysis approaches
 - **Enhanced Pesticide Support**: Expanded from 4 to 5 pesticides with updated calibration curves
 - **Improved Image Alignment**: Interactive canvas-based alignment tools for precise ROI positioning
 - **Advanced Pixel Sampling**: Direct coordinate-based sampling for more accurate brightness measurements
@@ -47,6 +50,172 @@ This application is a React-based web tool that analyzes biosensor test kits to 
 - **Image Processing**: Custom algorithms for ROI detection and brightness analysis
 - **UI Framework**: Material-UI (MUI) with custom theming and responsive design
 - **Canvas Integration**: HTML5 Canvas API for interactive image manipulation and analysis
+
+## Project Structure
+
+The codebase is organized into logical modules for maintainability and scalability:
+
+```
+biosensor-apptesting-2/
+├── App.tsx                          # Main application component and routing
+├── index.tsx                        # Application entry point
+├── types.ts                         # TypeScript type definitions
+├── metadata.json                    # Application metadata
+├── vite.config.ts                   # Vite build configuration
+├── tsconfig.json                    # TypeScript configuration
+├── package.json                     # Dependencies and scripts
+│
+├── components/                      # React components organized by feature
+│   ├── analyze/                     # Image analysis and capture functionality
+│   │   ├── AnalysisResultScreen.tsx # Results display component
+│   │   ├── CameraCapture.tsx        # Camera interface wrapper
+│   │   ├── CaptureScreen.tsx        # Main capture interface
+│   │   ├── ImageAlignment.tsx      # Image alignment tools
+│   │   ├── ImageDisplay.tsx         # Image display with ROI overlays
+│   │   ├── ImageUpload.tsx          # File upload component
+│   │   ├── ResultCard.tsx           # Individual result display
+│   │   │
+│   │   ├── alignment/               # Image alignment functionality
+│   │   │   ├── CanvasStage.tsx      # Main canvas component
+│   │   │   ├── Controls.tsx         # Alignment control buttons
+│   │   │   ├── CropOverlay.tsx      # Crop selection overlay
+│   │   │   ├── Header.tsx           # Alignment screen header
+│   │   │   ├── useAlignmentCanvas.ts # Main alignment logic hook
+│   │   │   │
+│   │   │   ├── components/         # Alignment sub-components
+│   │   │   │   └── AlignmentCanvas.tsx
+│   │   │   │
+│   │   │   └── hooks/               # Alignment-specific hooks
+│   │   │       ├── useCanvasState.ts    # Canvas state management
+│   │   │       ├── useImageCropping.ts  # Image cropping logic
+│   │   │       ├── useImageTransform.ts # Image transformation
+│   │   │       ├── useMouseEvents.ts     # Mouse/touch event handling
+│   │   │       └── useMovableDots.ts    # Movable dot controls
+│   │   │
+│   │   ├── camera/                  # Camera capture functionality
+│   │   │   ├── components/           # Camera UI components
+│   │   │   │   ├── CameraControls.tsx   # Camera control buttons
+│   │   │   │   ├── CameraHeader.tsx     # Camera screen header
+│   │   │   │   └── CameraView.tsx       # Camera video display
+│   │   │   │
+│   │   │   ├── hooks/               # Camera-specific hooks
+│   │   │   │   ├── useCameraCapture.ts  # Main capture logic
+│   │   │   │   ├── useCameraStream.ts   # Camera stream management
+│   │   │   │   └── useImageCapture.ts   # Image capture processing
+│   │   │   │
+│   │   │   ├── overlays/            # Camera overlay components
+│   │   │   │   ├── Overlays.tsx          # Main overlay container
+│   │   │   │   └── components/
+│   │   │   │       ├── CameraTestAreas.tsx    # Test area indicators
+│   │   │   │       └── PesticideGuideDots.tsx # Guide dot overlays
+│   │   │
+│   │   ├── capture/                 # Image capture workflow
+│   │   │   ├── components/           # Capture UI components
+│   │   │   │   ├── CaptureActions.tsx    # Action buttons
+│   │   │   │   ├── CaptureHeader.tsx     # Capture screen header
+│   │   │   │   ├── ImageActions.tsx      # Image action buttons
+│   │   │   │   └── ImagePreview.tsx      # Image preview display
+│   │   │   │
+│   │   │   └── hooks/                # Capture-specific hooks
+│   │   │       └── useCaptureLogic.ts    # Main capture workflow
+│   │   │
+│   │   └── imageDisplay/            # Image display components
+│   │       └── components/
+│   │           ├── CalibrationStrips.tsx # Calibration strip display
+│   │           ├── EmptyState.tsx         # Empty state component
+│   │           └── TestAreas.tsx          # Test area indicators
+│   │
+│   ├── history/                     # Analysis history functionality
+│   │   ├── HistoryItem.tsx          # Individual history item
+│   │   ├── HistoryScreen.tsx       # History list screen
+│   │   ├── components/              # History sub-components
+│   │   │   ├── HistoryHeader.tsx       # History screen header
+│   │   │   ├── HistoryName.tsx         # History item naming
+│   │   │   └── HistoryResults.tsx      # History results display
+│   │   └── hooks/                   # History-specific hooks
+│   │       └── useHistoryItemLogic.ts  # History item logic
+│   │
+│   ├── settings/                    # Application settings
+│   │   ├── SettingsScreen.tsx      # Main settings screen
+│   │   ├── SettingsSection.tsx     # Settings section wrapper
+│   │   ├── AboutSection.tsx        # About information
+│   │   ├── CalibrationSettings.tsx # Calibration configuration
+│   │   ├── DataSettings.tsx        # Data management settings
+│   │   ├── DetectionModeSettings.tsx # Detection mode selection
+│   │   │
+│   │   ├── calibration/            # Calibration management
+│   │   │   ├── components/         # Calibration UI components
+│   │   │   │   ├── CalibrationEditActions.tsx # Edit controls
+│   │   │   │   ├── CalibrationInputs.tsx     # Input fields
+│   │   │   │   ├── PesticideActions.tsx      # Pesticide controls
+│   │   │   │   ├── PesticideCard.tsx         # Pesticide display
+│   │   │   │   └── PesticideName.tsx         # Pesticide naming
+│   │   │   │
+│   │   │   └── hooks/              # Calibration-specific hooks
+│   │   │       └── useCalibrationLogic.ts   # Calibration logic
+│   │
+│   └── shared/                     # Shared components and utilities
+│       ├── AppButton.tsx           # Reusable button component
+│       ├── EmptyState.tsx         # Generic empty state
+│       ├── Layout.tsx             # Main app layout
+│       └── layout/                # Layout components
+│           └── components/
+│               ├── AppHeader.tsx       # Application header
+│               ├── BottomNav.tsx       # Bottom navigation
+│               └── MainContent.tsx     # Main content wrapper
+│
+├── state/                          # State management (Zustand stores)
+│   ├── calibrationStore.ts         # Calibration data management
+│   ├── historyStore.ts            # Analysis history storage
+│   ├── modeStore.ts               # Detection mode state
+│   ├── pesticideStore.ts          # Pesticide data management
+│   ├── themeStore.ts              # Theme and UI state
+│   ├── muiTheme.ts                # Material-UI theme configuration
+│   └── themes/                    # Theme definitions
+│       ├── darkTheme.ts           # Dark theme configuration
+│       ├── lightTheme.ts          # Light theme configuration
+│       └── palettes.ts            # Color palette definitions
+│
+├── utils/                          # Utility functions and algorithms
+│   ├── analysis/                   # Analysis algorithms
+│   │   ├── brightnessAnalysis.ts      # Brightness calculation methods
+│   │   ├── brightnessCalculations.ts   # Brightness computation utilities
+│   │   ├── calibrationAnalysis.ts     # Calibration curve analysis
+│   │   ├── presetAnalysis.ts          # Preset curve analysis
+│   │   └── unifiedAnalysis.ts         # Unified analysis interface
+│   │
+│   ├── constants/                 # Application constants
+│   │   └── roiConstants.ts         # Region of Interest definitions
+│   │
+│   ├── imageProcessing/           # Image processing utilities
+│   │   ├── brightness.ts              # Brightness calculation functions
+│   │   ├── colorUtils.ts              # Color manipulation utilities
+│   │   ├── imageCropping.ts           # Image cropping functions
+│   │   ├── pixelSampling.ts           # Pixel sampling algorithms
+│   │   ├── pixelValidation.ts          # Pixel validation logic
+│   │   ├── samplingAlgorithms.ts      # Advanced sampling methods
+│   │   ├── types.ts                   # Image processing types
+│   │   └── index.ts                   # Processing utilities export
+│   │
+│   └── version.ts                 # Version management utilities
+│
+├── public/                         # Static assets
+│   └── hkjs_logo.PNG              # Team logo
+│
+└── dist/                          # Production build output
+    ├── assets/                     # Bundled assets
+    ├── hkjs_logo.PNG              # Static assets
+    └── index.html                  # Main HTML file
+```
+
+### Key Architectural Patterns
+
+- **Feature-based Organization**: Components are grouped by functionality (analyze, history, settings)
+- **Hook-based Logic**: Business logic is extracted into custom hooks for reusability
+- **State Management**: Zustand stores manage different aspects of application state
+- **Utility Separation**: Image processing and analysis algorithms are isolated in utils/
+- **Component Composition**: Complex UI is built from smaller, focused components
+- **Type Safety**: Comprehensive TypeScript types ensure code reliability
 
 ## Installation
 
@@ -98,12 +267,23 @@ The built files will be in the `dist/` directory, ready for deployment.
 
 ## Usage
 
-### Test Kit Preparation
+### Detection Modes
 
-1. Ensure your biosensor test kit has the correct layout:
-   - Five pesticide test areas arranged horizontally
-   - Two calibration strips on the left side and three on the right side
-   - Calibration strips contain 5 segments with known concentrations (0, 0.3, 1, 3, 10 µM from top to bottom)
+The application offers two analysis approaches to suit different needs:
+
+#### **Preset Standard Curve Mode** (Default)
+- Uses predefined calibration curves based on standardized concentration ranges
+- Faster analysis with consistent results across different test kits
+- Ideal for routine testing with known pesticide types
+- Concentration ranges: 0, 0.3, 1, 3, 10 µM for all pesticides
+
+#### **Strip Mode** (Alternative)
+- Analyzes the built-in calibration strips on each test kit
+- Provides kit-specific measurements for maximum accuracy
+- Flexible approach that adapts to individual test kit variations
+- Recommended for research applications or when highest precision is required
+
+**Mode Selection**: Choose your preferred detection mode in the Settings tab before analysis.
 
 ### Analysis Process
 
@@ -121,8 +301,10 @@ The built files will be in the `dist/` directory, ready for deployment.
    - Manual adjustment controls for fine-tuning detection regions
 
 3. **Analysis**
-   - The app automatically analyzes both calibration strips and test areas
-   - Brightness values are calculated using RGB luminance formula
+   - The app automatically analyzes based on your selected detection mode
+   - **Preset Mode**: Uses predefined calibration curves for rapid analysis
+   - **Strip Mode**: Analyzes built-in calibration strips for kit-specific measurements
+   - Brightness values are calculated using total RGB
    - Concentrations are estimated by comparing test brightness to calibration curves
 
 4. **Results Interpretation**
@@ -138,7 +320,7 @@ The built files will be in the `dist/` directory, ready for deployment.
 
 ## Contributing
 
-We welcome contributions to improve the biosensor analysis tool! Please follow these guidelines:
+We welcome contributions to improve the biosensor analysis platform! Please follow these guidelines:
 
 ### Development Setup
 
@@ -146,7 +328,7 @@ We welcome contributions to improve the biosensor analysis tool! Please follow t
 2. Create a feature branch: `git checkout -b feature/your-feature-name`
 3. Make your changes following the existing code style
 4. Test your changes thoroughly
-5. Submit a pull request with a clear description of your changes
+5. Submit a Pull Request with a clear description of your changes
 
 ### Code Style
 
@@ -161,13 +343,6 @@ We welcome contributions to improve the biosensor analysis tool! Please follow t
 - Verify calibration accuracy across different lighting conditions
 - Ensure responsive design works on different screen sizes
 
-## Authors and Acknowledgments
-
-### Development Team
-
-- **Team HK-Joint-School 2025** - iGEM Competition Entry
-- **CPU Students** - Primary development and algorithm design
-
 ### Technologies Used
 
 - **React 19** - Frontend framework with latest features
@@ -177,17 +352,3 @@ We welcome contributions to improve the biosensor analysis tool! Please follow t
 - **Material-UI (MUI)** - UI component library with theming
 - **Canvas API** - Image processing and analysis
 - **React Easy Crop** - Image cropping functionality
-
-### Acknowledgments
-
-- **iGEM Foundation** - For providing the platform for synthetic biology innovation
-- **Open Source Community** - For the excellent tools and libraries that made this project possible
-- **Academic Advisors** - For guidance on biosensor technology and pesticide detection methods
-
-### Live Application
-
-The application is available online at: https://hkjs-biosensorapp.netlify.app/
-
----
-
-_This project was developed for the iGEM 2025 competition, focusing on innovative solutions for environmental monitoring and pesticide detection using synthetic biology approaches._
