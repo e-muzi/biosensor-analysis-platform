@@ -9,7 +9,7 @@ export const CaptureHeader: React.FC = () => {
   return (
     <Container maxWidth='md' sx={{ py: 4 }}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant='h3' component='h2' gutterBottom>
+        <Typography variant='h2' component='h1' gutterBottom>
           Pesticide Analysis
         </Typography>
         <Typography variant='body2' color='text.secondary'>

@@ -31,7 +31,7 @@ export function AppHeader() {
           alt='Team Logo'
           src={hkjs_logo}
         />
-        <Typography variant='h6' sx={{ flexGrow: 1 }}>
+        <Typography variant='h4' sx={{ flexGrow: 1 }}>
           PestiGuard Analysis Platform
         </Typography>
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { CALIBRATION_STRIPS } from '../../../../utils/analysis';
+import { CALIBRATION_STRIPS } from '../../../../utils/constants/roiConstants';
 
 // Calibration Strips
 export const CalibrationStrips: React.FC = () => {
