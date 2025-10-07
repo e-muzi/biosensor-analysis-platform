@@ -60,22 +60,10 @@ export function analyzeWithPresetCurves(
             : 0;
         const testRGB = averageR + averageG + averageB; // Total RGB value
 
-        // Debug logging
-        console.log(
-          `Debug: ${coordinate.name} - Coordinate: (${coordinate.x}, ${coordinate.y})`
-        );
-        console.log(
-          `Debug: ${coordinate.name} - Test RGB: ${testRGB.toFixed(1)}`
-        );
-
         // Use RGB comparison for concentration estimation
         const { concentration, confidence } = estimateConcentrationFromRGB(
           testRGB,
           pesticide.curve
-        );
-
-        console.log(
-          `Debug: ${coordinate.name} - Estimated concentration: ${concentration.toFixed(3)} µM, Confidence: ${confidence}`
         );
 
         results.push({

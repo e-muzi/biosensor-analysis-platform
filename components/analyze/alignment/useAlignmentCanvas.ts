@@ -112,20 +112,13 @@ export function useAlignmentCanvas(
 
   // Apply transformations and crop to create aligned image
   const handleConfirm = useCallback(async () => {
-    console.log('Debug: ALIGNMENT - handleConfirm called');
-    console.log('Debug: ALIGNMENT - imageTransform:', imageTransform);
-    console.log('Debug: ALIGNMENT - scale:', scale);
-    console.log('Debug: ALIGNMENT - rotation:', rotation);
-
     if (!canvasRef.current || !imageRef.current) {
-      console.log('Debug: ALIGNMENT - Missing refs, using original image');
       onConfirm(imageSrc);
       return;
     }
 
     try {
       const image = imageRef.current;
-      console.log('Debug: ALIGNMENT - Creating aligned image...');
 
       // Create a new canvas for the final aligned image
       const alignedCanvas = document.createElement('canvas');
@@ -175,11 +168,6 @@ export function useAlignmentCanvas(
 
       // Convert to data URL
       const alignedImageSrc = alignedCanvas.toDataURL('image/jpeg', 0.9);
-      console.log(
-        'Debug: ALIGNMENT - Aligned image created, length:',
-        alignedImageSrc.length
-      );
-      console.log('Debug: ALIGNMENT - Calling onConfirm with aligned image');
       onConfirm(alignedImageSrc);
     } catch (error) {
       console.error('Error creating aligned image:', error);

@@ -5,13 +5,13 @@ export function estimateConcentrationFromCalibration(
   concentrations: number[]
 ): { concentration: number; confidence: 'high' | 'medium' | 'low' } {
   // For biosensors, higher concentrations typically result in darker colors (lower RGB values)
-  // So we need to handle the inverse relationship between RGB and concentration
+  // therefore it is an inverse relationship between RGB and concentration
 
-  // Find the two calibration points that bracket the test RGB
+  // Step 1: Find the two calibration points that bracket the test RGB
   let lowerIndex = 0;
   let upperIndex = calibrationRGBs.length - 1;
 
-  // Check if RGB values are in ascending or descending order
+  // Step 2: Check if RGB values are in ascending or descending order
   const isAscending =
     calibrationRGBs[0] < calibrationRGBs[calibrationRGBs.length - 1];
 
@@ -57,7 +57,7 @@ export function estimateConcentrationFromCalibration(
     }
   }
 
-  // Linear interpolation
+  // Step 3: Linear interpolation formular
   const lowerRGB = calibrationRGBs[lowerIndex];
   const upperRGB = calibrationRGBs[upperIndex];
   const lowerConcentration = concentrations[lowerIndex];
@@ -72,7 +72,7 @@ export function estimateConcentrationFromCalibration(
     ((testRGB - lowerRGB) * (upperConcentration - lowerConcentration)) /
       (upperRGB - lowerRGB);
 
-  // Determine confidence based on how close we are to calibration points
+  // Step 4: Calculate confidence based on how close we are to calibration points
   const rgbRange = Math.abs(upperRGB - lowerRGB);
   const rgbDiff = Math.abs(testRGB - lowerRGB);
   const ratio = rgbDiff / rgbRange;

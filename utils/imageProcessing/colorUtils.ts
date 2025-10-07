@@ -53,9 +53,6 @@ export function calculateAverageRGBForRoi(
 
   // If no valid pixels found, fall back to including all pixels
   if (validPixelCount === 0) {
-    console.log(
-      `Debug: No valid colored pixels found, falling back to all pixels`
-    );
     for (let i = 0; i < data.length; i += 4) {
       const rRaw = data[i];
       const gRaw = data[i + 1];
@@ -70,10 +67,6 @@ export function calculateAverageRGBForRoi(
       totalB += b;
       validPixelCount++;
     }
-  } else {
-    console.log(
-      `Debug: Found ${validPixelCount} valid colored pixels out of ${data.length / 4} total pixels`
-    );
   }
 
   return {

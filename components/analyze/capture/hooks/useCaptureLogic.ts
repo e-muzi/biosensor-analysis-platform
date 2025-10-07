@@ -39,12 +39,6 @@ export function useCaptureLogic(
 
   const handleAlignmentConfirm = useCallback(
     (alignedImageSrc: string) => {
-      console.log('Debug: CAPTURE LOGIC - handleAlignmentConfirm called');
-      console.log(
-        'Debug: CAPTURE LOGIC - alignedImageSrc length:',
-        alignedImageSrc.length
-      );
-      console.log('Debug: CAPTURE LOGIC - Setting imageSrc to aligned image');
       if (onImageCapture) {
         onImageCapture(alignedImageSrc);
       } else {
@@ -62,13 +56,6 @@ export function useCaptureLogic(
   const handleAnalyze = useCallback(async () => {
     if (!imageSrc) return;
 
-    console.log(
-      `Debug: CAPTURE LOGIC - Starting analysis with mode: ${detectionMode}`
-    );
-    console.log(`Debug: CAPTURE LOGIC - imageSrc length: ${imageSrc.length}`);
-    console.log(
-      `Debug: CAPTURE LOGIC - imageSrc preview: ${imageSrc.substring(0, 50)}...`
-    );
     setIsAnalyzing(true);
     setError(null);
 
@@ -80,9 +67,6 @@ export function useCaptureLogic(
         img.onerror = reject;
       });
 
-      console.log(
-        `Debug: CAPTURE LOGIC - Image loaded: ${img.naturalWidth}x${img.naturalHeight}`
-      );
       const { calibrationResults } = await analyzeImage(img, detectionMode);
 
       // For backward compatibility, we still pass CalibrationResult[] to onAnalysisComplete

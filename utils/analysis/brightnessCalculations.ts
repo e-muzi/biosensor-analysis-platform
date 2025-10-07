@@ -35,9 +35,6 @@ export function analyzeWithCalibrationStrips(
 
         // NEW: Use coordinate-based sampling for test area RGB
         const coordinate = PESTICIDE_COORDINATES[index];
-        console.log(
-          `Debug: ANALYSIS - Sampling ${strip.name} at coordinate (${coordinate.x}, ${coordinate.y}) canvas: ${canvas.width}x${canvas.height}`
-        );
         const samplingResults = samplePesticidesAtCoordinates(ctx, [
           coordinate,
         ]);
@@ -57,10 +54,6 @@ export function analyzeWithCalibrationStrips(
             ? pixels.reduce((sum, p) => sum + p.b, 0) / pixels.length
             : 0;
         const testRGB = averageR + averageG + averageB;
-
-        console.log(
-          `Debug: ANALYSIS - ${strip.name} testRGB: ${testRGB.toFixed(0)}`
-        );
 
         // Estimate concentration
         const { concentration, confidence } =

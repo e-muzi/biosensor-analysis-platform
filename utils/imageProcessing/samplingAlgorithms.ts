@@ -232,16 +232,6 @@ export function samplePixelsAtCoordinates(
       const averageBrightness =
         validPixelsCount > 0 ? totalBrightness / validPixelsCount : 0;
 
-      // Debug logging
-      console.log(
-        `Debug: ${coord.name} - 5-pixel sampling at (${centerX}, ${centerY}):`
-      );
-      console.log(`  Valid pixels: ${validPixelsCount}/5`);
-      console.log(
-        `  Average RGB: (${averageR.toFixed(1)}, ${averageG.toFixed(1)}, ${averageB.toFixed(1)})`
-      );
-      console.log(`  Average brightness: ${averageBrightness.toFixed(2)}`);
-
       return {
         pesticide: coord.name,
         centerPoint: {
