@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { CameraAlt as CameraAltIcon } from '@mui/icons-material';
 
-// Empty State handle
 export const EmptyState: React.FC = () => {
   return (
     <Box

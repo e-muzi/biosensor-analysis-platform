@@ -8,7 +8,6 @@ interface AlignmentHeaderProps {
   subtitleColor: string;
 }
 
-// Alignment Header
 export const AlignmentHeader: React.FC<AlignmentHeaderProps> = ({
   title,
   subtitle,

@@ -15,7 +15,6 @@ interface CameraControlsProps {
   onClose: () => void;
 }
 
-// Camera Controls - Full camera view
 export const CameraControls: React.FC<CameraControlsProps> = ({
   flashEnabled,
   isCapturing,

@@ -6,7 +6,6 @@ import {
 import { useThemeStore, iGEMColors } from '../../../../state/themeStore';
 const hkjs_logo = '/hkjs_logo.PNG';
 
-// App Header
 export function AppHeader() {
   const { theme, toggleTheme } = useThemeStore();
 

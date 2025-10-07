@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react';
 
-// Mouse Events
 export function useMouseEvents(
   onMouseDown: (e: React.MouseEvent) => void,
   onMouseMove: (e: React.MouseEvent) => void,

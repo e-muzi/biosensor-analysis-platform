@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Typography, Box, Alert } from '@mui/material';
 import { useModeStore } from '../../../../state/modeStore';
 
-// Capture Headers
 export const CaptureHeader: React.FC = () => {
   const { detectionMode } = useModeStore();
 

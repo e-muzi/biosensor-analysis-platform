@@ -7,7 +7,6 @@ interface PesticideGuideDotsProps {
   videoHeight: number;
 }
 
-// Pesticide Guide Dots - Shows dots at the center of each green box
 export const PesticideGuideDots: React.FC<PesticideGuideDotsProps> = () => {
   // Always show the dots, using percentage-based positioning like the green boxes
 

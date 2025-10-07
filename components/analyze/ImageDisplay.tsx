@@ -15,9 +15,7 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
   ({ imageSrc, showROIs = true }, ref) => {
     const { detectionMode } = useModeStore();
 
-    // Handle image load to get dimensions
     const handleImageLoad = () => {
-      // Image loaded successfully
     };
 
     return (

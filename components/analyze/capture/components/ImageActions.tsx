@@ -10,7 +10,6 @@ interface ImageActionsProps {
   onShowAlignment: () => void;
 }
 
-// Image Actions
 export const ImageActions: React.FC<ImageActionsProps> = ({
   isUploadedImage,
   isAnalyzing,

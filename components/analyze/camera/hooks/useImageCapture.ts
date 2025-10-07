@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-// Image Capture
 export function useImageCapture() {
   const [flashEnabled, setFlashEnabled] = useState(false);
 
@@ -11,12 +10,6 @@ export function useImageCapture() {
   const captureImage = useCallback(
     async (
       video: HTMLVideoElement,
-      detectedBounds: {
-        x: number;
-        y: number;
-        width: number;
-        height: number;
-      } | null,
       onCapture: (imageSrc: string, originalImageSrc?: string) => void,
       onError: (error: string) => void,
       setIsCapturing: (capturing: boolean) => void
@@ -44,42 +37,10 @@ export function useImageCapture() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         // Get original image data
-        const originalImageData = ctx.getImageData(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
         const originalImageSrc = canvas.toDataURL('image/jpeg', 0.9);
 
-        // Crop to test kit if bounds are detected
-        let finalImageSrc = originalImageSrc;
-        if (detectedBounds) {
-          // Create a new canvas for cropping
-          const croppedCanvas = document.createElement('canvas');
-          croppedCanvas.width = detectedBounds.width;
-          croppedCanvas.height = detectedBounds.height;
-
-          const croppedCtx = croppedCanvas.getContext('2d');
-          if (croppedCtx) {
-            croppedCtx.drawImage(
-              canvas,
-              detectedBounds.x,
-              detectedBounds.y,
-              detectedBounds.width,
-              detectedBounds.height,
-              0,
-              0,
-              detectedBounds.width,
-              detectedBounds.height
-            );
-            finalImageSrc = croppedCanvas.toDataURL('image/jpeg', 0.9);
-          }
-        }
-
-        onCapture(finalImageSrc, originalImageSrc);
+        onCapture(originalImageSrc, originalImageSrc);
       } catch (error) {
-        console.error('Image capture error:', error);
         onError(
           error instanceof Error ? error.message : 'Failed to capture image'
         );

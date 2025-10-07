@@ -24,7 +24,6 @@ interface AlignmentControlsProps {
   accentColor: string;
 }
 
-// Main Alignment Controls
 export const AlignmentControls: React.FC<AlignmentControlsProps> = ({
   scale,
   rotation,

@@ -7,7 +7,6 @@ export interface CropBounds {
   height: number;
 }
 
-// Canvas Refs
 export function useCanvasRefs() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
@@ -31,7 +30,6 @@ export function useCanvasState() {
   const [panStart, setPanStart] = useState<{ x: number; y: number } | null>(
     null
   );
-  const [isAutoDetecting, setIsAutoDetecting] = useState(false);
   const [imageDisplaySize, setImageDisplaySize] = useState<{
     width: number;
     height: number;
@@ -50,8 +48,6 @@ export function useCanvasState() {
     setDragStart,
     panStart,
     setPanStart,
-    isAutoDetecting,
-    setIsAutoDetecting,
     imageDisplaySize,
     setImageDisplaySize,
   };

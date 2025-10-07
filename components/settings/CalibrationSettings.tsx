@@ -19,18 +19,18 @@ export function CalibrationSettings() {
     useCalibrationStore();
   const { detectionMode } = useModeStore();
   const [editingPesticide, setEditingPesticide] = useState<string | null>(null);
-  const [tempConcentrations, setTempConcentrations] = useState<string>('');
+  const [concentrationsInput, setConcentrationsInput] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const handleEditStart = (pesticide: string) => {
     setEditingPesticide(pesticide);
-    setTempConcentrations(userCalibrations[pesticide]?.join(', ') || '');
+    setConcentrationsInput(userCalibrations[pesticide]?.join(', ') || '');
     setError(null);
   };
 
   const handleEditCancel = () => {
     setEditingPesticide(null);
-    setTempConcentrations('');
+    setConcentrationsInput('');
     setError(null);
   };
 
@@ -38,7 +38,7 @@ export function CalibrationSettings() {
     if (!editingPesticide) return;
 
     try {
-      const concentrations = tempConcentrations
+      const concentrations = concentrationsInput
         .split(',')
         .map(s => parseFloat(s.trim()))
         .filter(n => !isNaN(n) && n >= 0);
@@ -50,7 +50,7 @@ export function CalibrationSettings() {
 
       setCalibration(editingPesticide, concentrations);
       setEditingPesticide(null);
-      setTempConcentrations('');
+      setConcentrationsInput('');
       setError(null);
     } catch (err) {
       setError(
@@ -170,8 +170,8 @@ export function CalibrationSettings() {
                     <TextField
                       fullWidth
                       label='Concentrations (comma-separated)'
-                      value={tempConcentrations}
-                      onChange={e => setTempConcentrations(e.target.value)}
+                      value={concentrationsInput}
+                      onChange={e => setConcentrationsInput(e.target.value)}
                       placeholder='0, 25, 50, 75, 100'
                       helperText='Enter concentration values separated by commas'
                     />

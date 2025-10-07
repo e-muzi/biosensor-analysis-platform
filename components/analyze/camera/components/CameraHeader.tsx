@@ -1,7 +1,6 @@
 import React from 'react';
 import { Paper, Box, Typography } from '@mui/material';
 
-// Camera Header - Full camera view
 export const CameraHeader: React.FC = () => {
   return (
     <Paper

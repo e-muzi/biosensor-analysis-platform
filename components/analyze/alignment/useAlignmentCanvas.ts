@@ -170,7 +170,6 @@ export function useAlignmentCanvas(
       const alignedImageSrc = alignedCanvas.toDataURL('image/jpeg', 0.9);
       onConfirm(alignedImageSrc);
     } catch (error) {
-      console.error('Error creating aligned image:', error);
       // Fallback to original image if transformation fails
       onConfirm(imageSrc);
     }

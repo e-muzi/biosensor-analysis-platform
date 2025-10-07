@@ -7,7 +7,6 @@ interface EmptyStateProps {
   description: string;
 }
 
-//Reusable EmptyState component
 export const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   title,

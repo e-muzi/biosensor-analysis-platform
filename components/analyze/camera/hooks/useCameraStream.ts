@@ -1,6 +1,5 @@
 import { useRef, useCallback, useState } from 'react';
 
-// Camera Stream
 export function useCameraStream() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -40,13 +39,12 @@ export function useCameraStream() {
             try {
               await videoRef.current?.play();
             } catch (playError) {
-              console.warn('Video play interrupted:', playError);
+              // Video play interrupted
             }
           };
         }
         streamRef.current = stream;
       } catch (err) {
-        console.error('Error accessing camera: ', err);
         let message = 'Could not access camera.';
         if (err instanceof Error && err.name === 'NotAllowedError') {
           message =

@@ -35,9 +35,6 @@ export function analyzeWithPresetCurves(
           p => p.name === coordinate.name
         );
         if (!pesticide) {
-          console.warn(
-            `No preset curve found for pesticide: ${coordinate.name}`
-          );
           return;
         }
 

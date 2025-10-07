@@ -8,7 +8,6 @@ interface ImagePreviewProps {
   isUploadedImage: boolean;
 }
 
-// Image Preview
 export const ImagePreview: React.FC<ImagePreviewProps> = ({
   imageSrc,
   isUploadedImage,

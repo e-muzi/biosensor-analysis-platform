@@ -31,7 +31,6 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
     isUploadedImage,
     handleImageSelect,
     handleAlignmentConfirm,
-    handleAlignmentBack,
     handleAnalyze,
     handleClearImage,
     handleOpenCamera,
@@ -46,7 +45,6 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
     pendingImage
   );
 
-  // Show alignment screen if image is selected and alignment is enabled
   if (showAlignment && imageSrc) {
     return (
       <ImageAlignment

@@ -8,7 +8,6 @@ interface CameraOverlaysProps {
   videoHeight: number;
 }
 
-// Camera Overlays - Full camera view with pesticide guide dots and green ROI boxes
 export const CameraOverlays: React.FC<CameraOverlaysProps> = ({
   videoWidth,
   videoHeight,

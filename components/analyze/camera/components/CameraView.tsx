@@ -7,7 +7,6 @@ interface CameraViewProps {
   isVideoReady?: boolean;
 }
 
-// Camera View - Full camera view with pesticide guide dots
 export const CameraView: React.FC<CameraViewProps> = ({
   videoRef,
   isVideoReady = false,

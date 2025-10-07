@@ -75,11 +75,9 @@ export function useCaptureLogic(
         onAnalysisComplete(calibrationResults, imageSrc);
       } else {
         // This should not happen in the new system as both modes return CalibrationResult[]
-        console.warn('Unexpected: analysisResults without calibrationResults');
         onAnalysisComplete([], imageSrc);
       }
     } catch (err) {
-      console.error(err);
       setError('Failed to analyze image. Please try a different one.');
     } finally {
       setIsAnalyzing(false);

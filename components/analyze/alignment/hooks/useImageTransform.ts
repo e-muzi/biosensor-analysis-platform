@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
 
-// Image Transform
 export function useImageTransform() {
   const [scale, setScale] = useState(1);
   const [rotation, setRotation] = useState(0);

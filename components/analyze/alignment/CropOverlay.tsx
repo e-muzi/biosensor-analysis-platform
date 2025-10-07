@@ -15,7 +15,6 @@ interface CropOverlayProps {
   borderColor: string;
 }
 
-// Crop Overlay
 export const CropOverlay: React.FC<CropOverlayProps> = ({
   cropBounds,
   canvasWidth,

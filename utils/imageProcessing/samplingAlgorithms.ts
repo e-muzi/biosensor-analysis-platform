@@ -254,10 +254,6 @@ export function samplePixelsAtCoordinates(
         samplingMethod: 'coordinate_based',
       };
     } catch (error) {
-      console.error(
-        `Error sampling coordinate (${coord.x}, ${coord.y}) for ${coord.name}:`,
-        error
-      );
       return createErrorResult(
         coord.name,
         coord.x / canvas.width,

@@ -8,7 +8,6 @@ interface CaptureActionsProps {
   onImageSelect: (src: string) => void;
 }
 
-// Capture Actions
 export const CaptureActions: React.FC<CaptureActionsProps> = ({
   onOpenCamera,
   onImageSelect,

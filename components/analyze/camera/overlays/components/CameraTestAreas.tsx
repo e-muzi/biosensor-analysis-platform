@@ -2,23 +2,10 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { PESTICIDE_ROIS } from '../../../../../utils/constants/roiConstants';
 
-interface CameraTestAreasProps {
-  videoWidth: number;
-  videoHeight: number;
-}
-
 // Camera-specific Test Areas - Simplified to always show
-export const CameraTestAreas: React.FC<CameraTestAreasProps> = ({
-  videoWidth,
-  videoHeight,
-}) => {
+export const CameraTestAreas: React.FC = () => {
   // Always show the boxes, even if video dimensions are not available yet
   // Use percentage-based positioning like the original TestAreas component
-
-  console.log('CameraTestAreas rendering with dimensions:', {
-    videoWidth,
-    videoHeight,
-  });
 
   return (
     <>

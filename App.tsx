@@ -20,7 +20,7 @@ function App() {
     'analyze' | 'history' | 'settings'
   >('analyze');
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [pendingImage, setPendingImage] = useState<string | null>(null); // Image captured but not yet analyzed
+  const [pendingImage, setPendingImage] = useState<string | null>(null);
   const [analysisResults, setAnalysisResults] = useState<CalibrationResult[]>(
     []
   );
@@ -32,18 +32,13 @@ function App() {
     setShowAlignment(false);
   }, []);
 
-  const handleAlignmentBack = useCallback(() => {
-    setShowAlignment(false);
-  }, []);
-
   const handleAnalysisComplete = useCallback(
     (results: CalibrationResult[], imageSrc: string) => {
       setAnalysisResults(results);
       setCapturedImage(imageSrc);
-      setPendingImage(null); // Clear pending image since analysis is complete
+      setPendingImage(null);
       setIsAnalyzing(false);
 
-      // Save to history
       const historyItem = {
         id: Date.now().toString(),
         name: `Analysis ${new Date().toLocaleString()}`,
@@ -63,7 +58,6 @@ function App() {
 
   const handleImageCapture = useCallback((imageSrc: string) => {
     setPendingImage(imageSrc);
-    // Don't clear analysis results when capturing a new image
   }, []);
 
   const handleClearImage = useCallback(() => {
@@ -96,7 +90,6 @@ function App() {
   const renderCurrentScreen = () => {
     switch (currentScreen) {
       case 'analyze':
-        // Show alignment if in alignment mode
         if (showAlignment && capturedImage) {
           return (
             <ImageAlignment
@@ -106,7 +99,6 @@ function App() {
           );
         }
 
-        // Show analysis results if available
         if (analysisResults.length > 0 && capturedImage) {
           return (
             <AnalysisResultScreen
@@ -119,7 +111,6 @@ function App() {
           );
         }
 
-        // Show capture screen by default
         return (
           <CaptureScreen
             onAnalysisComplete={handleAnalysisComplete}
