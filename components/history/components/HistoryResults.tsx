@@ -1,27 +1,17 @@
 import { Box, Typography, Grid, Chip, Card, CardContent } from '@mui/material';
 import { ImageDisplay } from '../../analyze/ImageDisplay';
+import { useModeStore } from '../../../state/modeStore';
 import type { AnalysisResult } from '../../../types';
+import { getConcentrationLabel, getConcentrationColor } from '../../../utils/analysis/pesticideThresholds';
 
 interface HistoryResultsProps {
   results: AnalysisResult[];
   imageSrc: string;
 }
 
-const getConcentrationLabel = (concentration: number): string => {
-  if (concentration < 0.1) return 'Low';
-  if (concentration < 1.0) return 'Medium';
-  return 'High';
-};
-
-const getConcentrationColor = (
-  concentration: number
-): 'success' | 'warning' | 'error' => {
-  if (concentration < 0.1) return 'success';
-  if (concentration < 1.0) return 'warning';
-  return 'error';
-};
-
 export function HistoryResults({ results, imageSrc }: HistoryResultsProps) {
+  const { detectionMode } = useModeStore();
+  
   if (!results || results.length === 0) {
     return (
       <Box sx={{ textAlign: 'center', py: 4 }}>
@@ -67,8 +57,16 @@ export function HistoryResults({ results, imageSrc }: HistoryResultsProps) {
                     {result.pesticide}
                   </Typography>
                   <Chip
-                    label={getConcentrationLabel(result.concentration)}
-                    color={getConcentrationColor(result.concentration)}
+                    label={getConcentrationLabel(
+                      result.concentration,
+                      result.pesticide,
+                      detectionMode
+                    )}
+                    color={getConcentrationColor(
+                      result.concentration,
+                      result.pesticide,
+                      detectionMode
+                    )}
                     size='small'
                   />
                 </Box>
@@ -77,7 +75,7 @@ export function HistoryResults({ results, imageSrc }: HistoryResultsProps) {
                   color='text.secondary'
                   sx={{ mb: 0.5 }}
                 >
-                  Concentration: {result.concentration.toFixed(3)} µM
+                  Concentration: {result.concentration.toFixed(3)} mg/L
                 </Typography>
                 <Typography variant='body2' color='text.secondary'>
                   RGB Value: {(result.rgb || result.brightness || 0).toFixed(0)}

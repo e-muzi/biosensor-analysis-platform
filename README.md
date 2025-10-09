@@ -12,12 +12,12 @@ This application is a React-based web app that analyzes biosensor test kits to d
 
 ### Key Features
 
-- **Multi-Pesticide Detection**: Supports analysis of five common pesticides:
-  - Acephate (0-1 µM range)
-  - Glyphosate (0-1 µM range)
-  - Malathion (0-1 µM range)
-  - Chlorpyrifos (0-1 µM range)
-  - Acetamiprid (0-1 µM range)
+- **Multi-Pesticide Detection**: Supports analysis of five common pesticides with pesticide-specific concentration thresholds:
+  - **Acephate**: Low (0.01-0.1 mg/L), Medium (0.1-0.5 mg/L), High (0.5-1.0 mg/L)
+  - **Glyphosate**: Low (0.1-0.3 mg/L), Medium (0.3-0.7 mg/L), High (0.7-1.0 mg/L)
+  - **Malathion**: Low (0.1-0.4 mg/L), Medium (0.4-0.8 mg/L), High (0.8-1.0 mg/L)
+  - **Chlorpyrifos**: Low (0.01-0.05 mg/L), Medium (0.05-0.1 mg/L), High (0.1-1.0 mg/L)
+  - **Acetamiprid**: Low (0.01-0.1 mg/L), Medium (0.1-0.5 mg/L), High (0.5-1.0 mg/L)
 
 - **Dual Detection Modes**: 
   - **Preset Standard Curve Mode** (Default): Uses predefined calibration curves for rapid analysis with standardized concentration ranges
@@ -39,7 +39,7 @@ This application is a React-based web app that analyzes biosensor test kits to d
 - **Enhanced Pesticide Support**: Expanded from 4 to 5 pesticides with updated calibration curves
 - **Improved Image Alignment**: Interactive canvas-based alignment tools for precise ROI positioning
 - **Advanced Pixel Sampling**: Direct coordinate-based sampling for more accurate brightness measurements
-- **Updated Calibration System**: Standardized concentration ranges (0, 0.3, 1, 3, 10 µM) across all pesticides
+- **Pesticide-Specific Thresholds**: Customized concentration thresholds for each pesticide in Preset mode, displayed in mg/L units
 - **Material-UI Integration**: Modern UI framework with custom theming and responsive design
 
 ### Technical Architecture
@@ -275,7 +275,7 @@ The application offers two analysis approaches to suit different needs:
 - Uses predefined calibration curves based on standardized concentration ranges
 - Faster analysis with consistent results across different test kits
 - Ideal for routine testing with known pesticide types
-- Concentration ranges: 0, 0.3, 1, 3, 10 µM for all pesticides
+- Concentration ranges: Pesticide-specific thresholds in mg/L (see pesticide details above)
 
 #### **Strip Mode** (Alternative)
 - Analyzes the built-in calibration strips on each test kit
