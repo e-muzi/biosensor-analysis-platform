@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { PesticideGuideDots } from './overlays/components/PesticideGuideDots';
 import { CameraTestAreas } from './overlays/components/CameraTestAreas';
 import { StripModeBorder } from './overlays/components/StripModeBorder';
+import { CalibrationStrips } from '../imageDisplay/components/CalibrationStrips';
 import { useModeStore } from '../../../state/modeStore';
 
 interface CameraOverlaysProps {
@@ -30,6 +31,9 @@ export const CameraOverlays: React.FC<CameraOverlaysProps> = ({
         videoWidth={displayWidth}
         videoHeight={displayHeight}
       />
+
+      {/* Calibration strips - only visible in strip mode */}
+      {detectionMode === 'strip' && <CalibrationStrips />}
 
       {/* Strip mode border - only visible in strip mode */}
       {detectionMode === 'strip' && (

@@ -8,6 +8,7 @@ import { samplePesticidesAtCoordinates } from '../imageProcessing/pixelSampling'
 import type { CalibrationResult } from '../../types';
 
 // Analyze image with calibration strips using new 5-pixel sampling method
+// Updated for 3-point calibration system
 export function analyzeWithCalibrationStrips(
   image: HTMLImageElement
 ): Promise<CalibrationResult[]> {
