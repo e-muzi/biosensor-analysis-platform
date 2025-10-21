@@ -2,6 +2,8 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { PesticideGuideDots } from './overlays/components/PesticideGuideDots';
 import { CameraTestAreas } from './overlays/components/CameraTestAreas';
+import { StripModeBorder } from './overlays/components/StripModeBorder';
+import { useModeStore } from '../../../state/modeStore';
 
 interface CameraOverlaysProps {
   videoWidth: number;
@@ -12,6 +14,8 @@ export const CameraOverlays: React.FC<CameraOverlaysProps> = ({
   videoWidth,
   videoHeight,
 }) => {
+  const { detectionMode } = useModeStore();
+  
   // Use default dimensions if video dimensions are not available yet
   const displayWidth = videoWidth || 1920;
   const displayHeight = videoHeight || 1080;
@@ -26,6 +30,14 @@ export const CameraOverlays: React.FC<CameraOverlaysProps> = ({
         videoWidth={displayWidth}
         videoHeight={displayHeight}
       />
+
+      {/* Strip mode border - only visible in strip mode */}
+      {detectionMode === 'strip' && (
+        <StripModeBorder
+          videoWidth={displayWidth}
+          videoHeight={displayHeight}
+        />
+      )}
     </Box>
   );
 };
