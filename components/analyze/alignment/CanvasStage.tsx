@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
-import {
-  PESTICIDE_ROIS,
-  CALIBRATION_STRIPS,
-  PESTICIDE_CENTER_POINTS,
-} from '../../../utils/constants/roiConstants';
+import { AlignmentCanvas } from './components/AlignmentCanvas';
 import { useModeStore } from '../../../state/modeStore';
+import { iGEMColors } from '../../../state/themeStore';
+import type { MovableDot } from './hooks/useMovableDots';
+import type { DotPosition } from './hooks/useMovableDots';
 
 interface CanvasStageProps {
   canvasRef: React.RefObject<HTMLCanvasElement>;
@@ -14,13 +13,9 @@ interface CanvasStageProps {
   scale: number;
   rotation: number;
   imageTransform: { x: number; y: number; scale?: number };
-  isDragging: boolean;
-  onMouseDown: (e: React.MouseEvent<HTMLCanvasElement>) => void;
-  onMouseMove: (e: React.MouseEvent<HTMLCanvasElement>) => void;
-  onMouseUp: (e: React.MouseEvent<HTMLCanvasElement>) => void;
-  onTouchStart: (e: React.TouchEvent<HTMLCanvasElement>) => void;
-  onTouchMove: (e: React.TouchEvent<HTMLCanvasElement>) => void;
-  onTouchEnd: (e: React.TouchEvent<HTMLCanvasElement>) => void;
+  dots: MovableDot[];
+  onDotMove: (dotName: string, position: DotPosition) => void;
+  onResetDots: () => void;
   setLocalImageDisplaySize: (size: { width: number; height: number }) => void;
 }
 
@@ -31,19 +26,16 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
   scale,
   rotation,
   imageTransform,
-  isDragging,
-  onMouseDown,
-  onMouseMove,
-  onMouseUp,
-  onTouchStart,
-  onTouchMove,
-  onTouchEnd,
+  dots,
+  onDotMove,
+  onResetDots,
   setLocalImageDisplaySize,
 }) => {
   const [localImageDisplaySize, setLocalImageDisplaySizeLocal] = useState<{
     width: number;
     height: number;
   }>({ width: 400, height: 300 });
+  const [imageLoaded, setImageLoaded] = useState(false);
   const { detectionMode } = useModeStore();
 
   // Calculate image display size when image loads
@@ -78,6 +70,7 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
           width: displayWidth,
           height: displayHeight,
         });
+        setImageLoaded(true);
       }
     };
 
@@ -89,65 +82,21 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
     }
   }, [imageSrc]);
 
-  // Draw the image
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const image = imageRef.current;
-    if (!canvas || !image || !image.complete) return;
-
-    const ctx = canvas.getContext('2d', {
-      premultipliedAlpha: false,
-      willReadFrequently: true,
-    }) as CanvasRenderingContext2D;
-    if (!ctx) return;
-
-    // Set canvas size to match display size
-    canvas.width = localImageDisplaySize.width;
-    canvas.height = localImageDisplaySize.height;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Save context
-    ctx.save();
-
-    // Apply transformations
-    ctx.translate(imageTransform.x, imageTransform.y);
-    ctx.scale(
-      scale * (imageTransform.scale || 1),
-      scale * (imageTransform.scale || 1)
-    );
-    ctx.rotate((rotation * Math.PI) / 180);
-
-    // Draw the image
-    ctx.drawImage(
-      image,
-      0,
-      0,
-      localImageDisplaySize.width,
-      localImageDisplaySize.height
-    );
-
-    // Restore context
-    ctx.restore();
-  }, [
-    imageSrc,
-    localImageDisplaySize,
-    scale,
-    rotation,
-    imageTransform,
-    isDragging,
-  ]);
 
   return (
     <Box sx={{ position: 'relative', display: 'inline-block' }}>
-      <img
+      {/* Hidden image for reference */}
+      <Box
+        component='img'
         ref={imageRef}
         src={imageSrc}
-        style={{ display: 'none' }}
-        alt='Test kit'
+        onLoad={() => setImageLoaded(true)}
+        crossOrigin='anonymous'
+        sx={{ display: 'none' }}
       />
+      
       <Box
+        data-canvas-container
         sx={{
           position: 'relative',
           width: '100%',
@@ -165,112 +114,22 @@ export const CanvasStage: React.FC<CanvasStageProps> = ({
           backgroundColor: 'background.paper',
         }}
       >
-        <canvas
-          ref={canvasRef}
-          width={localImageDisplaySize.width}
-          height={localImageDisplaySize.height}
-          onMouseDown={onMouseDown}
-          onMouseMove={onMouseMove}
-          onMouseUp={onMouseUp}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'contain',
-            cursor: isDragging ? 'grabbing' : 'grab',
-            position: 'relative',
-            zIndex: 0,
-            pointerEvents: 'auto',
+        <AlignmentCanvas
+          canvasRef={canvasRef}
+          imageRef={imageRef}
+          imageSrc={imageSrc}
+          imageDisplaySize={localImageDisplaySize}
+          cropBounds={null} // No crop bounds for alignment
+          imageLoaded={imageLoaded}
+          colors={{
+            surface: 'rgba(255, 255, 255, 0.9)',
+            border: iGEMColors.primary,
           }}
+          dots={dots}
+          onDotMove={onDotMove}
+          onResetDots={onResetDots}
+          onImageLoad={() => setImageLoaded(true)}
         />
-
-        {/* Calibration strips overlay - only in strip mode */}
-        {detectionMode === 'strip' &&
-          CALIBRATION_STRIPS.map(strip => (
-            <Box
-              key={strip.name}
-              sx={{
-                position: 'absolute',
-                left: `${strip.roi.x * 100}%`,
-                top: `${strip.roi.y * 100}%`,
-                width: `${strip.roi.width * 100}%`,
-                height: `${strip.roi.height * 100}%`,
-                border: '1px solid',
-                borderColor: 'primary.main',
-                backgroundColor: 'transparent',
-                pointerEvents: 'none',
-                borderRadius: 1,
-                zIndex: 1,
-              }}
-            />
-          ))}
-
-        {/* Pesticide test areas overlay - always show */}
-        {PESTICIDE_ROIS.map(pesticide => (
-          <Box
-            key={pesticide.name}
-            sx={{
-              position: 'absolute',
-              left: `${pesticide.roi.x * 100}%`,
-              top: `${pesticide.roi.y * 100}%`,
-              width: `${pesticide.roi.width * 100}%`,
-              height: `${pesticide.roi.height * 100}%`,
-              border: '1px solid',
-              borderColor: 'primary.main',
-              backgroundColor: 'transparent',
-              pointerEvents: 'none',
-              borderRadius: 1,
-              zIndex: 1,
-            }}
-          />
-        ))}
-
-        {/* Guide dots overlay - always show */}
-        {PESTICIDE_CENTER_POINTS.map(pesticide => (
-          <Box key={pesticide.name}>
-            {/* Guide dot positioned at the center of the green box */}
-            <Box
-              sx={{
-                position: 'absolute',
-                left: `${pesticide.roi.x * 100}%`,
-                top: `${pesticide.roi.y * 100}%`,
-                width: 8,
-                height: 8,
-                borderRadius: '50%',
-                backgroundColor: 'red',
-                border: '2px solid white',
-                zIndex: 15, // Higher than green boxes
-                transform: 'translate(-50%, -50%)',
-                boxShadow: '0 0 8px rgba(255, 0, 0, 0.8)',
-              }}
-            />
-
-            {/* Pesticide label */}
-            <Box
-              component='span'
-              sx={{
-                position: 'absolute',
-                left: `${pesticide.roi.x * 100}%`,
-                top: `${pesticide.roi.y * 100}%`,
-                color: 'red',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                px: 0.5,
-                py: 0.2,
-                borderRadius: 0.5,
-                fontSize: '0.6rem',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap',
-                zIndex: 15,
-                border: '1px solid red',
-                transform: 'translate(-50%, -120%)',
-              }}
-            >
-              {pesticide.name}
-            </Box>
-          </Box>
-        ))}
       </Box>
     </Box>
   );

@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react';
 import { useCanvasRefs } from './hooks/useCanvasState';
 import { useImageTransform } from './hooks/useImageTransform';
+import { useMovableDots } from './hooks/useMovableDots';
 
 export function useAlignmentCanvas(
   imageSrc: string,
-  onConfirm: (alignedImageSrc: string) => void
+  onConfirm: (alignedImageSrc: string, dotPositions: Array<{ name: string; x: number; y: number }>) => void
 ) {
   const { canvasRef, imageRef } = useCanvasRefs();
   // Default display size - will be updated by CanvasStage
@@ -17,7 +18,6 @@ export function useAlignmentCanvas(
     scale,
     rotation,
     imageTransform,
-    setImageTransform,
     handleZoomIn,
     handleZoomOut,
     handleRotateLeft,
@@ -25,95 +25,29 @@ export function useAlignmentCanvas(
     handleResetTransform,
   } = useImageTransform();
 
-  // State for tracking drag operations
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState<{ x: number; y: number } | null>(
-    null
-  );
+  // Movable dots functionality
+  const { dots, updateDotPosition, resetDots, getDotPositions } = useMovableDots();
 
-  // Handle mouse drag for image positioning
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true);
-    setDragStart({ x: e.clientX, y: e.clientY });
-  }, []);
+  // Handle dot movement
+  const handleDotMove = useCallback((dotName: string, position: { x: number; y: number }) => {
+    updateDotPosition(dotName, position);
+  }, [updateDotPosition]);
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      if (!isDragging || !dragStart) return;
-
-      const deltaX = e.clientX - dragStart.x;
-      const deltaY = e.clientY - dragStart.y;
-
-      setImageTransform(prev => ({
-        x: prev.x + deltaX,
-        y: prev.y + deltaY,
-      }));
-
-      setDragStart({ x: e.clientX, y: e.clientY });
-    },
-    [isDragging, dragStart]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-    setDragStart(null);
-  }, []);
-
-  // Handle touch events for two-finger zoom and single finger drag
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      // Single touch - start drag
-      setIsDragging(true);
-      setDragStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-    } else if (e.touches.length === 2) {
-      // Two touches - prepare for zoom
-      setIsDragging(false);
-      setDragStart(null);
-    }
-  }, []);
-
-  const handleTouchMove = useCallback(
-    (e: React.TouchEvent) => {
-      if (e.touches.length === 1 && isDragging && dragStart) {
-        // Single touch drag
-        const deltaX = e.touches[0].clientX - dragStart.x;
-        const deltaY = e.touches[0].clientY - dragStart.y;
-
-        setImageTransform(prev => ({
-          x: prev.x + deltaX,
-          y: prev.y + deltaY,
-        }));
-
-        setDragStart({ x: e.touches[0].clientX, y: e.touches[0].clientY });
-      } else if (e.touches.length === 2) {
-        // Two finger zoom
-        const touch1 = e.touches[0];
-        const touch2 = e.touches[1];
-        const distance = Math.sqrt(
-          Math.pow(touch2.clientX - touch1.clientX, 2) +
-            Math.pow(touch2.clientY - touch1.clientY, 2)
-        );
-
-        // Simple zoom based on distance change (you can make this more sophisticated)
-        const zoomFactor = distance / 200; // Adjust this value as needed
-        setImageTransform(prev => ({
-          ...prev,
-          scale: Math.max(0.5, Math.min(3, zoomFactor)),
-        }));
-      }
-    },
-    [isDragging, dragStart]
-  );
-
-  const handleTouchEnd = useCallback(() => {
-    setIsDragging(false);
-    setDragStart(null);
-  }, []);
+  // Handle dot reset
+  const handleResetDots = useCallback(() => {
+    resetDots();
+  }, [resetDots]);
 
   // Apply transformations and crop to create aligned image
   const handleConfirm = useCallback(async () => {
     if (!canvasRef.current || !imageRef.current) {
-      onConfirm(imageSrc);
+      // Get current dot positions and convert to pixel coordinates
+      const dotPositions = getDotPositions().map(dot => ({
+        name: dot.name,
+        x: Math.round(dot.roi.x * 400), // Use default canvas size if not available
+        y: Math.round(dot.roi.y * 300),
+      }));
+      onConfirm(imageSrc, dotPositions);
       return;
     }
 
@@ -128,7 +62,12 @@ export function useAlignmentCanvas(
       }) as CanvasRenderingContext2D;
 
       if (!alignedCtx) {
-        onConfirm(imageSrc);
+        const dotPositions = getDotPositions().map(dot => ({
+          name: dot.name,
+          x: Math.round(dot.roi.x * 400),
+          y: Math.round(dot.roi.y * 300),
+        }));
+        onConfirm(imageSrc, dotPositions);
         return;
       }
 
@@ -168,10 +107,23 @@ export function useAlignmentCanvas(
 
       // Convert to data URL
       const alignedImageSrc = alignedCanvas.toDataURL('image/jpeg', 0.9);
-      onConfirm(alignedImageSrc);
+      
+      // Get current dot positions and convert to pixel coordinates for the aligned image
+      const dotPositions = getDotPositions().map(dot => ({
+        name: dot.name,
+        x: Math.round(dot.roi.x * image.naturalWidth),
+        y: Math.round(dot.roi.y * image.naturalHeight),
+      }));
+      
+      onConfirm(alignedImageSrc, dotPositions);
     } catch (error) {
       // Fallback to original image if transformation fails
-      onConfirm(imageSrc);
+      const dotPositions = getDotPositions().map(dot => ({
+        name: dot.name,
+        x: Math.round(dot.roi.x * 400),
+        y: Math.round(dot.roi.y * 300),
+      }));
+      onConfirm(imageSrc, dotPositions);
     }
   }, [
     imageSrc,
@@ -182,6 +134,7 @@ export function useAlignmentCanvas(
     scale,
     rotation,
     localImageDisplaySize,
+    getDotPositions,
   ]);
 
   return {
@@ -190,14 +143,10 @@ export function useAlignmentCanvas(
     scale,
     rotation,
     imageTransform,
-    isDragging,
+    dots,
     handleConfirm,
-    handleMouseDown,
-    handleMouseMove,
-    handleMouseUp,
-    handleTouchStart,
-    handleTouchMove,
-    handleTouchEnd,
+    handleDotMove,
+    handleResetDots,
     handleZoomIn,
     handleZoomOut,
     handleRotateLeft,

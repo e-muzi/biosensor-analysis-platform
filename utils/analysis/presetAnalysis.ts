@@ -6,7 +6,8 @@ import type { CalibrationResult } from '../../types';
 
 // Analyze image using preset calibration curves
 export function analyzeWithPresetCurves(
-  image: HTMLImageElement
+  image: HTMLImageElement,
+  dotPositions?: Array<{ name: string; x: number; y: number }>
 ): Promise<CalibrationResult[]> {
   return new Promise((resolve, reject) => {
     try {
@@ -23,13 +24,16 @@ export function analyzeWithPresetCurves(
 
       const results: CalibrationResult[] = [];
 
+      // Use provided dot positions or fall back to default coordinates
+      const coordinates = dotPositions || PESTICIDE_COORDINATES;
+      
       // NEW: Use coordinate-based sampling instead of ROI-based
       const samplingResults = samplePesticidesAtCoordinates(
         ctx,
-        PESTICIDE_COORDINATES
+        coordinates
       );
 
-      PESTICIDE_COORDINATES.forEach((coordinate, index) => {
+      coordinates.forEach((coordinate, index) => {
         // Find the corresponding pesticide curve
         const pesticide = PREDEFINED_PESTICIDES.find(
           p => p.name === coordinate.name
@@ -74,6 +78,7 @@ export function analyzeWithPresetCurves(
 
       resolve(results);
     } catch (error) {
+      console.error('Error in analyzeWithPresetCurves:', error);
       reject(error);
     }
   });

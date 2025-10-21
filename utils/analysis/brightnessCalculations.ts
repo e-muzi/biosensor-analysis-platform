@@ -10,7 +10,8 @@ import type { CalibrationResult } from '../../types';
 // Analyze image with calibration strips using new 5-pixel sampling method
 // Updated for 3-point calibration system
 export function analyzeWithCalibrationStrips(
-  image: HTMLImageElement
+  image: HTMLImageElement,
+  dotPositions?: Array<{ name: string; x: number; y: number }>
 ): Promise<CalibrationResult[]> {
   return new Promise((resolve, reject) => {
     try {
@@ -30,12 +31,17 @@ export function analyzeWithCalibrationStrips(
 
       const results: CalibrationResult[] = [];
 
+      // Use provided dot positions or fall back to default coordinates
+      const coordinates = dotPositions || PESTICIDE_COORDINATES;
+
       CALIBRATION_STRIPS.forEach((strip, index) => {
         // Calculate calibration strip RGB values
         const calibrationRGBs = calculateCalibrationStripRGBs(ctx, strip);
 
         // NEW: Use coordinate-based sampling for test area RGB
-        const coordinate = PESTICIDE_COORDINATES[index];
+        const coordinate = coordinates[index];
+        if (!coordinate) return; // Skip if no coordinate available
+        
         const samplingResults = samplePesticidesAtCoordinates(ctx, [
           coordinate,
         ]);

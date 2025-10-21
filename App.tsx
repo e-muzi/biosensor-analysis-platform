@@ -24,20 +24,28 @@ function App() {
   const [analysisResults, setAnalysisResults] = useState<CalibrationResult[]>(
     []
   );
+  const [dotPositions, setDotPositions] = useState<Array<{ name: string; x: number; y: number }>>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [showAlignment, setShowAlignment] = useState(false);
 
-  const handleAlignmentConfirm = useCallback((alignedImageSrc: string) => {
+  const handleAlignmentConfirm = useCallback((alignedImageSrc: string, dotPositions: Array<{ name: string; x: number; y: number }>) => {
     setCapturedImage(alignedImageSrc);
     setShowAlignment(false);
+    // Store dot positions for analysis
+    setDotPositions(dotPositions);
   }, []);
 
   const handleAnalysisComplete = useCallback(
-    (results: CalibrationResult[], imageSrc: string) => {
+    (results: CalibrationResult[], imageSrc: string, analysisDotPositions?: Array<{ name: string; x: number; y: number }>) => {
       setAnalysisResults(results);
       setCapturedImage(imageSrc);
       setPendingImage(null);
       setIsAnalyzing(false);
+      
+      // Update dot positions if provided (from analysis)
+      if (analysisDotPositions && analysisDotPositions.length > 0) {
+        setDotPositions(analysisDotPositions);
+      }
 
       const historyItem = {
         id: Date.now().toString(),
@@ -104,6 +112,7 @@ function App() {
             <AnalysisResultScreen
               results={analysisResults}
               imageSrc={capturedImage}
+              dotPositions={dotPositions}
               onBack={handleBack}
               onNewAnalysis={handleNewAnalysis}
               isAnalyzing={isAnalyzing}
@@ -117,6 +126,7 @@ function App() {
             onImageCapture={handleImageCapture}
             onImageClear={handleClearImage}
             pendingImage={pendingImage}
+            dotPositions={dotPositions}
           />
         );
 
