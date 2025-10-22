@@ -26,24 +26,7 @@ export function calculateCalibrationStripRGBs(
       height: strip.roi.height,
     };
     const { r, g, b } = calculateAverageRGBForRoi(ctx, segmentROI);
-    const totalRGB = r + g + b;
-    rgbValues.push(totalRGB); // Total RGB value
-    
-    // Console log individual segment RGB values
-    console.log(`📊 Calibration Strip Segment ${strip.name} - Segment ${i + 1}:`, {
-      strip: strip.name,
-      segment: i + 1,
-      concentration: strip.concentrations[i],
-      roi: segmentROI,
-      pixelCoordinates: {
-        x: segmentX,
-        y: Math.floor(canvas.height * strip.roi.y),
-        width: segmentWidth,
-        height: Math.floor(canvas.height * strip.roi.height)
-      },
-      rgb: { r: Math.round(r), g: Math.round(g), b: Math.round(b) },
-      totalRGB: Math.round(totalRGB)
-    });
+    rgbValues.push(r + g + b); // Total RGB value
   }
 
   return rgbValues;
