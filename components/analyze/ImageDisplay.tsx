@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react';
+import { forwardRef } from 'react';
 import { Box } from '@mui/material';
 import { EmptyState } from './imageDisplay/components/EmptyState';
 import { CalibrationStrips } from './imageDisplay/components/CalibrationStrips';
@@ -9,45 +9,14 @@ import { PESTICIDE_CENTER_POINTS } from '../../utils/constants/roiConstants';
 interface ImageDisplayProps {
   imageSrc: string | null;
   showROIs?: boolean;
-  dotPositions?: Array<{ name: string; x: number; y: number }>;
 }
 
 export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
-  ({ imageSrc, showROIs = true, dotPositions }, ref) => {
+  ({ imageSrc, showROIs = true }, ref) => {
     const { detectionMode } = useModeStore();
-    const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
     const handleImageLoad = () => {
-      if (ref && typeof ref === 'object' && ref.current) {
-        setImageDimensions({
-          width: ref.current.naturalWidth,
-          height: ref.current.naturalHeight,
-        });
-      }
     };
-
-    // Convert pixel coordinates to percentage coordinates for display
-    const getDisplayDots = () => {
-      if (!dotPositions || dotPositions.length === 0) {
-        return PESTICIDE_CENTER_POINTS;
-      }
-
-      // Use actual image dimensions if available, otherwise fallback to default
-      const width = imageDimensions?.width || 400;
-      const height = imageDimensions?.height || 300;
-      
-      return dotPositions.map(dot => ({
-        name: dot.name,
-        roi: {
-          x: dot.x / width,
-          y: dot.y / height,
-          width: 0,
-          height: 0,
-        },
-      }));
-    };
-
-    const displayDots = getDisplayDots();
 
     return (
       <Box
@@ -89,10 +58,10 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
             {showROIs && (
               <>
                 {detectionMode === 'strip' && <CalibrationStrips />}
-                <TestAreas dotPositions={dotPositions} imageDimensions={imageDimensions} />
+                <TestAreas />
 
                 {/* Guide dots overlay - always show */}
-                {displayDots.map(pesticide => (
+                {PESTICIDE_CENTER_POINTS.map(pesticide => (
                   <Box key={pesticide.name}>
                     {/* Guide dot positioned at the center of the green box */}
                     <Box

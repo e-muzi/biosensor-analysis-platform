@@ -9,11 +9,10 @@ import { useCaptureLogic } from './capture/hooks/useCaptureLogic';
 import type { CalibrationResult } from '../../types';
 
 interface CaptureScreenProps {
-  onAnalysisComplete: (results: CalibrationResult[], imageSrc: string, analysisDotPositions?: Array<{ name: string; x: number; y: number }>) => void;
+  onAnalysisComplete: (results: CalibrationResult[], imageSrc: string) => void;
   onImageCapture?: (imageSrc: string) => void;
   onImageClear?: () => void;
   pendingImage?: string | null;
-  dotPositions?: Array<{ name: string; x: number; y: number }>;
 }
 
 export const CaptureScreen: React.FC<CaptureScreenProps> = ({
@@ -21,7 +20,6 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
   onImageCapture,
   onImageClear,
   pendingImage,
-  dotPositions,
 }) => {
   const {
     imageSrc,
@@ -44,8 +42,7 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
     onAnalysisComplete,
     onImageCapture,
     onImageClear,
-    pendingImage,
-    dotPositions
+    pendingImage
   );
 
   if (showAlignment && imageSrc) {

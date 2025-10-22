@@ -42,7 +42,7 @@ export const CalibrationStrips: React.FC = () => {
             </Typography>
           </Box>
 
-          {/* Show individual calibration segments (horizontal) - 3-point calibration */}
+          {/* Show individual calibration segments (horizontal) */}
           {strip.concentrations.map((conc, segIndex) => (
             <Box
               key={`segment-${strip.name}-${segIndex}`}
@@ -54,8 +54,8 @@ export const CalibrationStrips: React.FC = () => {
                 pointerEvents: 'none',
                 backgroundColor: 'transparent',
                 top: `${strip.roi.y * 100}%`,
-                left: `${(strip.roi.x + (segIndex * strip.roi.width) / 3) * 100}%`,
-                width: `${(strip.roi.width / 3) * 100}%`,
+                left: `${(strip.roi.x + (segIndex * strip.roi.width) / 5) * 100}%`,
+                width: `${(strip.roi.width / 5) * 100}%`,
                 height: `${strip.roi.height * 100}%`,
                 zIndex: 1,
               }}

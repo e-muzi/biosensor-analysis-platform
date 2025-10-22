@@ -28,32 +28,32 @@ export const TEST_KIT_LAYOUT = {
   START_Y: 0.2,
 } as const;
 
-// Calibration strip configurations - 3 horizontal strips at bottom
+// Calibration strip configurations - 5 horizontal strips at bottom
 export const CALIBRATION_STRIPS: CalibrationStrip[] = [
   {
     name: PREDEFINED_PESTICIDES[0].name, // Acephate
     roi: { x: 0.21, y: 0.5, width: 0.08, height: 0.06 },
-    concentrations: [0, 1, 10], // µM concentrations (left to right) - 3-point calibration
+    concentrations: [0, 0.3, 1, 3, 10], // µM concentrations (left to right)
   },
   {
     name: PREDEFINED_PESTICIDES[1].name, // Glyphosate
     roi: { x: 0.34, y: 0.5, width: 0.08, height: 0.06 },
-    concentrations: [0, 1, 10], // µM concentrations (left to right) - 3-point calibration
+    concentrations: [0, 0.3, 1, 3, 10], // µM concentrations (left to right)
   },
   {
     name: PREDEFINED_PESTICIDES[2].name, // Malathion
     roi: { x: 0.46, y: 0.5, width: 0.08, height: 0.06 },
-    concentrations: [0, 1, 10], // µM concentrations (left to right) - 3-point calibration
+    concentrations: [0, 0.3, 1, 3, 10], // µM concentrations (left to right)
   },
   {
     name: PREDEFINED_PESTICIDES[3].name, // Chlorpyrifos
     roi: { x: 0.59, y: 0.5, width: 0.08, height: 0.06 },
-    concentrations: [0, 1, 10], // µM concentrations (left to right) - 3-point calibration
+    concentrations: [0, 0.3, 1, 3, 10], // µM concentrations (left to right)
   },
   {
     name: PREDEFINED_PESTICIDES[4].name, // Acetamiprid
     roi: { x: 0.72, y: 0.5, width: 0.08, height: 0.06 },
-    concentrations: [0, 1, 10], // µM concentrations (left to right) - 3-point calibration
+    concentrations: [0, 0.3, 1, 3, 10], // µM concentrations (left to right)
   },
 ];
 

@@ -18,7 +18,6 @@ import type { CalibrationResult } from '../../types';
 interface AnalysisResultScreenProps {
   results: CalibrationResult[];
   imageSrc: string;
-  dotPositions?: Array<{ name: string; x: number; y: number }>;
   onBack: () => void;
   onNewAnalysis: () => void;
   isAnalyzing: boolean;
@@ -27,7 +26,6 @@ interface AnalysisResultScreenProps {
 export function AnalysisResultScreen({
   results,
   imageSrc,
-  dotPositions,
   onBack,
   onNewAnalysis,
   isAnalyzing,
@@ -70,7 +68,7 @@ export function AnalysisResultScreen({
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ImageDisplay ref={imageRef} imageSrc={imageSrc} dotPositions={dotPositions} />
+          <ImageDisplay ref={imageRef} imageSrc={imageSrc} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

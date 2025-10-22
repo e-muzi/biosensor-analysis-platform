@@ -2,7 +2,7 @@ import { calculateAverageRGBForRoi } from '../imageProcessing/colorUtils';
 import type { CalibrationStrip } from '../../types';
 
 // Calculate RGB values for each segment of a horizontal calibration strip
-// strip mode only - updated for 3-point calibration
+// strip mode only
 export function calculateCalibrationStripRGBs(
   ctx: CanvasRenderingContext2D,
   strip: CalibrationStrip
@@ -12,12 +12,12 @@ export function calculateCalibrationStripRGBs(
   const stripWidth = Math.floor(canvas.width * strip.roi.width);
   const stripHeight = Math.floor(canvas.height * strip.roi.height);
 
-  if (stripWidth <= 0 || stripHeight <= 0) return [0, 0, 0];
+  if (stripWidth <= 0 || stripHeight <= 0) return [0, 0, 0, 0, 0];
 
-  const segmentWidth = stripWidth / 3; // 3 horizontal segments for 3-point calibration
+  const segmentWidth = stripWidth / 5; // 5 horizontal segments
   const rgbValues: number[] = [];
 
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     const segmentX = stripX + i * segmentWidth;
     const segmentROI = {
       x: segmentX / canvas.width,

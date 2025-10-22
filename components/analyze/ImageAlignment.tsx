@@ -6,7 +6,7 @@ import { useThemeStore } from '../../state/themeStore';
 
 interface ImageAlignmentProps {
   imageSrc: string;
-  onConfirm: (alignedImageSrc: string, dotPositions: Array<{ name: string; x: number; y: number }>) => void;
+  onConfirm: (alignedImageSrc: string) => void;
 }
 
 export function ImageAlignment({ imageSrc, onConfirm }: ImageAlignmentProps) {
@@ -19,10 +19,14 @@ export function ImageAlignment({ imageSrc, onConfirm }: ImageAlignmentProps) {
     scale,
     rotation,
     imageTransform,
-    dots,
+    isDragging,
     handleConfirm,
-    handleDotMove,
-    handleResetDots,
+    handleMouseDown,
+    handleMouseMove,
+    handleMouseUp,
+    handleTouchStart,
+    handleTouchMove,
+    handleTouchEnd,
     handleZoomIn,
     handleZoomOut,
     handleRotateLeft,
@@ -38,7 +42,7 @@ export function ImageAlignment({ imageSrc, onConfirm }: ImageAlignmentProps) {
           Align Test Kit
         </Typography>
         <Typography variant='body1' color='text.secondary'>
-          Drag the dots to align them with the test areas, then confirm
+          Adjust the image position and crop to focus on the test kit
         </Typography>
       </Box>
 
@@ -57,9 +61,13 @@ export function ImageAlignment({ imageSrc, onConfirm }: ImageAlignmentProps) {
           scale={scale}
           rotation={rotation}
           imageTransform={imageTransform}
-          dots={dots}
-          onDotMove={handleDotMove}
-          onResetDots={handleResetDots}
+          isDragging={isDragging}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
           setLocalImageDisplaySize={setLocalImageDisplaySize}
         />
 
