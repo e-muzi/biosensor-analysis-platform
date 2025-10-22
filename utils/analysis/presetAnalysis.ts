@@ -61,6 +61,23 @@ export function analyzeWithPresetCurves(
             : 0;
         const testRGB = averageR + averageG + averageB; // Total RGB value
 
+        // Console log preset analysis RGB values
+        console.log(`🎨 Preset Analysis ${coordinate.name}:`, {
+          pesticide: coordinate.name,
+          coordinates: { x: coordinate.x, y: coordinate.y },
+          sampledPixels: pixels.length,
+          averageRGB: { r: Math.round(averageR), g: Math.round(averageG), b: Math.round(averageB) },
+          totalRGB: Math.round(testRGB),
+          individualPixels: pixels.map(p => ({
+            x: Math.round(p.x * ctx.canvas.width),
+            y: Math.round(p.y * ctx.canvas.height),
+            r: Math.round(p.r),
+            g: Math.round(p.g),
+            b: Math.round(p.b),
+            brightness: Math.round(p.brightness)
+          }))
+        });
+
         // Use RGB comparison for concentration estimation
         const { concentration, confidence } = estimateConcentrationFromRGB(
           testRGB,
