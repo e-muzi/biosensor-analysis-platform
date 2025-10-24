@@ -68,7 +68,11 @@ export function AnalysisResultScreen({
 
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 6 }}>
-          <ImageDisplay ref={imageRef} imageSrc={imageSrc} />
+          <ImageDisplay 
+            ref={imageRef} 
+            imageSrc={imageSrc} 
+            showCaptureModePositions={results.some(result => result.isCaptureMode)}
+          />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

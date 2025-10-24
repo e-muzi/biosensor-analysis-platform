@@ -19,7 +19,8 @@ function convertCalibrationToAnalysis(
 // Unified analysis function that switches based on mode
 export async function analyzeImage(
   image: HTMLImageElement,
-  mode: DetectionMode
+  mode: DetectionMode,
+  isCaptureMode: boolean = false
 ): Promise<{
   calibrationResults?: CalibrationResult[];
   analysisResults: AnalysisResult[];
@@ -30,7 +31,7 @@ export async function analyzeImage(
     return { calibrationResults, analysisResults };
   } else {
     // Preset mode - use predefined curves
-    const presetResults = await analyzeWithPresetCurves(image);
+    const presetResults = await analyzeWithPresetCurves(image, isCaptureMode);
     const analysisResults = convertCalibrationToAnalysis(presetResults);
     return { calibrationResults: presetResults, analysisResults };
   }

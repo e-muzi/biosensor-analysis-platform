@@ -156,6 +156,9 @@ export function samplePixelsAtCoordinates(
 ): SamplingResult[] {
   const canvas = ctx.canvas;
 
+  // Log the coordinates being used for pixel sampling
+  console.log('🎯 Pixel sampling coordinates:', coordinates);
+
   return coordinates.map(coord => {
     try {
       // Ensure coordinates are within canvas bounds
@@ -247,6 +250,9 @@ export function samplePixelsAtCoordinates(
           height: 3 / canvas.height,
         },
         pixels,
+        averageR,
+        averageG,
+        averageB,
         averageBrightness,
         validPixels: validPixelsCount,
         totalPixels: 5,

@@ -1,10 +1,25 @@
 import { Box } from '@mui/material';
-import { PESTICIDE_ROIS } from '../../../../utils/constants/roiConstants';
+import { PESTICIDE_ROIS, PESTICIDE_ROIS_CAPTURE_MODE } from '../../../../utils/constants/roiConstants';
 
-export const TestAreas = () => {
+interface TestAreasProps {
+  showCaptureModePositions?: boolean;
+}
+
+export const TestAreas = ({ showCaptureModePositions = false }: TestAreasProps) => {
+  const rois = showCaptureModePositions ? PESTICIDE_ROIS_CAPTURE_MODE : PESTICIDE_ROIS;
+  
+  // Log which test areas are being used
+  if (showCaptureModePositions) {
+    console.log('🟢 TestAreas: Showing CAMERA CAPTURE green boxes (moved down, dots centered)');
+    console.log('📍 Capture mode test areas:', PESTICIDE_ROIS_CAPTURE_MODE);
+  } else {
+    console.log('🟢 TestAreas: Showing UPLOAD/NORMAL green boxes');
+    console.log('📍 Normal test areas:', PESTICIDE_ROIS);
+  }
+  
   return (
     <>
-      {PESTICIDE_ROIS.map(({ name, roi }) => (
+      {rois.map(({ name, roi }) => (
         <Box
           key={name}
           sx={{

@@ -31,6 +31,7 @@ export interface CalibrationResult {
   calibrationBrightnesses?: number[]; // Optional for backward compatibility
   estimatedConcentration: number;
   confidence: 'high' | 'medium' | 'low';
+  isCaptureMode?: boolean; // Track if this result came from capture mode analysis
 }
 
 export interface HistoryRecord {

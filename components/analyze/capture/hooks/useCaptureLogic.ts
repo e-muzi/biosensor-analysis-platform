@@ -67,7 +67,7 @@ export function useCaptureLogic(
         img.onerror = reject;
       });
 
-      const { calibrationResults } = await analyzeImage(img, detectionMode);
+      const { calibrationResults } = await analyzeImage(img, detectionMode, !isUploadedImage);
 
       // For backward compatibility, we still pass CalibrationResult[] to onAnalysisComplete
       // Both preset and strip modes return CalibrationResult objects

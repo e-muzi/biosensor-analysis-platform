@@ -1,12 +1,13 @@
 import { estimateConcentrationFromRGB } from './calibrationAnalysis';
-import { PESTICIDE_COORDINATES } from '../constants/roiConstants';
+import { PESTICIDE_COORDINATES, PESTICIDE_COORDINATES_CAPTURE_MODE } from '../constants/roiConstants';
 import { PREDEFINED_PESTICIDES } from '../../state/pesticideStore';
 import { samplePesticidesAtCoordinates } from '../imageProcessing/pixelSampling';
 import type { CalibrationResult } from '../../types';
 
 // Analyze image using preset calibration curves
 export function analyzeWithPresetCurves(
-  image: HTMLImageElement
+  image: HTMLImageElement,
+  isCaptureMode: boolean = false
 ): Promise<CalibrationResult[]> {
   return new Promise((resolve, reject) => {
     try {
@@ -23,13 +24,32 @@ export function analyzeWithPresetCurves(
 
       const results: CalibrationResult[] = [];
 
+      // Choose coordinates based on mode
+      const coordinates = isCaptureMode ? PESTICIDE_COORDINATES_CAPTURE_MODE : PESTICIDE_COORDINATES;
+      
+      // Log the coordinates being used for analysis
+      console.log(`🔍 Analysis Mode: ${isCaptureMode ? 'CAMERA CAPTURE' : 'UPLOAD/NORMAL'}`);
+      console.log('📍 Pixel coordinates for analysis:', coordinates);
+
+      // Verify that guiding dots match analysis coordinates
+      if (isCaptureMode) {
+        console.log('🔍 Verifying guiding dots match analysis coordinates...');
+        // Convert pixel coordinates to percentage for comparison
+        const analysisPercentages = coordinates.map(coord => ({
+          name: coord.name,
+          x: coord.x / image.naturalWidth,
+          y: coord.y / image.naturalHeight
+        }));
+        console.log('📍 Analysis coordinates as percentages:', analysisPercentages);
+      }
+
       // NEW: Use coordinate-based sampling instead of ROI-based
       const samplingResults = samplePesticidesAtCoordinates(
         ctx,
-        PESTICIDE_COORDINATES
+        coordinates
       );
 
-      PESTICIDE_COORDINATES.forEach((coordinate, index) => {
+      coordinates.forEach((coordinate, index) => {
         // Find the corresponding pesticide curve
         const pesticide = PREDEFINED_PESTICIDES.find(
           p => p.name === coordinate.name
@@ -40,6 +60,9 @@ export function analyzeWithPresetCurves(
 
         // Get RGB values from coordinate sampling
         const samplingResult = samplingResults[index];
+
+        // Log the analysis position for verification
+        console.log(`🎯 ${coordinate.name}: Analyzing at (${coordinate.x}, ${coordinate.y})`);
 
         // Calculate average RGB from all sampled pixels (5-pixel sampling)
         const pixels = samplingResult?.pixels || [];
@@ -69,6 +92,7 @@ export function analyzeWithPresetCurves(
           calibrationRGBs: pesticide.curve.map(point => point.rgb),
           estimatedConcentration: concentration,
           confidence,
+          isCaptureMode: isCaptureMode, // Track if this was capture mode analysis
         });
       });
 

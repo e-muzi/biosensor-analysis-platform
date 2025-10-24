@@ -4,19 +4,29 @@ import { EmptyState } from './imageDisplay/components/EmptyState';
 import { CalibrationStrips } from './imageDisplay/components/CalibrationStrips';
 import { TestAreas } from './imageDisplay/components/TestAreas';
 import { useModeStore } from '../../state/modeStore';
-import { PESTICIDE_CENTER_POINTS } from '../../utils/constants/roiConstants';
+import { PESTICIDE_CENTER_POINTS, PESTICIDE_CENTER_POINTS_CAPTURE_MODE } from '../../utils/constants/roiConstants';
 
 interface ImageDisplayProps {
   imageSrc: string | null;
   showROIs?: boolean;
+  showCaptureModePositions?: boolean; // Show analysis positions instead of capture positions
 }
 
 export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
-  ({ imageSrc, showROIs = true }, ref) => {
+  ({ imageSrc, showROIs = true, showCaptureModePositions = false }, ref) => {
     const { detectionMode } = useModeStore();
 
     const handleImageLoad = () => {
     };
+
+    // Log which positions are being used
+    if (showCaptureModePositions) {
+      console.log('🎯 ImageDisplay: Showing CAMERA CAPTURE analysis positions (dots centered in moved boxes)');
+      console.log('📍 Camera capture analysis positions:', PESTICIDE_CENTER_POINTS_CAPTURE_MODE);
+    } else {
+      console.log('🎯 ImageDisplay: Showing UPLOAD/NORMAL positions');
+      console.log('📍 Upload/Normal positions:', PESTICIDE_CENTER_POINTS);
+    }
 
     return (
       <Box
@@ -58,10 +68,10 @@ export const ImageDisplay = forwardRef<HTMLImageElement, ImageDisplayProps>(
             {showROIs && (
               <>
                 {detectionMode === 'strip' && <CalibrationStrips />}
-                <TestAreas />
+                <TestAreas showCaptureModePositions={showCaptureModePositions} />
 
-                {/* Guide dots overlay - always show */}
-                {PESTICIDE_CENTER_POINTS.map(pesticide => (
+                {/* Guide dots overlay - show analysis positions if from capture mode */}
+                {(showCaptureModePositions ? PESTICIDE_CENTER_POINTS_CAPTURE_MODE : PESTICIDE_CENTER_POINTS).map((pesticide: any) => (
                   <Box key={pesticide.name}>
                     {/* Guide dot positioned at the center of the green box */}
                     <Box

@@ -9,6 +9,7 @@ interface PesticideGuideDotsProps {
 
 export const PesticideGuideDots: React.FC<PesticideGuideDotsProps> = () => {
   // Always show the dots, using percentage-based positioning like the green boxes
+  // Keep original positions for capture mode - analysis will use different coordinates
 
   return (
     <>
