@@ -124,6 +124,15 @@ export const PESTICIDE_COORDINATES_CAPTURE_MODE = [
   { name: PREDEFINED_PESTICIDES[4].name, x: 417, y: 272 }, // Acetamiprid - 20 pixels down from y: 252, moved left 3px
 ];
 
+// NEW: Upload mode analysis coordinates - specific coordinates for uploaded images
+export const PESTICIDE_COORDINATES_UPLOAD_MODE = [
+  { name: PREDEFINED_PESTICIDES[0].name, x: 83, y: 248 }, // Acephate - upload mode coordinates
+  { name: PREDEFINED_PESTICIDES[1].name, x: 163, y: 248 }, // Glyphosate - upload mode coordinates
+  { name: PREDEFINED_PESTICIDES[2].name, x: 248, y: 248 }, // Malathion - upload mode coordinates
+  { name: PREDEFINED_PESTICIDES[3].name, x: 332, y: 248 }, // Chlorpyrifos - upload mode coordinates
+  { name: PREDEFINED_PESTICIDES[4].name, x: 420, y: 248 }, // Acetamiprid - upload mode coordinates
+];
+
 // NEW: Capture mode test areas - 20 pixels downward from original positions
 // These are used for displaying green boxes in capture mode analysis
 export const PESTICIDE_ROIS_CAPTURE_MODE: PesticideROI[] = [

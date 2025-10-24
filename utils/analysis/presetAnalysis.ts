@@ -1,6 +1,6 @@
 import { estimateConcentrationFromRGB } from './calibrationAnalysis';
-import { PESTICIDE_COORDINATES, PESTICIDE_COORDINATES_CAPTURE_MODE } from '../constants/roiConstants';
-import { PREDEFINED_PESTICIDES } from '../../state/pesticideStore';
+import { PESTICIDE_COORDINATES_CAPTURE_MODE, PESTICIDE_COORDINATES_UPLOAD_MODE } from '../constants/roiConstants';
+import { getPesticideCurves } from '../../state/pesticideStore';
 import { samplePesticidesAtCoordinates } from '../imageProcessing/pixelSampling';
 import type { CalibrationResult } from '../../types';
 
@@ -25,10 +25,16 @@ export function analyzeWithPresetCurves(
       const results: CalibrationResult[] = [];
 
       // Choose coordinates based on mode
-      const coordinates = isCaptureMode ? PESTICIDE_COORDINATES_CAPTURE_MODE : PESTICIDE_COORDINATES;
+      let coordinates;
+      if (isCaptureMode) {
+        coordinates = PESTICIDE_COORDINATES_CAPTURE_MODE;
+      } else {
+        // For upload mode, use the new upload-specific coordinates
+        coordinates = PESTICIDE_COORDINATES_UPLOAD_MODE;
+      }
       
       // Log the coordinates being used for analysis
-      console.log(`🔍 Analysis Mode: ${isCaptureMode ? 'CAMERA CAPTURE' : 'UPLOAD/NORMAL'}`);
+      console.log(`🔍 Analysis Mode: ${isCaptureMode ? 'CAMERA CAPTURE' : 'UPLOAD'}`);
       console.log('📍 Pixel coordinates for analysis:', coordinates);
 
       // Verify that guiding dots match analysis coordinates
@@ -43,6 +49,10 @@ export function analyzeWithPresetCurves(
         console.log('📍 Analysis coordinates as percentages:', analysisPercentages);
       }
 
+      // Get appropriate pesticide curves based on input mode
+      const pesticides = getPesticideCurves(isCaptureMode);
+      console.log(`📊 Using ${isCaptureMode ? 'TEMP' : 'ORIGINAL'} curves for analysis`);
+
       // NEW: Use coordinate-based sampling instead of ROI-based
       const samplingResults = samplePesticidesAtCoordinates(
         ctx,
@@ -51,7 +61,7 @@ export function analyzeWithPresetCurves(
 
       coordinates.forEach((coordinate, index) => {
         // Find the corresponding pesticide curve
-        const pesticide = PREDEFINED_PESTICIDES.find(
+        const pesticide = pesticides.find(
           p => p.name === coordinate.name
         );
         if (!pesticide) {

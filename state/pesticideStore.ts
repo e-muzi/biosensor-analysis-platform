@@ -21,79 +21,101 @@ const TEMP_TEST_CURVE = [
   { concentration: 0.01, rgb: 349 },
 ];
 
-// Apply temporary curve to all pesticides
-const ACEPHATE_CURVE = TEMP_TEST_CURVE;
-const GLYPHOSATE_CURVE = TEMP_TEST_CURVE;
-const MALATHION_CURVE = TEMP_TEST_CURVE;
-const CHLORPYRIFOS_CURVE = TEMP_TEST_CURVE;
-const ACETAMIPRID_CURVE = TEMP_TEST_CURVE;
-
-// COMMENTED OUT - Original individual pesticide curves
-/*
-const ACEPHATE_CURVE = [
+// Original individual pesticide curves (for upload mode)
+const ACEPHATE_CURVE_ORIGINAL = [
   { concentration: 0, rgb: 359 },
   { concentration: 0.3, rgb: 337 },
   { concentration: 1, rgb: 311 },
 ];
 
-const GLYPHOSATE_CURVE = [
+const GLYPHOSATE_CURVE_ORIGINAL = [
   { concentration: 0, rgb: 381 },
   { concentration: 0.3, rgb: 367 },
   { concentration: 1, rgb: 348 },
 ];
 
-const MALATHION_CURVE = [
+const MALATHION_CURVE_ORIGINAL = [
   { concentration: 0, rgb: 273 },
   { concentration: 0.3, rgb: 209 },
   { concentration: 1, rgb: 183 },
 ];
 
-const CHLORPYRIFOS_CURVE = [
+const CHLORPYRIFOS_CURVE_ORIGINAL = [
   { concentration: 0, rgb: 179 },
   { concentration: 0.3, rgb: 164 },
   { concentration: 1, rgb: 147 },
 ];
 
-const ACETAMIPRID_CURVE = [
+const ACETAMIPRID_CURVE_ORIGINAL = [
   { concentration: 0, rgb: 358 },
   { concentration: 0.3, rgb: 343 },
   { concentration: 1, rgb: 333 },
 ];
-*/
 
-// List of predefined pesticides that are used in the app
+// Temporary test curves (for capture mode)
+const ACEPHATE_CURVE_TEMP = TEMP_TEST_CURVE;
+const GLYPHOSATE_CURVE_TEMP = TEMP_TEST_CURVE;
+const MALATHION_CURVE_TEMP = TEMP_TEST_CURVE;
+const CHLORPYRIFOS_CURVE_TEMP = TEMP_TEST_CURVE;
+const ACETAMIPRID_CURVE_TEMP = TEMP_TEST_CURVE;
+
+// Helper function to get curves based on input mode
+export function getPesticideCurves(isCaptureMode: boolean): Pesticide[] {
+  if (isCaptureMode) {
+    // Use temp curves for capture mode
+    return [
+      { name: 'Acephate', curve: ACEPHATE_CURVE_TEMP },
+      { name: 'Glyphosate', curve: GLYPHOSATE_CURVE_TEMP },
+      { name: 'Malathion', curve: MALATHION_CURVE_TEMP },
+      { name: 'Chlorpyrifos', curve: CHLORPYRIFOS_CURVE_TEMP },
+      { name: 'Acetamiprid', curve: ACETAMIPRID_CURVE_TEMP },
+    ];
+  } else {
+    // Use original curves for upload mode
+    return [
+      { name: 'Acephate', curve: ACEPHATE_CURVE_ORIGINAL },
+      { name: 'Glyphosate', curve: GLYPHOSATE_CURVE_ORIGINAL },
+      { name: 'Malathion', curve: MALATHION_CURVE_ORIGINAL },
+      { name: 'Chlorpyrifos', curve: CHLORPYRIFOS_CURVE_ORIGINAL },
+      { name: 'Acetamiprid', curve: ACETAMIPRID_CURVE_ORIGINAL },
+    ];
+  }
+}
+
+// Default pesticides (using temp curves for backward compatibility)
 export const PREDEFINED_PESTICIDES: Pesticide[] = [
   {
     name: 'Acephate',
-    curve: ACEPHATE_CURVE,
+    curve: ACEPHATE_CURVE_TEMP,
   },
   {
     name: 'Glyphosate',
-    curve: GLYPHOSATE_CURVE,
+    curve: GLYPHOSATE_CURVE_TEMP,
   },
   {
     name: 'Malathion',
-    curve: MALATHION_CURVE,
+    curve: MALATHION_CURVE_TEMP,
   },
   {
     name: 'Chlorpyrifos',
-    curve: CHLORPYRIFOS_CURVE,
+    curve: CHLORPYRIFOS_CURVE_TEMP,
   },
   {
     name: 'Acetamiprid',
-    curve: ACETAMIPRID_CURVE,
+    curve: ACETAMIPRID_CURVE_TEMP,
   },
 ];
 
 interface PesticideState {
   pesticides: Pesticide[];
-  getCurveForPesticide: (name: string) => CalibrationPoint[];
+  getCurveForPesticide: (name: string, isCaptureMode?: boolean) => CalibrationPoint[];
 }
 
 export const usePesticideStore = create<PesticideState>(() => ({
   pesticides: PREDEFINED_PESTICIDES,
-  getCurveForPesticide: name => {
-    const pesticide = PREDEFINED_PESTICIDES.find(p => p.name === name);
+  getCurveForPesticide: (name: string, isCaptureMode: boolean = true) => {
+    const pesticides = getPesticideCurves(isCaptureMode);
+    const pesticide = pesticides.find(p => p.name === name);
     return pesticide ? pesticide.curve : [];
   },
 }));
