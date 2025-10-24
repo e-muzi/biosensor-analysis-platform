@@ -12,6 +12,24 @@ export interface Pesticide {
 // Individual pesticide curves (concentrations in µM)
 // These curves represent realistic biosensor responses where higher concentrations
 // result in darker colors (lower RGB values)
+
+// TEMPORARY TEST CURVES - All pesticides use the same test data
+// Test data: 0.01: 349, 0.005: 179, 0.001: 92
+const TEMP_TEST_CURVE = [
+  { concentration: 0.001, rgb: 92 },
+  { concentration: 0.005, rgb: 179 },
+  { concentration: 0.01, rgb: 349 },
+];
+
+// Apply temporary curve to all pesticides
+const ACEPHATE_CURVE = TEMP_TEST_CURVE;
+const GLYPHOSATE_CURVE = TEMP_TEST_CURVE;
+const MALATHION_CURVE = TEMP_TEST_CURVE;
+const CHLORPYRIFOS_CURVE = TEMP_TEST_CURVE;
+const ACETAMIPRID_CURVE = TEMP_TEST_CURVE;
+
+// COMMENTED OUT - Original individual pesticide curves
+/*
 const ACEPHATE_CURVE = [
   { concentration: 0, rgb: 359 },
   { concentration: 0.3, rgb: 337 },
@@ -41,6 +59,7 @@ const ACETAMIPRID_CURVE = [
   { concentration: 0.3, rgb: 343 },
   { concentration: 1, rgb: 333 },
 ];
+*/
 
 // List of predefined pesticides that are used in the app
 export const PREDEFINED_PESTICIDES: Pesticide[] = [
