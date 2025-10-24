@@ -13,7 +13,7 @@ export const CaptureActions: React.FC<CaptureActionsProps> = ({
   onImageSelect,
 }) => {
   const handleDownloadTestImage = () => {
-    const downloadUrl = 'https://drive.google.com/uc?export=download&id=1xrP6yOVY8uOPptXogpFItTRVDBoxd9Lo';
+    const downloadUrl = 'https://drive.google.com/uc?export=download&id=1JXmKqK50On_ps5nQjMfw_BDW3u_rRHlc';
     window.open(downloadUrl, '_blank');
   };
   return (
